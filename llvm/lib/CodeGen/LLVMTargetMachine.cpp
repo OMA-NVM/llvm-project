@@ -227,7 +227,7 @@ bool LLVMTargetMachine::addPassesToEmitFile(
       PM.add(createPrintMIRPass(Out));
   }
 
-  PM.add(createFreeMachineFunctionPass());
+  // PM.add(createFreeMachineFunctionPass()); Modified for IR2MIR
   return false;
 }
 
@@ -276,7 +276,7 @@ bool LLVMTargetMachine::addPassesToEmitMC(PassManagerBase &PM, MCContext *&Ctx,
     return true;
 
   PM.add(Printer);
-  PM.add(createFreeMachineFunctionPass());
+  // PM.add(createFreeMachineFunctionPass()); Modified for IR2MIR
 
   return false; // success!
 }
