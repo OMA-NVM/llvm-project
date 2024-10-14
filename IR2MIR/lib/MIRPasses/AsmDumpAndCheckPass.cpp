@@ -37,10 +37,10 @@ bool AsmDumpAndCheckPass::runOnMachineFunction(MachineFunction &F) {
   F.viewCFG();
   int Nr = 0;
   for (auto &MBB : F) {
-    errs() << "Basic Block: " << Nr++ << "\n\n";
+    // errs() << "Basic Block: " << Nr++ << "\n\n";
     for (auto &MI : MBB) {
-      MI.print(errs(), true, false);
-      errs() << "\n";
+      // MI.print(errs(), true, false);
+      // errs() << "\n";
     }
   }
   return false;
