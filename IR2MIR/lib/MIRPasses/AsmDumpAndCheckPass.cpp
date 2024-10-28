@@ -1,6 +1,9 @@
 #include "MIRPasses/AsmDumpAndCheckPass.h"
+#include "llvm/Analysis/CFGPrinter.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
+#include "llvm/IR/Module.h"
 #include "llvm/Support/raw_ostream.h"
+#include "llvm/Support/GraphWriter.h"
 using namespace llvm;
 
 namespace TimingAnalysisPass {
@@ -35,6 +38,8 @@ bool AsmDumpAndCheckPass::doFinalization(Module &) { return false; }
 bool AsmDumpAndCheckPass::runOnMachineFunction(MachineFunction &F) {
   outs() << "Function: " << F.getName() << "\n";
   F.viewCFG();
+  //DOTFuncInfo CFGInfo(&F);
+  //llvm::dumpDotGraphToFile(this, F.getName() + ".dot", F.getName());
   int Nr = 0;
   for (auto &MBB : F) {
     // errs() << "Basic Block: " << Nr++ << "\n\n";

@@ -25,7 +25,7 @@ LLVM Pipeline for refference of IR to MIR: [CorePipeline](https://llvm.org/docs/
 #### 1. IR -> gMIR Mapping
 IR is mapped to gMIR with the [IRTranslator](https://llvm.org/docs/GlobalISel/IRTranslator.html).
 The mapping is not kept!
-Quick link to [IRTranslator.cpp](dependencies/llvm-18.1.4.src/lib/CodeGen/GlobalISel/IRTranslator.cpp)
+Quick link to [IRTranslator.cpp](../llvm/lib/CodeGen/GlobalISel/IRTranslator.cpp)
 
 #### 2. gMIR -> MIR Mapping
 It seems that MIR is created from gMIR in multiple passes, which are also Target dependent.
