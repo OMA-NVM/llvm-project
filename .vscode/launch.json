@@ -11,6 +11,14 @@
       "program": "${workspaceFolder}/build/bin/ir2mir",
       "args": ["${workspaceFolder}/IR2MIR/tests/hello.ll"],
       "cwd": "${workspaceFolder}"
+    },
+    {
+      "type": "lldb",
+      "request": "launch",
+      "name": "IR2MIR dijkstra",
+      "program": "${workspaceFolder}/build/bin/ir2mir",
+      "args": ["${workspaceFolder}/IR2MIR/tests/dijkstra/dijktraWithInput.ll"],
+      "cwd": "${workspaceFolder}"
     }
   ]
 }

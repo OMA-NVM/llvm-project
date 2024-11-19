@@ -50,6 +50,7 @@
 #include "llvm/Support/TimeProfiler.h"
 #include "llvm/Support/ToolOutputFile.h"
 #include "llvm/Support/WithColor.h"
+#include "llvm/Support/raw_ostream.h"
 #include "llvm/Target/TargetLoweringObjectFile.h"
 #include "llvm/Target/TargetMachine.h"
 #include "llvm/TargetParser/Host.h"
@@ -745,7 +746,7 @@ static int compileModule(char **argv, LLVMContext &Context) {
       PM.add(TAPass);
     }
     // add MIR printer pass
-    PM.add(createPrintMIRPass(*OS));
+    // PM.add(createPrintMIRPass(outs()));
     PM.add(createFreeMachineFunctionPass());
     // END MODIFICATION
 
