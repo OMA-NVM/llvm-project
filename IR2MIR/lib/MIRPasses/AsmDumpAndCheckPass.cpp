@@ -80,9 +80,7 @@ bool AsmDumpAndCheckPass::runOnMachineBasicBlock(MachineBasicBlock &MBB) {
 }
 
 void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
-  bool FoundPseudoInstruction = false;
   switch (I.getOpcode()) {
-
   case MSP430::ADD16mc:
   case MSP430::ADD16mi:
   case MSP430::ADD16mm:
@@ -251,7 +249,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::CMP8rn:
   case MSP430::CMP8rp:
   case MSP430::CMP8rr:
-  //The DADD instruction needs 1 extra cycle.
+  // The DADD instruction needs 1 extra cycle.
   case MSP430::DADD16mc:
   case MSP430::DADD16mi:
   case MSP430::DADD16mm:
@@ -276,7 +274,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::DADD8rn:
   case MSP430::DADD8rp:
   case MSP430::DADD8rr:
-  //End DADD
+  // End DADD
   case MSP430::RRA16m:
   case MSP430::RRA16n:
   case MSP430::RRA16p:
@@ -422,7 +420,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::JMP:
   case MSP430::RET:
   case MSP430::RETI:
-  //Conditional branches
+  // Conditional branches
   case MSP430::JCC:
     break;
 
