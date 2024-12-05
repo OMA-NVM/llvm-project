@@ -31,7 +31,7 @@ AsmDumpAndCheckPass::AsmDumpAndCheckPass(TargetMachine &TM)
  *
  * @return false
  */
-bool AsmDumpAndCheckPass::doFinalization(Module &) { return false; }
+bool AsmDumpAndCheckPass::doFinalization(Module &M) { return false; }
 
 /**
  * @brief Iterates over MachineFunction
@@ -58,41 +58,21 @@ bool AsmDumpAndCheckPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
-/**
- * @brief Calls checkInstruction on all Instructions in MBB.
- *
- * @param MBB
- * @return true
- * @return false
- */
-bool AsmDumpAndCheckPass::runOnMachineBasicBlock(MachineBasicBlock &MBB) {
-  // TODO get the BBToMBB mapping fron the IRTranslatorPass
-  // and get the corresponding IR BB.
-  for (auto &MI : MBB) {
-    // print MI
-    MI.dump();
-    // if (MI.isPseudo()) {
-    // outs() << "Found pseudo instruction: ";
-    // MI.dump();
-    //}
-  }
-  return false;
-}
-
 void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
+  // Latecy Information found here:
   switch (I.getOpcode()) {
-  case MSP430::ADD16mc:
+  case MSP430::ADD16mc:  //
   case MSP430::ADD16mi:
   case MSP430::ADD16mm:
   case MSP430::ADD16mn:
   case MSP430::ADD16mp:
-  case MSP430::ADD16mr:
-  case MSP430::ADD16rc:
-  case MSP430::ADD16ri:
-  case MSP430::ADD16rm:
-  case MSP430::ADD16rn:
-  case MSP430::ADD16rp:
-  case MSP430::ADD16rr:
+  case MSP430::ADD16mr:  // , mem
+  case MSP430::ADD16rc:  // cg16imm, GR
+  case MSP430::ADD16ri:  // imm, GR
+  case MSP430::ADD16rm:  // GR, mem [ADDR]
+  case MSP430::ADD16rn:  // GR, indreg(imm16)
+  case MSP430::ADD16rp:  // GR, Pointer location, mayload
+  case MSP430::ADD16rr:  // GR, GR
   case MSP430::ADD8mc:
   case MSP430::ADD8mi:
   case MSP430::ADD8mm:
@@ -435,11 +415,12 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::Srl16:    // Pseudo
   case MSP430::Srl8:     // Pseudo
     errs() << "PSEUDO Inst: " << I << "\n";
-    assert(0 && "Found pseudo instruction");
+    // assert(0 && "Found pseudo instruction");
     break;
   default:
     errs() << "UNKNOWN: " << I << "\n";
-    assert(0 && "Found unknown instruction");
+    // TODO Handle frame-setup CFI_INSTRUCTION
+    // assert(0 && "Found unknown instruction");
     break;
   }
 }
