@@ -1,14 +1,11 @@
 #include "MIRPasses/AsmDumpAndCheckPass.h"
-#include "llvm/Analysis/CFGPrinter.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
 #include "llvm/IR/Module.h"
-#include "llvm/Support/GraphWriter.h"
 #include "llvm/Support/raw_ostream.h"
 #include "llvm/TargetParser/Triple.h"
 #include <cassert>
 
 #include "MCTargetDesc/MSP430MCTargetDesc.h"
-#include "MSP430.h"
 
 using namespace llvm;
 
@@ -61,18 +58,18 @@ bool AsmDumpAndCheckPass::runOnMachineFunction(MachineFunction &F) {
 void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   // Latecy Information found here:
   switch (I.getOpcode()) {
-  case MSP430::ADD16mc:  //
+  case MSP430::ADD16mc: //
   case MSP430::ADD16mi:
   case MSP430::ADD16mm:
   case MSP430::ADD16mn:
   case MSP430::ADD16mp:
-  case MSP430::ADD16mr:  // , mem
-  case MSP430::ADD16rc:  // cg16imm, GR
-  case MSP430::ADD16ri:  // imm, GR
-  case MSP430::ADD16rm:  // GR, mem [ADDR]
-  case MSP430::ADD16rn:  // GR, indreg(imm16)
-  case MSP430::ADD16rp:  // GR, Pointer location, mayload
-  case MSP430::ADD16rr:  // GR, GR
+  case MSP430::ADD16mr: // , mem
+  case MSP430::ADD16rc: // cg16imm, GR
+  case MSP430::ADD16ri: // imm, GR
+  case MSP430::ADD16rm: // GR, mem [ADDR]
+  case MSP430::ADD16rn: // GR, indreg(imm16)
+  case MSP430::ADD16rp: // GR, Pointer location, mayload
+  case MSP430::ADD16rr: // GR, GR
   case MSP430::ADD8mc:
   case MSP430::ADD8mi:
   case MSP430::ADD8mm:
@@ -415,12 +412,16 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::Srl16:    // Pseudo
   case MSP430::Srl8:     // Pseudo
     errs() << "PSEUDO Inst: " << I << "\n";
-    // assert(0 && "Found pseudo instruction");
+    assert(0 && "Found pseudo instruction, which should be lowered by now!");
+    break;
+  case TargetOpcode::CFI_INSTRUCTION:
+    // TODO We should be able to ignore those but better make sure
+    errs() << "Found CFI";
     break;
   default:
     errs() << "UNKNOWN: " << I << "\n";
     // TODO Handle frame-setup CFI_INSTRUCTION
-    // assert(0 && "Found unknown instruction");
+    assert(0 && "Found unknown instruction");
     break;
   }
 }

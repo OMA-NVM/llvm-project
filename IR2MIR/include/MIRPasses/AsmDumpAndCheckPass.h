@@ -1,9 +1,8 @@
+#include "llvm/CodeGen/LiveIntervals.h"
+#include "llvm/CodeGen/LiveStacks.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
-#include "llvm/CodeGen/LiveIntervals.h"
-#include "llvm/CodeGen/LiveStacks.h"
-
 
 using namespace llvm;
 
@@ -24,20 +23,19 @@ public:
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
   bool doFinalization(Module &) override;
-  void getAnalysisUsage(AnalysisUsage &AU) const override{
-      //AU.addUsedIfAvailable<LiveStacks>();
-      //AU.addUsedIfAvailable<LiveVariables>();
-      //AU.addUsedIfAvailable<SlotIndexes>();
-      //AU.addUsedIfAvailable<LiveIntervals>();
-      AU.setPreservesAll();
-      MachineFunctionPass::getAnalysisUsage(AU);
-    };
+  void getAnalysisUsage(AnalysisUsage &AU) const override {
+    // AU.addUsedIfAvailable<LiveStacks>();
+    // AU.addUsedIfAvailable<LiveVariables>();
+    // AU.addUsedIfAvailable<SlotIndexes>();
+    // AU.addUsedIfAvailable<LiveIntervals>();
+    AU.setPreservesAll();
+    MachineFunctionPass::getAnalysisUsage(AU);
+  };
 
   virtual llvm::StringRef getPassName() const override {
     return "ARM Timing Analysis Result Dump Pass";
   }
   void checkMSP430Instruction(const MachineInstr &I);
-
 };
 
 } // namespace TimingAnalysisPass
