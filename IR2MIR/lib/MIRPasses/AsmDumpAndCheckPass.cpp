@@ -252,6 +252,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::DADD8rp:
   case MSP430::DADD8rr:
   // End DADD
+  // Format-II Instructions
   case MSP430::RRA16m:
   case MSP430::RRA16n:
   case MSP430::RRA16p:
@@ -268,6 +269,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::RRC8n:
   case MSP430::RRC8p:
   case MSP430::RRC8r:
+  // End Format-II
   case MSP430::SEXT16m:
   case MSP430::SEXT16n:
   case MSP430::SEXT16p:
@@ -320,10 +322,12 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::SUBC8rn:
   case MSP430::SUBC8rp:
   case MSP430::SUBC8rr:
+  // Format-II Instructions
   case MSP430::SWPB16m:
   case MSP430::SWPB16n:
   case MSP430::SWPB16p:
   case MSP430::SWPB16r:
+  // End Format-II Instructions
   case MSP430::XOR16mc:
   case MSP430::XOR16mi:
   case MSP430::XOR16mm:
@@ -351,6 +355,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::ZEXT16r:
 
   // Call Instructions
+  // Format-II Instructions
   case MSP430::CALLi:
   case MSP430::CALLm:
   case MSP430::CALLn:
@@ -384,6 +389,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::MOVZX16rr8:
 
   // Miscellaneous Instructions
+  // Format-II Instructions
   case MSP430::POP16r:
   case MSP430::PUSH16c:
   case MSP430::PUSH16i:
@@ -391,6 +397,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   case MSP430::PUSH8r:
 
   // Control Flow Instructions
+  // Format-III Instructions
   case MSP430::Bi:
   case MSP430::Bm:
   case MSP430::Br:
@@ -400,6 +407,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   // Conditional branches
   case MSP430::JCC:
     break;
+  // End Format-III Instructions
 
   case MSP430::Rrcl16:   // Pseudo
   case MSP430::Rrcl8:    // Pseudo
