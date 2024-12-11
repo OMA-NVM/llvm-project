@@ -46,7 +46,7 @@ add_llvm_tool(ir2mir
 
 add_subdirectory(lib)
 
-target_link_libraries(ir2mir PRIVATE ir2mirMPasses)
+target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility)
 
 
 export_executable_symbols_for_plugins(ir2mir)

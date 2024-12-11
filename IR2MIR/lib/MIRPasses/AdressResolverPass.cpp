@@ -10,6 +10,8 @@
 #include <map>
 #include <sstream>
 
+#include "Utility/Options.h"
+
 using namespace llvm;
 
 namespace TimingAnalysisPass {
@@ -50,6 +52,7 @@ std::multimap<int, InstructionLineRelation> InstructionRelationData;
  */
 bool AdressResolverPass::doInitialization(Module &M) {
   parseFile(M.getModuleIdentifier());
+  outs() << "DumpFilename: " << DumpFilename << "\n";
   return false;
 }
 
