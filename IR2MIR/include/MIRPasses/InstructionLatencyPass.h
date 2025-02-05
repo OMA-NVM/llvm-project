@@ -33,7 +33,7 @@ public:
   }
   // bool isFormatII(const MachineInstr &I);
   // bool isFormatIII(const MachineInstr &I);
-  void getMSP430Latency(const MachineInstr &I);
+  unsigned int getMSP430Latency(const MachineInstr &I);
 };
 
 } // namespace TimingAnalysisPass
