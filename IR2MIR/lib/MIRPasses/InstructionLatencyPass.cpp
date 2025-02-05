@@ -64,7 +64,16 @@ bool containsPC(const MachineInstr &I) {
   return false;
 }
 
+// TODO I dont know how the latencies will be represented if the FRAM Controller is analysed.
+// Mayube use struct instead if simple unsigned int.
 unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
+  // r = RN, RM
+  // m = x(Rn), x(Rm), EDE, &EDE
+  // n = @Rn
+  // p = @Rn+
+  // c, i = #N
+  // if two are used first is destination secnd is source
+  // E.g.: ADD16rm -> r = Destination, m = Source
   switch (I.getOpcode()) {
   // Format-III Instructions
 
