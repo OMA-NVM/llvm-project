@@ -7,17 +7,10 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "IR2MIR dbg",
+      "name": "dbg MSP430 blink",
       "program": "${workspaceFolder}/build/bin/ir2mir",
-      "args": ["${workspaceFolder}/IR2MIR/tests/hello.ll"],
-      "cwd": "${workspaceFolder}"
-    },
-    {
-      "type": "lldb",
-      "request": "launch",
-      "name": "IR2MIR dijkstra",
-      "program": "${workspaceFolder}/build/bin/ir2mir",
-      "args": ["${workspaceFolder}/IR2MIR/tests/dijkstra/dijktraWithInput.ll"],
+      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/blink/msp.ll",
+      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/blink/msp.elf.dump"],
       "cwd": "${workspaceFolder}"
     }
   ]
