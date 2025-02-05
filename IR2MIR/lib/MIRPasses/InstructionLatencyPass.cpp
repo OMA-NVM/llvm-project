@@ -56,6 +56,14 @@ bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
+bool containsPC(const MachineInstr &I) {
+  for (const MachineOperand &MO : I.operands()) {
+    if (MO.isReg() && MO.getReg() == MSP430::PC)
+      return true;
+  }
+  return false;
+}
+
 bool isFormatII(const MachineInstr &I) {
   switch (I.getOpcode()) {
   // Format-II Instructions
@@ -476,9 +484,11 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     // End ???
 
     default:
-      break;
+      errs() << "No Latency assigned to Inst: " << I << "\n";
+      assert(0 && "Instruction has no Latency!");
     }
   }
+  return 0;
 }
 } // namespace TimingAnalysisPass
 
