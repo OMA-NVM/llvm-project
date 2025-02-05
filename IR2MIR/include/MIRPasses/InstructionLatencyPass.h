@@ -31,8 +31,6 @@ public:
   virtual llvm::StringRef getPassName() const override {
     return "ARM Timing Analysis Result Dump Pass";
   }
-  // bool isFormatII(const MachineInstr &I);
-  // bool isFormatIII(const MachineInstr &I);
   bool containsPC(const MachineInstr &I);
   unsigned int getMSP430Latency(const MachineInstr &I);
 };
