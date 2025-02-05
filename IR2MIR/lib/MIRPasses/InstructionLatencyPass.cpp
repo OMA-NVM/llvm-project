@@ -64,56 +64,12 @@ bool containsPC(const MachineInstr &I) {
   return false;
 }
 
-bool isFormatII(const MachineInstr &I) {
-  switch (I.getOpcode()) {
-  // Format-II Instructions
-  case MSP430::RRA16m:
-  case MSP430::RRA16n:
-  case MSP430::RRA16p:
-  case MSP430::RRA16r:
-  case MSP430::RRA8m:
-  case MSP430::RRA8n:
-  case MSP430::RRA8p:
-  case MSP430::RRA8r:
-  case MSP430::RRC16m:
-  case MSP430::RRC16n:
-  case MSP430::RRC16p:
-  case MSP430::RRC16r:
-  case MSP430::RRC8m:
-  case MSP430::RRC8n:
-  case MSP430::RRC8p:
-  case MSP430::RRC8r:
-  case MSP430::SWPB16m:
-  case MSP430::SWPB16n:
-  case MSP430::SWPB16p:
-  case MSP430::SWPB16r:
-  case MSP430::CALLi:
-  case MSP430::CALLm:
-  case MSP430::CALLn:
-  case MSP430::CALLp:
-  case MSP430::CALLr:
-  case MSP430::POP16r:
-  case MSP430::PUSH16c:
-  case MSP430::PUSH16i:
-  case MSP430::PUSH16r:
-  case MSP430::PUSH8r:
-    return true;
-  default:
-    return false;
-  }
+unsigned int isFormatII(const MachineInstr &I) {
+  switch (I.getOpcode()) {}
 }
 
 bool isFormatIII(const MachineInstr &I) {
   switch (I.getOpcode()) {
-  // Format-III Instructions
-  case MSP430::Bi:
-  case MSP430::Bm:
-  case MSP430::Br:
-  case MSP430::JMP:
-  case MSP430::RET:
-  case MSP430::RETI:
-  // Conditional branches
-  case MSP430::JCC:
     return true;
   default:
     return false;
@@ -138,6 +94,73 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
 
   } else {
     switch (I.getOpcode()) {
+    // Format-III Instructions
+
+    // return from subroutine
+    case MSP430::RET:
+      return 4;
+    // return from interrupt
+    case MSP430::RETI:
+      return 5;
+
+    //All jump instructions require one code word and take two CPU cycles to execute, regardless of whether the jump is taken or not.
+    case MSP430::JCC: // conditional
+    case MSP430::JMP:
+      return 2;
+    // END Format-III Instructions
+
+
+    // Format-II Instructions [SLAU445I p.154]
+    case MSP430::RRA16m:
+    case MSP430::RRA8m:
+    case MSP430::RRC16m:
+    case MSP430::RRC8m:
+    case MSP430::SWPB16m:
+    case MSP430::SEXT16m:
+      return 4;
+
+    case MSP430::RRA16n:
+    case MSP430::RRA8n:
+    case MSP430::RRC16n:
+    case MSP430::RRC8n:
+    case MSP430::SWPB16n:
+    case MSP430::SEXT16n:
+      return 3;
+
+    case MSP430::RRA16p:
+    case MSP430::RRA8p:
+    case MSP430::RRC16p:
+    case MSP430::RRC8p:
+    case MSP430::SWPB16p:
+    case MSP430::SEXT16p:
+      return 3;
+
+    case MSP430::RRA16r:
+    case MSP430::RRA8r:
+    case MSP430::RRC16r:
+    case MSP430::RRC8r:
+    case MSP430::SWPB16r:
+    case MSP430::ZEXT16r:
+      return 1;
+
+    case MSP430::CALLm:
+      return 5; // TODO &EDE is 6
+
+    case MSP430::CALLi:
+    case MSP430::CALLn:
+    case MSP430::CALLp:
+    case MSP430::CALLr:
+      return 4;
+    case MSP430::POP16r:
+    case MSP430::PUSH16c:
+    case MSP430::PUSH16i:
+    case MSP430::PUSH16r:
+    case MSP430::PUSH8r:
+      return 3;
+    // End Format-II Instructions
+
+
+    // Format-I Instructions
     // mc and mi translates to #N and x(RM), EDE, &EDE [SLAU445I p.155]
     case MSP430::ADD16mc:
     case MSP430::ADD16mi:
@@ -159,10 +182,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIS16mi:
     case MSP430::BIS8mc:
     case MSP430::BIS8mi:
-    case MSP430::DADD16mc:
-    case MSP430::DADD16mi:
-    case MSP430::DADD8mc:
-    case MSP430::DADD8mi:
+    case MSP430::DADD16mc: // Emulated
+    case MSP430::DADD16mi: // Emulated
+    case MSP430::DADD8mc: // Emulated
+    case MSP430::DADD8mi: // Emulated
     case MSP430::SUB16mc:
     case MSP430::SUB8mc:
     case MSP430::SUBC16mc:
@@ -186,7 +209,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::MOV16mi:
     case MSP430::MOV8mc:
     case MSP430::MOV8mi:
-      return 4; // MOV, BIT and CMP Instructions execute in one fewer cycle [SLAU445I p.155]
+      return 4; // MOV, BIT and CMP Instructions execute in one fewer cycle
+                // [SLAU445I p.155]
 
     // mm translates to x(Rn), EDE, &EDE and x(RM), EDE, &EDE [SLAU445I p.155]
     case MSP430::ADD16mm:
@@ -199,8 +223,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIC8mm:
     case MSP430::BIS16mm:
     case MSP430::BIS8mm:
-    case MSP430::DADD16mm:
-    case MSP430::DADD8mm:
+    case MSP430::DADD16mm: // Emulated
+    case MSP430::DADD8mm: // Emulated
     case MSP430::SUB16mm:
     case MSP430::SUB8mm:
     case MSP430::SUBC16mm:
@@ -214,7 +238,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::CMP8mm:
     case MSP430::MOV16mm:
     case MSP430::MOV8mm:
-      return 5;// MOV, BIT and CMP Instructions execute in one fewer cycle [SLAU445I p.155]
+      return 5; // MOV, BIT and CMP Instructions execute in one fewer cycle
+                // [SLAU445I p.155]
 
     // mn translates to @Rn and x(RM), EDE, &EDE [SLAU445I p.155]
     case MSP430::ADD16mn:
@@ -227,8 +252,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIC8mn:
     case MSP430::BIS16mn:
     case MSP430::BIS8mn:
-    case MSP430::DADD16mn:
-    case MSP430::DADD8mn:
+    case MSP430::DADD16mn: // Emulated
+    case MSP430::DADD8mn: // Emulated
     case MSP430::SUB16mn:
     case MSP430::SUB8mn:
     case MSP430::SUBC16mn:
@@ -242,7 +267,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::CMP8mn:
     case MSP430::MOV16mn:
     case MSP430::MOV8mn:
-      return 4;// MOV, BIT and CMP Instructions execute in one fewer cycle [SLAU445I p.155]
+      return 4; // MOV, BIT and CMP Instructions execute in one fewer cycle
+                // [SLAU445I p.155]
 
     // mp translates to @Rn+ and x(RM), EDE, &EDE [SLAU445I p.155]
     case MSP430::ADD16mp:
@@ -255,8 +281,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIC8mp:
     case MSP430::BIS16mp:
     case MSP430::BIS8mp:
-    case MSP430::DADD16mp:
-    case MSP430::DADD8mp:
+    case MSP430::DADD16mp: // Emulated
+    case MSP430::DADD8mp: // Emulated
     case MSP430::SUB16mp:
     case MSP430::SUB8mp:
     case MSP430::SUBC16mp:
@@ -268,7 +294,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIT8mp:
     case MSP430::CMP16mp:
     case MSP430::CMP8mp:
-      return 4;// MOV, BIT and CMP Instructions execute in one fewer cycle [SLAU445I p.155]
+      return 4; // MOV, BIT and CMP Instructions execute in one fewer cycle
+                // [SLAU445I p.155]
 
     // mr translates to Rn and x(RM), EDE, &EDE [SLAU445I p.155]
     case MSP430::ADD16mr:
@@ -281,8 +308,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIC8mr:
     case MSP430::BIS16mr:
     case MSP430::BIS8mr:
-    case MSP430::DADD16mr:
-    case MSP430::DADD8mr:
+    case MSP430::DADD16mr: // Emulated
+    case MSP430::DADD8mr: // Emulated
     case MSP430::SUB16mr:
     case MSP430::SUB8mr:
     case MSP430::SUBC16mr:
@@ -296,7 +323,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIT8mr:
     case MSP430::CMP16mr:
     case MSP430::CMP8mr:
-      return 3;// MOV, BIT and CMP Instructions execute in one fewer cycle [SLAU445I p.155]
+      return 3; // MOV, BIT and CMP Instructions execute in one fewer cycle
+                // [SLAU445I p.155]
 
     // rc and ri translates to #N and Rm, PC [SLAU445I p.155]
     case MSP430::ADD16rc:
@@ -327,10 +355,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::CMP16ri:
     case MSP430::CMP8rc:
     case MSP430::CMP8ri:
-    case MSP430::DADD16rc:
-    case MSP430::DADD16ri:
-    case MSP430::DADD8rc:
-    case MSP430::DADD8ri:
+    case MSP430::DADD16rc: // Emulated
+    case MSP430::DADD16ri: // Emulated
+    case MSP430::DADD8rc: // Emulated
+    case MSP430::DADD8ri: // Emulated
     case MSP430::SUB16rc:
     case MSP430::SUB16ri:
     case MSP430::SUB8rc:
@@ -347,6 +375,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::MOV16ri:
     case MSP430::MOV8rc:
     case MSP430::MOV8ri:
+    case MSP430::Bi: // Emulated
       if (containsPC(I))
         return 3;
       return 2;
@@ -366,8 +395,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIT8rm:
     case MSP430::CMP16rm:
     case MSP430::CMP8rm:
-    case MSP430::DADD16rm:
-    case MSP430::DADD8rm:
+    case MSP430::DADD16rm: // Emulated
+    case MSP430::DADD8rm: // Emulated
     case MSP430::SUB16rm:
     case MSP430::SUB8rm:
     case MSP430::SUBC16rm:
@@ -377,7 +406,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::MOV16rm:
     case MSP430::MOV8rm:
     case MSP430::MOVZX16rm8:
-    case MSP430::SEXT16m://TODO uncertain
+    case MSP430::Bm: // Emulated
       if (containsPC(I))
         return 5;
       return 3;
@@ -397,8 +426,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIT8rn:
     case MSP430::CMP16rn:
     case MSP430::CMP8rn:
-    case MSP430::DADD16rn:
-    case MSP430::DADD8rn:
+    case MSP430::DADD16rn: // Emulated
+    case MSP430::DADD8rn: // Emulated
     case MSP430::SUB16rn:
     case MSP430::SUB8rn:
     case MSP430::SUBC16rn:
@@ -407,7 +436,6 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::XOR8rn:
     case MSP430::MOV16rn:
     case MSP430::MOV8rn:
-    case MSP430::SEXT16n://TODO uncertain
       if (containsPC(I))
         return 4;
       return 2;
@@ -427,8 +455,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIT8rp:
     case MSP430::CMP16rp:
     case MSP430::CMP8rp:
-    case MSP430::DADD16rp:
-    case MSP430::DADD8rp:
+    case MSP430::DADD16rp: // Emulated
+    case MSP430::DADD8rp: // Emulated
     case MSP430::SUB16rp:
     case MSP430::SUB8rp:
     case MSP430::SUBC16rp:
@@ -437,12 +465,11 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::XOR8rp:
     case MSP430::MOV16rp:
     case MSP430::MOV8rp:
-    case MSP430::SEXT16p://TODO uncertain
       if (containsPC(I))
         return 4;
       return 2;
 
-    //rr translates to Rn and Rm or Rn and PC [SLAU445I p.155]
+    // rr translates to Rn and Rm or Rn and PC [SLAU445I p.155]
     case MSP430::ADD16rr:
     case MSP430::ADD8rr:
     case MSP430::ADDC16rr:
@@ -457,8 +484,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::BIT8rr:
     case MSP430::CMP16rr:
     case MSP430::CMP8rr:
-    case MSP430::DADD16rr:
-    case MSP430::DADD8rr:
+    case MSP430::DADD16rr: // Emulated
+    case MSP430::DADD8rr: // Emulated
     case MSP430::SUB16rr:
     case MSP430::SUB8rr:
     case MSP430::SUBC16rr:
@@ -468,10 +495,11 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     case MSP430::MOV16rr:
     case MSP430::MOV8rr:
     case MSP430::MOVZX16rr8:
-    case MSP430::ZEXT16r: //TODO Uncertain
+    case MSP430::Br: // Emulated
       if (containsPC(I))
         return 3;
       return 1;
+    // End Format-I Instructions
 
     default:
       errs() << "No Latency assigned to Inst: " << I << "\n";
