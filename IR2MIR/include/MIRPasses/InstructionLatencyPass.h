@@ -4,7 +4,6 @@
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
-#include "MCTargetDesc/MSP430MCTargetDesc.h"
 
 using namespace llvm;
 

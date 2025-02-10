@@ -14,6 +14,8 @@ namespace TimingAnalysisPass {
 
 char InstructionLatencyPass::ID = 0;
 
+bool DebugPrints = false;
+
 /**
  * @brief Construct a new Asm Dump And Check Pass:: Asm Dump And Check Pass
  * object
@@ -46,6 +48,9 @@ bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
       switch (Arch) {
       case Triple::ArchType::msp430:
         getMSP430Latency(MI);
+        if (DebugPrints)
+          outs() << "Instruction: " << MI << "Latency: " << getMSP430Latency(MI)
+                 << "\n";
         break;
       default:
         errs() << "Unknown Arch: " << Arch;
@@ -56,16 +61,12 @@ bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
-// bool containsPC(const MachineInstr &I) {
-// for (const MachineOperand &MO : I.operands()) {
-//   if (MO.isReg() && MO.getReg() == MSP430::PC)
-//     return true;
-// }
-// return false;
-// }
-
 // TODO I dont know how the latencies will be represented if the FRAM Controller
 // is analysed. Mayube use struct instead if simple unsigned int.
+
+// TODO Currently we assume CPUx on the MSP430, this should be corrected, when
+// llvm also supports the MSP430 CPUX. Issue with this is latencies only hold
+// for the upper 64kb of memory on MSP430 CPUx
 unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   // r = RN, RM
   // m = x(Rn), x(Rm), EDE, &EDE
@@ -355,7 +356,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::MOV16ri:
   case MSP430::MOV8rc:
   case MSP430::MOV8ri:
-  case MSP430::Bi: // Emulated
+  case MSP430::Bi:                                  // Emulated
     for (const MachineOperand &MO : I.operands()) { // check for PC
       if (MO.isReg() && MO.getReg() == MSP430::PC)
         return 3;
@@ -388,7 +389,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::MOV16rm:
   case MSP430::MOV8rm:
   case MSP430::MOVZX16rm8:
-  case MSP430::Bm: // Emulated
+  case MSP430::Bm:                                  // Emulated
     for (const MachineOperand &MO : I.operands()) { // check for PC
       if (MO.isReg() && MO.getReg() == MSP430::PC)
         return 3; // 5 on Non MSP430 non X
@@ -483,13 +484,16 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::MOV16rr:
   case MSP430::MOV8rr:
   case MSP430::MOVZX16rr8:
-  case MSP430::Br: // Emulated
+  case MSP430::Br:                                  // Emulated
     for (const MachineOperand &MO : I.operands()) { // check for PC
       if (MO.isReg() && MO.getReg() == MSP430::PC)
         return 2; // 3 on Non MSP430 non X
     }
     return 1;
     // End Format-I Instructions
+
+  case MSP430::CFI_INSTRUCTION:
+    return 0; // TODO ????
 
   default:
     errs() << "No Latency assigned to Inst: " << I << "\n";
