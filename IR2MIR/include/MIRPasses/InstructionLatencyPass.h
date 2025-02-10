@@ -4,6 +4,8 @@
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
+#include "MCTargetDesc/MSP430MCTargetDesc.h"
+
 using namespace llvm;
 
 namespace TimingAnalysisPass {
@@ -31,7 +33,7 @@ public:
   virtual llvm::StringRef getPassName() const override {
     return "ARM Timing Analysis Result Dump Pass";
   }
-  bool containsPC(const MachineInstr &I);
+  // bool containsPC(const MachineInstr &I);
   unsigned int getMSP430Latency(const MachineInstr &I);
 };
 

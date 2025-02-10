@@ -56,16 +56,16 @@ bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
-bool containsPC(const MachineInstr &I) {
-  for (const MachineOperand &MO : I.operands()) {
-    if (MO.isReg() && MO.getReg() == MSP430::PC)
-      return true;
-  }
-  return false;
-}
+// bool containsPC(const MachineInstr &I) {
+// for (const MachineOperand &MO : I.operands()) {
+//   if (MO.isReg() && MO.getReg() == MSP430::PC)
+//     return true;
+// }
+// return false;
+// }
 
-// TODO I dont know how the latencies will be represented if the FRAM Controller is analysed.
-// Mayube use struct instead if simple unsigned int.
+// TODO I dont know how the latencies will be represented if the FRAM Controller
+// is analysed. Mayube use struct instead if simple unsigned int.
 unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   // r = RN, RM
   // m = x(Rn), x(Rm), EDE, &EDE
@@ -127,14 +127,14 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::CALLm:
     return 5; // TODO &EDE is 6
 
-  case MSP430::CALLi:
+  case MSP430::CALLi: // 5 on Non MSP430X
   case MSP430::CALLn:
-  case MSP430::CALLp:
+  case MSP430::CALLp: // 5 on Non MSP430x
   case MSP430::CALLr:
     return 4;
   case MSP430::POP16r:
-  case MSP430::PUSH16c:
-  case MSP430::PUSH16i:
+  case MSP430::PUSH16c: // 4 on Non MSP430X
+  case MSP430::PUSH16i: // 4 on Non MSP430X
   case MSP430::PUSH16r:
   case MSP430::PUSH8r:
     return 3;
@@ -356,8 +356,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::MOV8rc:
   case MSP430::MOV8ri:
   case MSP430::Bi: // Emulated
-    if (containsPC(I))
-      return 3;
+    for (const MachineOperand &MO : I.operands()) { // check for PC
+      if (MO.isReg() && MO.getReg() == MSP430::PC)
+        return 3;
+    }
     return 2;
 
   // rm translates to x(Rn) and Rm, PC [SLAU445I p.155]
@@ -387,8 +389,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::MOV8rm:
   case MSP430::MOVZX16rm8:
   case MSP430::Bm: // Emulated
-    if (containsPC(I))
-      return 5;
+    for (const MachineOperand &MO : I.operands()) { // check for PC
+      if (MO.isReg() && MO.getReg() == MSP430::PC)
+        return 3; // 5 on Non MSP430 non X
+    }
     return 3;
 
   // rn translates to @Rn and Rm, PC [SLAU445I p.155]
@@ -416,8 +420,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::XOR8rn:
   case MSP430::MOV16rn:
   case MSP430::MOV8rn:
-    if (containsPC(I))
-      return 4;
+    for (const MachineOperand &MO : I.operands()) { // check for PC
+      if (MO.isReg() && MO.getReg() == MSP430::PC)
+        return 2; // 4 on Non MSP430 non X
+    }
     return 2;
 
   // rp translates to @Rn+ and Rm, PC [SLAU445I p.155]
@@ -445,8 +451,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::XOR8rp:
   case MSP430::MOV16rp:
   case MSP430::MOV8rp:
-    if (containsPC(I))
-      return 4;
+    for (const MachineOperand &MO : I.operands()) { // check for PC
+      if (MO.isReg() && MO.getReg() == MSP430::PC)
+        return 3; // 4 on Non MSP430 non X
+    }
     return 2;
 
   // rr translates to Rn and Rm or Rn and PC [SLAU445I p.155]
@@ -476,8 +484,10 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::MOV8rr:
   case MSP430::MOVZX16rr8:
   case MSP430::Br: // Emulated
-    if (containsPC(I))
-      return 3;
+    for (const MachineOperand &MO : I.operands()) { // check for PC
+      if (MO.isReg() && MO.getReg() == MSP430::PC)
+        return 2; // 3 on Non MSP430 non X
+    }
     return 1;
     // End Format-I Instructions
 
