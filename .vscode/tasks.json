@@ -11,8 +11,7 @@
         "kind": "build",
         "isDefault": true
       }
-    },
-    {
+    },    {
       "label": "configIR2MIR",
       "type": "shell",
       "command": "cmake -S llvm -B build -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=1 -DLLVM_ENABLE_RTTI=ON -DLLVM_INCLUDE_BENCHMARKS=OFF -DLLVM_INCLUDE_TESTS=OFF -DLLVM_OPTIMIZED_TABLEGEN=ON -DLLVM_TARGETS_TO_BUILD='MSP430' -DLLVM_EXTERNAL_IR2MIR_SOURCE_DIR=./IR2MIR -DLLVM_EXTERNAL_PROJECTS='IR2MIR' -DLLVM_ENABLE_PROJECTS='clang' -GNinja ; cp build/compile_commands.json ."
