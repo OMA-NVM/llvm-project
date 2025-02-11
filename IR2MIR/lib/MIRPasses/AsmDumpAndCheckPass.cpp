@@ -9,7 +9,7 @@
 
 using namespace llvm;
 
-namespace TimingAnalysisPass {
+namespace {
 
 char AsmDumpAndCheckPass::ID = 0;
 
@@ -436,5 +436,5 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
 } // namespace TimingAnalysisPass
 
 MachineFunctionPass *llvm::createAsmDumpAndCheckPass(TargetMachine &TM) {
-  return new TimingAnalysisPass::AsmDumpAndCheckPass(TM);
+  return new AsmDumpAndCheckPass(TM);
 }

@@ -6,7 +6,7 @@
 
 using namespace llvm;
 
-namespace TimingAnalysisPass {
+namespace {
 
 /**
  * Pass that prints the resulting assembler for the given program if option

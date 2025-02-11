@@ -10,11 +10,9 @@
 
 using namespace llvm;
 
-namespace TimingAnalysisPass {
+namespace {
 
 char InstructionLatencyPass::ID = 0;
-
-bool DebugPrints = false;
 
 /**
  * @brief Construct a new Asm Dump And Check Pass:: Asm Dump And Check Pass
@@ -505,5 +503,5 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
 } // namespace TimingAnalysisPass
 
 MachineFunctionPass *llvm::createInstructionLatencyPass(TargetMachine &TM) {
-  return new TimingAnalysisPass::InstructionLatencyPass(TM);
+  return new InstructionLatencyPass(TM);
 }

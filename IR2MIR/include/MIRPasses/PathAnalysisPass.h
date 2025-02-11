@@ -1,13 +1,14 @@
-#include "llvm/CodeGen/LiveIntervals.h"
-#include "llvm/CodeGen/LiveStacks.h"
+#include "llvm/Analysis/CallGraph.h"
+#include "llvm/Analysis/LoopInfo.h"
+#include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
+#include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
-
 using namespace llvm;
 
-namespace {
+namespace  {
 
 /**
  * Pass that prints the resulting assembler for the given program if option
@@ -15,30 +16,35 @@ namespace {
  * instructions adheres to our implicit assumptions and gives reasonable error
  * messages to the user.
  */
-class InstructionLatencyPass : public MachineFunctionPass {
+class PathAnalysisPass : public MachineFunctionPass {
 public:
   static char ID;
+
   const bool DebugPrints = false;
   TargetMachine &TM;
-  InstructionLatencyPass(TargetMachine &TM);
+  PathAnalysisPass(TargetMachine &TM);
+
+  CallGraph *CG = nullptr;
 
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
   bool doFinalization(Module &) override;
   void getAnalysisUsage(AnalysisUsage &AU) const override {
-    AU.setPreservesAll();
+    AU.setPreservesCFG();
+    AU.addRequired<MachineLoopInfoWrapperPass>();
+    AU.addRequired<LoopInfoWrapperPass>();
+    AU.addRequired<ScalarEvolutionWrapperPass>();
+    AU.addRequired<CallGraphWrapperPass>();
     MachineFunctionPass::getAnalysisUsage(AU);
   };
 
   virtual llvm::StringRef getPassName() const override {
-    return "ARM Timing Analysis Result Dump Pass";
+    return "PathAnalysisPass for testing different analysis results";
   }
-  // bool containsPC(const MachineInstr &I);
-  unsigned int getMSP430Latency(const MachineInstr &I);
 };
 
 } // namespace TimingAnalysisPass
 
 namespace llvm {
-MachineFunctionPass *createInstructionLatencyPass(TargetMachine &TM);
+MachineFunctionPass *createPathAnalysisPass(TargetMachine &TM);
 } // namespace llvm

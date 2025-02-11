@@ -3,7 +3,7 @@
 #include "llvm/CodeGen/MachineFunctionPass.h"
 using namespace llvm;
 
-namespace TimingAnalysisPass {
+namespace {
 class AdressResolverPass : public MachineFunctionPass {
 public:
   static char ID;

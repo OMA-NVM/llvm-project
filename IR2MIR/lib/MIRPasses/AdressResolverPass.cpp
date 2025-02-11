@@ -14,7 +14,7 @@
 
 using namespace llvm;
 
-namespace TimingAnalysisPass {
+namespace {
 
 char AdressResolverPass::ID = 1;
 
@@ -305,5 +305,5 @@ bool AdressResolverPass::isHex(std::string &In) {
 } // namespace TimingAnalysisPass
 
 MachineFunctionPass *llvm::createAdressResolverPass(TargetMachine &TM) {
-  return new TimingAnalysisPass::AdressResolverPass(TM);
+  return new AdressResolverPass(TM);
 }

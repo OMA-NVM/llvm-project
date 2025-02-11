@@ -5,5 +5,8 @@ add_llvm_library(ir2mirMPasses
   TimingAnalysisPasses.cpp
   AdressResolverPass.cpp
   InstructionLatencyPass.cpp
+  AccessAnalyses.cpp
+  PathAnalysisPass.cpp
+  Mir2IrPass.cpp
   DEPENDS LLVMAnalysis LLVMCodeGen LLVMCore LLVMSupport LLVMTarget
 )
