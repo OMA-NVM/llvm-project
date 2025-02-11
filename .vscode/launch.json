@@ -7,10 +7,18 @@
     {
       "type": "lldb",
       "request": "launch",
-      "name": "dbg MSP430 blink",
+      "name": "dbg blink MSP430",
       "program": "${workspaceFolder}/build/bin/ir2mir",
       "args": ["${workspaceFolder}/IR2MIR/tests/msp430/blink/msp.ll",
       "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/blink/msp.elf.dump"],
+      "cwd": "${workspaceFolder}"
+    }, {
+      "type": "lldb",
+      "request": "launch",
+      "name": "dbg cnt MSP430",
+      "program": "${workspaceFolder}/build/bin/ir2mir",
+      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cnt/cnt.ll",
+      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cnt/cnt.elf.dump"],
       "cwd": "${workspaceFolder}"
     }
   ]

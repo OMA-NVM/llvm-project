@@ -9,5 +9,5 @@ test
 compile_commands.json
 *.devcontainer*
 *.DS_Store*
-*.ll
+
 *.S
