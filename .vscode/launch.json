@@ -11,7 +11,8 @@
       "program": "${workspaceFolder}/build/bin/ir2mir",
       "args": ["${workspaceFolder}/IR2MIR/tests/msp430/blink/msp.ll",
       "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/blink/msp.elf.dump"],
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "build"
     }, {
       "type": "lldb",
       "request": "launch",
@@ -19,7 +20,8 @@
       "program": "${workspaceFolder}/build/bin/ir2mir",
       "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cnt/cnt.ll",
       "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cnt/cnt.elf.dump"],
-      "cwd": "${workspaceFolder}"
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "build"
     }
   ]
 }
