@@ -5,14 +5,8 @@
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/IR/Module.h"
 #include "llvm/Support/raw_ostream.h"
-#include "llvm/TargetParser/Triple.h"
-#include <cassert>
 
-#include "MCTargetDesc/MSP430MCTargetDesc.h"
-
-using namespace llvm;
-
-namespace TimingAnalysisPass {
+namespace llvm {
 
 char AccessAnalysesPass::ID = 0;
 
@@ -87,8 +81,8 @@ bool AccessAnalysesPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
-} // namespace TimingAnalysisPass
 
 MachineFunctionPass *llvm::createAccessAnalysesPass(TargetMachine &TM) {
-  return new TimingAnalysisPass::AccessAnalysesPass(TM);
+  return new AccessAnalysesPass(TM);
 }
+} // namespace llvm

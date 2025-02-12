@@ -1,16 +1,9 @@
 #include "MIRPasses/InstructionLatencyPass.h"
-#include "llvm/CodeGen/GlobalISel/IRTranslator.h"
-#include "llvm/CodeGen/MachineInstr.h"
-#include "llvm/IR/Module.h"
-#include "llvm/Support/raw_ostream.h"
-#include "llvm/TargetParser/Triple.h"
 #include <cassert>
 
 #include "MCTargetDesc/MSP430MCTargetDesc.h"
 
-using namespace llvm;
-
-namespace {
+namespace llvm {
 
 char InstructionLatencyPass::ID = 0;
 
@@ -500,8 +493,8 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
 
   return 0;
 }
-} // namespace TimingAnalysisPass
 
-MachineFunctionPass *llvm::createInstructionLatencyPass(TargetMachine &TM) {
+MachineFunctionPass *createInstructionLatencyPass(TargetMachine &TM) {
   return new InstructionLatencyPass(TM);
 }
+} // namespace llvm

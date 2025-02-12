@@ -5,7 +5,7 @@
 #include "llvm/Support/CommandLine.h"
 
 /**
- * Path to the dumo file for Adress Resolving
+ * Path to the dump file for Adress Resolving
  */
 extern llvm::cl::opt<std::string> DumpFilename;
 

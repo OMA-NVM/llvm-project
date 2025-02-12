@@ -1,3 +1,6 @@
+#ifndef LLVM_MIR_TO_IR_PASS_H
+#define LLVM_MIR_TO_IR_PASS_H
+
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
@@ -5,42 +8,31 @@
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
-namespace llvm {
 
-/**
- * Pass that prints the resulting assembler for the given program if option
- * enable-asm-dump is true. In any case, it checks that the program with its
- * instructions adheres to our implicit assumptions and gives reasonable error
- * messages to the user.
- */
-class PathAnalysisPass : public MachineFunctionPass {
+namespace llvm {
+class MIRtoIRPass : public MachineFunctionPass {
 public:
   static char ID;
 
   const bool DebugPrints = false;
   TargetMachine &TM;
-  PathAnalysisPass(TargetMachine &TM);
-
-  CallGraph *CG = nullptr;
+  MIRtoIRPass(TargetMachine &TM);
 
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
   bool doFinalization(Module &) override;
   void getAnalysisUsage(AnalysisUsage &AU) const override {
-    AU.setPreservesCFG();
-    AU.addRequired<MachineLoopInfoWrapperPass>();
-    AU.addRequired<LoopInfoWrapperPass>();
-    AU.addRequired<ScalarEvolutionWrapperPass>();
-    AU.addRequired<CallGraphWrapperPass>();
+    AU.setPreservesAll();
     MachineFunctionPass::getAnalysisUsage(AU);
   };
-
   virtual llvm::StringRef getPassName() const override {
-    return "PathAnalysisPass for testing different analysis results";
+    return "Map Machine Instructions to LLVM IR";
   }
 };
-
 } // namespace llvm
+
+#endif // LLVM_MIR_TO_IR_PASS_H
+
 namespace llvm {
-MachineFunctionPass *createPathAnalysisPass(TargetMachine &TM);
+MachineFunctionPass *createMIRtoIRPass(TargetMachine &TM);
 } // namespace llvm

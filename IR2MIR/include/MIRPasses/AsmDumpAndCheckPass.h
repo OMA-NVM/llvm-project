@@ -4,9 +4,7 @@
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
-using namespace llvm;
-
-namespace {
+namespace llvm {
 
 /**
  * Pass that prints the resulting assembler for the given program if option
@@ -38,7 +36,7 @@ public:
   void checkMSP430Instruction(const MachineInstr &I);
 };
 
-} // namespace TimingAnalysisPass
+} // namespace llvm
 
 namespace llvm {
 MachineFunctionPass *createAsmDumpAndCheckPass(TargetMachine &TM);

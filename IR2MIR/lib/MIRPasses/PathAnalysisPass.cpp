@@ -6,9 +6,7 @@
 #include "llvm/IR/Module.h"
 #include "llvm/Support/raw_ostream.h"
 
-using namespace llvm;
-
-namespace {
+namespace llvm {
 
 char PathAnalysisPass::ID = 0;
 
@@ -83,8 +81,7 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
-} // namespace TimingAnalysisPass
-
-MachineFunctionPass *llvm::createPathAnalysisPass(TargetMachine &TM) {
+MachineFunctionPass *createPathAnalysisPass(TargetMachine &TM) {
   return new PathAnalysisPass(TM);
 }
+} // namespace llvm

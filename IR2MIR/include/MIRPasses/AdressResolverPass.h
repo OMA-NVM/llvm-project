@@ -1,9 +1,8 @@
 #ifndef IR2MIR_ADRESS_RESOLVER_H
 #define IR2MIR_ADRESS_RESOLVER_H
 #include "llvm/CodeGen/MachineFunctionPass.h"
-using namespace llvm;
 
-namespace {
+namespace llvm {
 class AdressResolverPass : public MachineFunctionPass {
 public:
   static char ID;
@@ -21,10 +20,6 @@ public:
   int lineHasLineNumber(std::string Line);
   bool isHex(std::string &In);
   void getAnalysisUsage(AnalysisUsage &AU) const override {
-    // AU.addUsedIfAvailable<LiveStacks>();
-    // AU.addUsedIfAvailable<LiveVariables>();
-    // AU.addUsedIfAvailable<SlotIndexes>();
-    // AU.addUsedIfAvailable<LiveIntervals>();
     AU.setPreservesCFG();
     AU.setPreservesAll();
     MachineFunctionPass::getAnalysisUsage(AU);
@@ -34,7 +29,7 @@ public:
     return "Adress Resolver Pass";
   }
 };
-} // namespace TimingAnalysisPass
+} // namespace llvm,
 
 namespace llvm {
 MachineFunctionPass *createAdressResolverPass(TargetMachine &TM);

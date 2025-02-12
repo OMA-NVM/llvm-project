@@ -5,11 +5,7 @@
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
-#include <optional>
-
-using namespace llvm;
-
-namespace TimingAnalysisPass {
+namespace llvm {
 
 /**
  * Pass that prints the resulting assembler for the given program if option
@@ -44,7 +40,7 @@ public:
   }
 };
 
-} // namespace TimingAnalysisPass
+} // namespace llvm
 
 namespace llvm {
 MachineFunctionPass *createAccessAnalysesPass(TargetMachine &TM);

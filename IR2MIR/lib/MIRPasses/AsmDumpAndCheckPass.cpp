@@ -6,10 +6,7 @@
 #include <cassert>
 
 #include "MCTargetDesc/MSP430MCTargetDesc.h"
-
-using namespace llvm;
-
-namespace {
+namespace llvm {
 
 char AsmDumpAndCheckPass::ID = 0;
 
@@ -407,7 +404,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   // Conditional branches
   case MSP430::JCC:
     break;
-  // End Format-III Instructions
+    // End Format-III Instructions
 
   case MSP430::Rrcl16:   // Pseudo
   case MSP430::Rrcl8:    // Pseudo
@@ -433,8 +430,8 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
     break;
   }
 }
-} // namespace TimingAnalysisPass
 
 MachineFunctionPass *llvm::createAsmDumpAndCheckPass(TargetMachine &TM) {
   return new AsmDumpAndCheckPass(TM);
 }
+} // namespace llvm

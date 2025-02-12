@@ -1,20 +1,15 @@
 #include "MIRPasses/AdressResolverPass.h"
 #include "MIRPasses/AsmDumpAndCheckPass.h"
+#include "Utility/Options.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
 #include "llvm/CodeGen/MachineInstr.h"
 #include "llvm/IR/DebugInfoMetadata.h"
-#include "llvm/IR/Module.h"
-#include "llvm/Support/Casting.h"
-#include "llvm/Support/raw_ostream.h"
 #include <fstream>
 #include <map>
 #include <sstream>
 
-#include "Utility/Options.h"
 
-using namespace llvm;
-
-namespace {
+namespace llvm {
 
 char AdressResolverPass::ID = 1;
 
@@ -302,8 +297,8 @@ bool AdressResolverPass::isHex(std::string &In) {
   }
   return true;
 }
-} // namespace TimingAnalysisPass
 
 MachineFunctionPass *llvm::createAdressResolverPass(TargetMachine &TM) {
   return new AdressResolverPass(TM);
 }
+} // namespace llvm
