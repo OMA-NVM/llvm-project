@@ -8,7 +8,6 @@
 #include <map>
 #include <sstream>
 
-
 namespace llvm {
 
 char AdressResolverPass::ID = 1;
@@ -47,7 +46,8 @@ std::multimap<int, InstructionLineRelation> InstructionRelationData;
  */
 bool AdressResolverPass::doInitialization(Module &M) {
   parseFile(M.getModuleIdentifier());
-  outs() << "DumpFilename: " << DumpFilename << "\n";
+  if (DebugPrints)
+    outs() << "DumpFilename: " << DumpFilename << "\n";
   return false;
 }
 
@@ -113,12 +113,13 @@ bool AdressResolverPass::runOnMachineFunction(MachineFunction &F) {
       }
     }
   }
-  llvm::outs() << NumberInstructionMapped << " instructions mapped to "
-               << NumberObjdumpEntries << " address information entries\n"
-               << NumberInstructionsNotMapped
-               << " instructions could not be mapped to address "
-                  "information\nTotal information entries: "
-               << InstructionRelationData.size() << "\n";
+  if (DebugPrints)
+    llvm::outs() << NumberInstructionMapped << " instructions mapped to "
+                 << NumberObjdumpEntries << " address information entries\n"
+                 << NumberInstructionsNotMapped
+                 << " instructions could not be mapped to address "
+                    "information\nTotal information entries: "
+                 << InstructionRelationData.size() << "\n";
   return false;
 }
 /*scans file for address information and saves it in the CompilerData
@@ -139,8 +140,9 @@ void AdressResolverPass::parseFile(std::string ModuleIdentifier) {
   strcpy(Command, CommandString.c_str());
   std::system(Command);
   /*parse debug output*/
-  llvm::outs() << "Scanning " << Filename
-               << ".ll for address and line information\n";
+  if (DebugPrints)
+    llvm::outs() << "Scanning " << Filename
+                 << ".ll for address and line information\n";
   // filename = filename + ".txt";
   int LineNumber = -1;
   int NewLineNumber;
@@ -168,7 +170,8 @@ void AdressResolverPass::parseFile(std::string ModuleIdentifier) {
       }
     }
   } else {
-    llvm::outs() << "Could not parse information from the input file.\n";
+    if (DebugPrints)
+      llvm::outs() << "Could not parse information from the input file.\n";
   }
   /*delete unneccessary files*/
   CommandString = "rm " + Filename + ".out && rm " + Filename + ".txt";

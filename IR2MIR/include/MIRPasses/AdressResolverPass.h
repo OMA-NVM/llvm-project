@@ -6,6 +6,8 @@ namespace llvm {
 class AdressResolverPass : public MachineFunctionPass {
 public:
   static char ID;
+
+  const bool DebugPrints = false;
   TargetMachine &TM;
   AdressResolverPass(TargetMachine &TM);
 
