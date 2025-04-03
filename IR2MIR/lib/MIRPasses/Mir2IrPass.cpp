@@ -26,7 +26,7 @@ MIRtoIRPass::MIRtoIRPass(TargetMachine &TM) : MachineFunctionPass(ID), TM(TM) {}
 bool MIRtoIRPass::doFinalization(Module &M) { return false; }
 
 bool MIRtoIRPass::runOnMachineFunction(MachineFunction &MF) {
-  errs() << "Processing Machine Function: " << MF.getName() << "\n";
+  // errs() << "Processing Machine Function: " << MF.getName() << "\n";
 
   MachineRegisterInfo &MRI = MF.getRegInfo(); // To track virtual registers
 

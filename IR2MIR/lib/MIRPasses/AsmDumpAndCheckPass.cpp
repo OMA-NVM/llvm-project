@@ -421,7 +421,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
     break;
   case TargetOpcode::CFI_INSTRUCTION:
     // TODO We should be able to ignore those but better make sure
-    errs() << "Found CFI";
+    // errs() << "Found CFI\n";
     break;
   default:
     errs() << "UNKNOWN: " << I << "\n";

@@ -5,6 +5,12 @@ message (STATUS "Found tool IR2MIR")
 
 project("ir2mir")
 
+list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE "Release")
+endif()
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+
 set(LLVM_LINK_COMPONENTS
   AllTargetsAsmParsers
   AllTargetsCodeGens
@@ -33,7 +39,11 @@ set(LLVM_LINK_COMPONENTS
 message (STATUS "${PROJECT_BINARY_DIR}$")
 message (STATUS "${PROJECT_SOURCE_DIR}$")
 
-include_directories(include ${LLVM_BINARY_DIR}/lib/Target/ARM ${LLVM_SOURCE_DIR}/lib/Target/ARM ${LLVM_BINARY_DIR}/lib/Target/RISCV  ${LLVM_SOURCE_DIR}/lib/Target/RISCV ${LLVM_BINARY_DIR}/lib/Target/MSP430  ${LLVM_SOURCE_DIR}/lib/Target/MSP430)
+find_package(GUROBI REQUIRED)
+
+message (${GUROBI_INCLUDE_DIRS})
+
+include_directories(include ${LLVM_BINARY_DIR}/lib/Target/ARM ${LLVM_SOURCE_DIR}/lib/Target/ARM ${LLVM_BINARY_DIR}/lib/Target/RISCV ${LLVM_SOURCE_DIR}/lib/Target/RISCV ${LLVM_BINARY_DIR}/lib/Target/MSP430 ${LLVM_SOURCE_DIR}/lib/Target/MSP430 ${GUROBI_INCLUDE_DIRS})
 
 add_llvm_tool(ir2mir
   IR2MIR.cpp
@@ -46,7 +56,6 @@ add_llvm_tool(ir2mir
 
 add_subdirectory(lib)
 
-target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility)
-
+target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility ${GUROBI_CXX_LIBRARY})
 
 export_executable_symbols_for_plugins(ir2mir)

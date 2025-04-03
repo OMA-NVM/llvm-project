@@ -26,6 +26,7 @@ public:
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
   bool doFinalization(Module &) override;
+  Function *getStartingFunction(CallGraph &CG);
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesCFG();
     AU.addRequired<MachineLoopInfoWrapperPass>();
