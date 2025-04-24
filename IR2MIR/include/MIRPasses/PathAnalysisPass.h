@@ -17,7 +17,7 @@ class PathAnalysisPass : public MachineFunctionPass {
 public:
   static char ID;
 
-  const bool DebugPrints = false;
+  const bool DebugPrints = true;
   TargetMachine &TM;
   PathAnalysisPass(TargetMachine &TM);
 

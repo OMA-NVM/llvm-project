@@ -431,7 +431,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   }
 }
 
-MachineFunctionPass *llvm::createAsmDumpAndCheckPass(TargetMachine &TM) {
+MachineFunctionPass *createAsmDumpAndCheckPass(TargetMachine &TM) {
   return new AsmDumpAndCheckPass(TM);
 }
 } // namespace llvm

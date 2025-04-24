@@ -301,7 +301,7 @@ bool AdressResolverPass::isHex(std::string &In) {
   return true;
 }
 
-MachineFunctionPass *llvm::createAdressResolverPass(TargetMachine &TM) {
+MachineFunctionPass *createAdressResolverPass(TargetMachine &TM) {
   return new AdressResolverPass(TM);
 }
 } // namespace llvm

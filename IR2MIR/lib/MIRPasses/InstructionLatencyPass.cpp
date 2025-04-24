@@ -2,6 +2,7 @@
 #include <cassert>
 
 #include "MCTargetDesc/MSP430MCTargetDesc.h"
+#include "llvm/Target/TargetMachine.h"
 
 namespace llvm {
 
@@ -13,8 +14,8 @@ char InstructionLatencyPass::ID = 0;
  *
  * @param TM
  */
-InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
-    : MachineFunctionPass(ID), TM(TM) {}
+llvm::InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
+    : MachineFunctionPass(ID), TM(TM), MBBLatencyMap(std::make_unique<std::unordered_map<MachineBasicBlock *, unsigned int>>()) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -22,7 +23,7 @@ InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
  *
  * @return false
  */
-bool InstructionLatencyPass::doFinalization(Module &M) { return false; }
+//bool InstructionLatencyPass::doFinalization(Module &M) { return false; }
 
 /**
  * @brief Iterates over MachineFunction
@@ -33,12 +34,15 @@ bool InstructionLatencyPass::doFinalization(Module &M) { return false; }
  * @return false
  */
 bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
-  auto Arch = TM.getTargetTriple().getArch();
+  auto Arch = F.getTarget().getTargetTriple().getArch();
   for (auto &MBB : F) {
+    // Sum up the latencies of all instructions in the basic block
+    unsigned int Latency = 0;
     for (auto &MI : MBB) {
+      unsigned int InstructionLatency = 0;
       switch (Arch) {
       case Triple::ArchType::msp430:
-        getMSP430Latency(MI);
+        InstructionLatency = getMSP430Latency(MI);
         if (DebugPrints)
           outs() << "Instruction: " << MI << "Latency: " << getMSP430Latency(MI)
                  << "\n";
@@ -47,7 +51,20 @@ bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
         errs() << "Unknown Arch: " << Arch;
         assert(false && "not implemented");
       }
+      Latency += InstructionLatency;
     }
+    // Create std::pair with the machien basic block and its latency
+    std::pair<MachineBasicBlock *, unsigned int> MBBLatencyPair(
+        &MBB, Latency);
+    // Insert the pair into the map, and check for duplicates
+    auto NoDuplicate = MBBLatencyMap->insert(MBBLatencyPair);
+    if (!NoDuplicate.second) {
+      // If the pair already exists, print a warning
+      errs() << "Warning: Duplicate MBB found: " << MBB.getName()
+             << " with Latency: " << Latency << "\n";
+    }
+    assert(NoDuplicate.second && "Duplicate MBB found in MBBLatencyMap");
+
   }
   return false;
 }

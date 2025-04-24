@@ -82,7 +82,7 @@ bool AccessAnalysesPass::runOnMachineFunction(MachineFunction &F) {
 }
 
 
-MachineFunctionPass *llvm::createAccessAnalysesPass(TargetMachine &TM) {
+MachineFunctionPass *createAccessAnalysesPass(TargetMachine &TM) {
   return new AccessAnalysesPass(TM);
 }
 } // namespace llvm
