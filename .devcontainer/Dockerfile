@@ -9,9 +9,7 @@ SHELL ["/bin/bash", "-c"]
 # [Optional] Uncomment this section to install additional OS packages.
 RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
         && apt-get -y install --no-install-recommends --fix-missing \
-        lldb gcc gdb cmake make ninja-build libboost-all-dev git python3.11 \
-        icecc icecream-sundae \
-        build-essential clang-format clang-tidy clang-tools clangd
+        icecc icecream-sundae
 
 RUN echo "set completion-ignore-case on" >> /etc/inputrc
 
