@@ -1,4 +1,3 @@
-
 #include "RTTargets/MuArchStateGraph.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/raw_ostream.h"
@@ -8,6 +7,87 @@
 #include <set>
 
 namespace llvm {
+
+
+// Constructor
+Node::Node(unsigned NewId, std::unique_ptr<MuArchState> State)
+    : Id(NewId), State(std::move(State)) {}
+
+// Copy Constructor
+Node::Node(const Node &Node)
+    : Id(Node.Id), Successors(Node.Successors), Predecessors(Node.Predecessors),
+      State(std::make_unique<MuArchState>(*Node.State)) {}
+
+// Destructor
+Node::~Node() {}
+
+// Comparison operator
+bool Node::operator<(const Node &Other) const {
+  return Id < Other.Id;
+}
+
+// Get the ID of the Node
+unsigned Node::getId() const {
+  return Id;
+}
+
+// Get the predecessors of the Node
+const std::set<unsigned> Node::getPredecessors() const {
+  return Predecessors;
+}
+
+// Get the successors of the Node
+const std::set<unsigned> Node::getSuccessors() const {
+  return Successors;
+}
+
+// Add a successor to the Node
+void Node::addSuccessor(unsigned SuccessorId) {
+  Successors.insert(SuccessorId);
+}
+
+// Add a predecessor to the Node
+void Node::addPredecessor(unsigned PredecessorId) {
+  Predecessors.insert(PredecessorId);
+}
+
+// Delete a successor from the Node
+bool Node::deleteSuccessor(unsigned SuccessorId) {
+  return Successors.erase(SuccessorId) > 0;
+}
+
+// Delete a predecessor from the Node
+bool Node::deletePredecessor(unsigned PredecessorId) {
+  return Predecessors.erase(PredecessorId) > 0;
+}
+
+// Check if a given ID is a predecessor of the Node
+bool Node::isPredecessor(unsigned PredecessorId) const {
+  return Predecessors.find(PredecessorId) != Predecessors.end();
+}
+
+// Check if a given ID is a successor of the Node
+bool Node::isSuccessor(unsigned SuccessorId) const {
+  return Successors.find(SuccessorId) != Successors.end();
+}
+
+// Check if the Node is free (no predecessors or successors)
+bool Node::isFree() const {
+  return Successors.empty() && Predecessors.empty();
+}
+
+// Get a description of the Node
+std::string Node::getNodeDescr() const {
+  return "Node ID: " + std::to_string(Id);
+}
+
+// Get the architectural state of the Node
+MuArchState &Node::getState() const {
+  return *State;
+}
+
+
+
 Graph::Graph() : NextNodeId(0), Nodes() {}
 
 Graph::Graph(Graph &G2)
@@ -67,13 +147,6 @@ void Graph::dump() const {
   for (const auto &Nd : Nodes) {
     errs() << Nd.second.getNodeDescr();
   }
-}
-
-std::ostream &operator<<(std::ostream &Stream, Graph Graph) {
-  for (const auto &Nd : Graph.getNodes()) {
-    Stream << Nd.second;
-  }
-  return Stream;
 }
 
 } // end namespace llvm

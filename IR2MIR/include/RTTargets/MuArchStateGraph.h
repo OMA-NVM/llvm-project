@@ -1,6 +1,6 @@
-
 #include <cassert>
 #include <map>
+#include <ostream>
 #include <set>
 
 namespace llvm {
@@ -53,7 +53,10 @@ public:
 
   MuArchState &getState() const;
 
-  friend std::ostream &operator<<(std::ostream &Stream, Node Node);
+  friend std::ostream &operator<<(std::ostream &Stream, Node Node) {
+    Stream << "Node ID: " << Node.Id;
+    return Stream;
+  }
 
   /**
    * Stores the id of this Node.
@@ -113,7 +116,12 @@ public:
 
   void dump() const;
 
-  friend std::ostream &operator<<(std::ostream &Stream, Graph Graph);
+  friend std::ostream &operator<<(std::ostream &Stream, Graph Graph) {
+  for (const auto &Nd : Graph.getNodes()) {
+    Stream << Nd.second;
+  }
+  return Stream;
+  }
 
 private:
   /**
