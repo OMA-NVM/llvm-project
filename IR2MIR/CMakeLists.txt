@@ -56,6 +56,6 @@ add_llvm_tool(ir2mir
 
 add_subdirectory(lib)
 
-target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility ${GUROBI_CXX_LIBRARY})
+target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility ir2mirRTTargets ${GUROBI_CXX_LIBRARY})
 
 export_executable_symbols_for_plugins(ir2mir)

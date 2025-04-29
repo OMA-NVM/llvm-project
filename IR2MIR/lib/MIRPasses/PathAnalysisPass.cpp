@@ -1,6 +1,7 @@
 #include "MIRPasses/PathAnalysisPass.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/Analysis/ScalarEvolutionAliasAnalysis.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/Passes.h"
@@ -40,6 +41,8 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
 
   for (auto &CGNode : CG) {
     auto *F = CGNode.second->getFunction();
+    if(F == nullptr)
+      continue;
     auto NumRef = CGNode.second->getNumReferences();
     if (NumRef < CurrentNumReferences) {
       StartingFunction = F;
@@ -50,6 +53,8 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
   }
   if (SeenNumRefsTwice)
     return nullptr;
+  if (DebugPrints)
+    outs() << "StartingFunction: " << StartingFunction->getName() << "\n";
   return StartingFunction;
 }
 
@@ -62,16 +67,23 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
  * @return false
  */
 bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
-  if (DebugPrints) {
+  //if (DebugPrints) {
     outs() << "MachineFunction: " << F.getName() << "\n";
-  }
+  //}
 
   // Get CallGraph analysis results
   if (CG == nullptr) {
     auto &CGWP = getAnalysis<CallGraphWrapperPass>();
     CG = &CGWP.getCallGraph();
-    // CG->print(outs());
-    //  Iterate over CallGraph
+    CG->print(outs());
+  }
+
+  // Get the starting function
+  Function *StartingFunction = getStartingFunction(*CG);
+  outs() << "StartingFunction: " << StartingFunction->getName() << "\n";
+  // do the Path analysis for the starting function ONLY!
+  if (F.getName().compare(StartingFunction->getName()) != 0) {
+    return false;
   }
 
   // Get the MachineLoopInfo analysisresults
@@ -81,20 +93,23 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   // Get the ScalarEvolution analysis results
   auto &SEWP = getAnalysis<ScalarEvolutionWrapperPass>();
   auto &SE = SEWP.getSE();
+  //SE.print(outs());
 
   // Get the LoopInfo analysis results
   auto &LWP = getAnalysis<LoopInfoWrapperPass>();
   auto &LI = LWP.getLoopInfo();
-  LI.print(outs());
+  //LI.print(outs());
 
   // access print the exitKind for each Loop from SCalarEveolution
   for (auto &L : LI) {
   // check for nested loops
-    if (L->getLoopDepth() > 1) {
-      auto SL = L->getSubLoops();
-      for (auto &S : SL) {
-        outs() << "SubLoop: " << S->getHeader()->getName() << "\n";
-        auto *Bound = SE.getExitCount(S, S->getExitBlock(), ScalarEvolution::ExitCountKind::ConstantMaximum);
+    if (L->getLoopDepth() >= 1) {
+      outs() << "UpperTripCnts:"<< SE.getSmallConstantMaxTripCount(L) << "\n";
+      auto SLs = L->getSubLoops();
+      for (auto &SL : SLs) {
+        outs() << "SubLoop: " << SL->getHeader()->getName() << "\n";
+        outs() << "UpperTripCnts:"<< SE.getSmallConstantMaxTripCount(L) << "\n";
+        auto *Bound = SE.getExitCount(SL, SL->getExitBlock(), ScalarEvolution::ExitCountKind::ConstantMaximum);
         if (Bound) {
           outs() << "SLExitKind: " << *Bound << "\n";
         } else {

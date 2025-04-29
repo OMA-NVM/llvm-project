@@ -1,10 +1,13 @@
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
+#include "llvm/Analysis/ScalarEvolutionAliasAnalysis.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
+
+//#include "MIRPasses/InstructionLatencyPass.h"
 namespace llvm {
 
 /**
@@ -17,7 +20,10 @@ class PathAnalysisPass : public MachineFunctionPass {
 public:
   static char ID;
 
-  const bool DebugPrints = true;
+  // a struct that holds graphnodes and edges, which link to BBs
+  // and instructions
+
+  const bool DebugPrints = false;
   TargetMachine &TM;
   PathAnalysisPass(TargetMachine &TM);
 
@@ -33,6 +39,8 @@ public:
     AU.addRequired<LoopInfoWrapperPass>();
     AU.addRequired<ScalarEvolutionWrapperPass>();
     AU.addRequired<CallGraphWrapperPass>();
+    AU.addRequired<SCEVAAWrapperPass>();
+    //AU.addRequired<InstructionLatencyPass>();
     MachineFunctionPass::getAnalysisUsage(AU);
   };
 

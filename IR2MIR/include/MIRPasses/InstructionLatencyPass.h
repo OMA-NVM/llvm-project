@@ -1,10 +1,7 @@
 #include "llvm/CodeGen/MachineFunctionPass.h"
-#include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
 #include <cstddef>
-#include <memory>
-#include <optional>
 #include <unordered_map>
 
 namespace llvm {

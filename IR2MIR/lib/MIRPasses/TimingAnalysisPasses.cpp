@@ -3,8 +3,8 @@
 #include "MIRPasses/AdressResolverPass.h"
 #include "MIRPasses/AsmDumpAndCheckPass.h"
 #include "MIRPasses/InstructionLatencyPass.h"
-#include "MIRPasses/PathAnalysisPass.h"
 #include "MIRPasses/Mir2IrPass.h"
+#include "MIRPasses/PathAnalysisPass.h"
 
 namespace llvm {
 
