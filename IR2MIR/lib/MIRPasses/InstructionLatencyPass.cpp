@@ -14,7 +14,7 @@ char InstructionLatencyPass::ID = 0;
  *
  * @param TM
  */
-llvm::InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
+InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
     : MachineFunctionPass(ID), TM(TM), MBBLatencyMap(std::make_unique<std::unordered_map<MachineBasicBlock *, unsigned int>>()) {}
 
 /**
