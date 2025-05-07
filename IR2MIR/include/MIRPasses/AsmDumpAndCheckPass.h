@@ -3,6 +3,7 @@
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
+#include "TimingAnalysisResults.h"
 
 namespace llvm {
 
@@ -15,8 +16,8 @@ namespace llvm {
 class AsmDumpAndCheckPass : public MachineFunctionPass {
 public:
   static char ID;
-  TargetMachine &TM;
-  AsmDumpAndCheckPass(TargetMachine &TM);
+  TimingAnalysisResults &TAR;
+  AsmDumpAndCheckPass(TimingAnalysisResults &TAR);
 
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
@@ -39,5 +40,5 @@ public:
 } // namespace llvm
 
 namespace llvm {
-MachineFunctionPass *createAsmDumpAndCheckPass(TargetMachine &TM);
+MachineFunctionPass *createAsmDumpAndCheckPass(TimingAnalysisResults &TAR);
 } // namespace llvm

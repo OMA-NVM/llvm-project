@@ -1,3 +1,4 @@
+#include "TimingAnalysisResults.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
@@ -24,8 +25,8 @@ public:
   // and instructions
 
   const bool DebugPrints = false;
-  TargetMachine &TM;
-  PathAnalysisPass(TargetMachine &TM);
+  TimingAnalysisResults &TAR;
+  PathAnalysisPass(TimingAnalysisResults &TAR);
 
   CallGraph *CG = nullptr;
 
@@ -51,5 +52,5 @@ public:
 
 } // namespace llvm
 namespace llvm {
-MachineFunctionPass *createPathAnalysisPass(TargetMachine &TM);
+MachineFunctionPass *createPathAnalysisPass(TimingAnalysisResults &TAR);
 } // namespace llvm

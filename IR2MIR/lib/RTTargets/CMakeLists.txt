@@ -1,7 +1,7 @@
 message(STATUS "Found LLVM Machine Passes LIB for IR2MIR")
 
 add_llvm_library(ir2mirRTTargets
-  MSP430/MSP430.cpp
+  MSP430/MSP430MuArchState.cpp
   MuArchStateGraph.cpp
   DEPENDS LLVMAnalysis LLVMCodeGen LLVMCore LLVMSupport LLVMTarget
 )

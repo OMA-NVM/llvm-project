@@ -15,7 +15,7 @@ char MIRtoIRPass::ID = 0;
  *
  * @param TM
  */
-MIRtoIRPass::MIRtoIRPass(TargetMachine &TM) : MachineFunctionPass(ID), TM(TM) {}
+MIRtoIRPass::MIRtoIRPass(TimingAnalysisResults &TAR) : MachineFunctionPass(ID), TAR(TAR) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -63,8 +63,8 @@ bool MIRtoIRPass::runOnMachineFunction(MachineFunction &MF) {
   return false; // No modification to the MachineFunction
 }
 
-MachineFunctionPass *createMIRtoIRPass(TargetMachine &TM) {
-  return new MIRtoIRPass(TM);
+MachineFunctionPass *createMIRtoIRPass(TimingAnalysisResults &TAR) {
+  return new MIRtoIRPass(TAR);
 }
 } // namespace llvm
 // Register the pass

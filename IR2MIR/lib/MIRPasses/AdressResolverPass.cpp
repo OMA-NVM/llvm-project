@@ -1,5 +1,6 @@
 #include "MIRPasses/AdressResolverPass.h"
 #include "MIRPasses/AsmDumpAndCheckPass.h"
+#include "TimingAnalysisResults.h"
 #include "Utility/Options.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
 #include "llvm/CodeGen/MachineInstr.h"
@@ -16,10 +17,10 @@ char AdressResolverPass::ID = 1;
  * @brief Construct a new Adress Resolver Pass:: Adress Resolver Pass
  * object
  *
- * @param TM
+ * @paramTAR
  */
-AdressResolverPass::AdressResolverPass(TargetMachine &TM)
-    : MachineFunctionPass(ID), TM(TM) {}
+AdressResolverPass::AdressResolverPass(TimingAnalysisResults &TAR)
+    : MachineFunctionPass(ID), TAR(TAR) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -301,7 +302,7 @@ bool AdressResolverPass::isHex(std::string &In) {
   return true;
 }
 
-MachineFunctionPass *createAdressResolverPass(TargetMachine &TM) {
-  return new AdressResolverPass(TM);
+MachineFunctionPass *createAdressResolverPass(TimingAnalysisResults &TAR) {
+  return new AdressResolverPass(TAR);
 }
 } // namespace llvm

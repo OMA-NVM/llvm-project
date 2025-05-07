@@ -1,13 +1,10 @@
 #ifndef LLVM_MIR_TO_IR_PASS_H
 #define LLVM_MIR_TO_IR_PASS_H
 
+#include "TimingAnalysisResults.h"
 #include "llvm/Analysis/CallGraph.h"
-#include "llvm/Analysis/LoopInfo.h"
-#include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
-#include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
-#include "llvm/Target/TargetMachine.h"
 
 namespace llvm {
 class MIRtoIRPass : public MachineFunctionPass {
@@ -15,8 +12,8 @@ public:
   static char ID;
 
   const bool DebugPrints = false;
-  TargetMachine &TM;
-  MIRtoIRPass(TargetMachine &TM);
+  TimingAnalysisResults &TAR;
+  MIRtoIRPass(TimingAnalysisResults &TAR);
 
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
@@ -34,5 +31,5 @@ public:
 #endif // LLVM_MIR_TO_IR_PASS_H
 
 namespace llvm {
-MachineFunctionPass *createMIRtoIRPass(TargetMachine &TM);
+MachineFunctionPass *createMIRtoIRPass(TimingAnalysisResults &TAR);
 } // namespace llvm

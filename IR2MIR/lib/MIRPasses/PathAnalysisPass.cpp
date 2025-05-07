@@ -1,4 +1,5 @@
 #include "MIRPasses/PathAnalysisPass.h"
+#include "TimingAnalysisResults.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Analysis/ScalarEvolutionAliasAnalysis.h"
@@ -19,8 +20,8 @@ char PathAnalysisPass::ID = 0;
  *
  * @param TM
  */
-PathAnalysisPass::PathAnalysisPass(TargetMachine &TM)
-    : MachineFunctionPass(ID), TM(TM) {}
+PathAnalysisPass::PathAnalysisPass(TimingAnalysisResults &TAR)
+    : MachineFunctionPass(ID), TAR(TAR) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -146,7 +147,7 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   return false;
 }
 
-MachineFunctionPass *createPathAnalysisPass(TargetMachine &TM) {
-  return new PathAnalysisPass(TM);
+MachineFunctionPass *createPathAnalysisPass(TimingAnalysisResults &TAR) {
+  return new PathAnalysisPass(TAR);
 }
 } // namespace llvm

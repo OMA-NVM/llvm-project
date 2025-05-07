@@ -1,4 +1,3 @@
-//===-- MSP430.cpp - MSP430 Target Implementation ------------------------===//
 #include "llvm/CodeGen/MachineInstr.h"
 #include "RTTargets/MuArchStateGraph.h"
 #include <cassert>
