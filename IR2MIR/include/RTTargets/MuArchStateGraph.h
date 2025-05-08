@@ -1,3 +1,4 @@
+#include "llvm/CodeGen/MachineBasicBlock.h"
 #include <cassert>
 #include <map>
 #include <ostream>
@@ -79,16 +80,16 @@ public:
   std::unique_ptr<MuArchState> State;
 };
 
-class Graph {
+class MuArchStateGraph {
 
 public:
-  Graph();
+  MuArchStateGraph();
 
-  Graph(Graph &G2);
+  MuArchStateGraph(MuArchStateGraph &G2);
 
-  ~Graph();
+  ~MuArchStateGraph();
 
-  unsigned addNode(std::unique_ptr<MuArchState> State);
+  unsigned addNode(MuArchState State, MachineBasicBlock * MBB);
 
   /**
    * Adds an edge to the graph from the Node with id start to the Node with
@@ -116,18 +117,12 @@ public:
 
   void dump() const;
 
-  friend std::ostream &operator<<(std::ostream &Stream, Graph Graph) {
+  friend std::ostream &operator<<(std::ostream &Stream, MuArchStateGraph Graph) {
   for (const auto &Nd : Graph.getNodes()) {
     Stream << Nd.second;
   }
   return Stream;
   }
-
-private:
-  /**
-   * A counter to give unique identifiers to each Node.
-   */
-  unsigned NextNodeId;
 
   /**
    * The set vertices in the graph.
@@ -135,6 +130,17 @@ private:
    * 	one in the preceding, one in the succeeding Node.
    */
   std::map<unsigned, Node> Nodes;
+
+  /**
+   * Map that stores a relation from MBB to Nodes
+   */
+  std::map<const MachineBasicBlock *, unsigned> MBBToNodeMap;
+
+private:
+  /**
+   * A counter to give unique identifiers to each Node.
+   */
+  unsigned NextNodeId;
 };
 
 } // end namespace llvm

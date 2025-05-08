@@ -2,6 +2,7 @@
 #define LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H
 
 #include "TimingAnalysisResults.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/Target/TargetMachine.h"
 
@@ -22,28 +23,17 @@ public:
   const bool DebugPrints = false;
   TimingAnalysisResults &TAR;
 
-  std::unique_ptr<std::unordered_map<MachineBasicBlock *, unsigned int>> MBBLatencyMap;
+  std::unordered_map<const MachineBasicBlock *, unsigned int> MBBLatencyMap;
 
   InstructionLatencyPass(TimingAnalysisResults &TAR);
 
-  const std::unordered_map<MachineBasicBlock *, unsigned int> &getMBBLatencyMap() const {
-    return *MBBLatencyMap;
+  const std::unordered_map<const MachineBasicBlock *, unsigned int> &getMBBLatencyMap() const {
+    return MBBLatencyMap;
   }
-  std::unordered_map<MachineBasicBlock *, unsigned int> &getMBBLatencyMap() {
-    return *MBBLatencyMap;
-  }
-
-  using iterator = std::unordered_map<MachineBasicBlock *, unsigned int>::iterator;
-  using const_iterator = std::unordered_map<MachineBasicBlock *, unsigned int>::const_iterator;
-
-  MachineFunction &getFunction() const {
-    return *MBBLatencyMap->begin()->first->getParent();
+  std::unordered_map<const MachineBasicBlock *, unsigned int> &getMBBLatencyMap() {
+    return MBBLatencyMap;
   }
 
-  inline iterator begin() { return MBBLatencyMap->begin(); }
-  inline iterator end() { return MBBLatencyMap->end(); }
-  inline const_iterator begin() const { return MBBLatencyMap->begin(); }
-  inline const_iterator end() const { return MBBLatencyMap->end(); }
 
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesAll();

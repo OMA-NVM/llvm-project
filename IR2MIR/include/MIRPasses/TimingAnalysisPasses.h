@@ -4,6 +4,6 @@
 
 namespace llvm {
 
-std::list<MachineFunctionPass *> getTimingAnalysisPasses(TargetMachine &TM);
+std::list<MachineFunctionPass *> getTimingAnalysisPasses();
 
 } // namespace llvm

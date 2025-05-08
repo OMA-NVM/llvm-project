@@ -1,4 +1,5 @@
 #include "RTTargets/MuArchStateGraph.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cassert>
@@ -88,62 +89,64 @@ MuArchState &Node::getState() const {
 
 
 
-Graph::Graph() : NextNodeId(0), Nodes() {}
+MuArchStateGraph::MuArchStateGraph() : Nodes(), NextNodeId(0) {}
 
-Graph::Graph(Graph &G2)
-    : NextNodeId(G2.NextNodeId), Nodes(G2.Nodes) {}
+MuArchStateGraph::MuArchStateGraph(MuArchStateGraph &G2)
+    : Nodes(G2.Nodes), NextNodeId(G2.NextNodeId) {}
 
-Graph::~Graph() {}
+MuArchStateGraph::~MuArchStateGraph() {}
 
-unsigned Graph::addNode(std::unique_ptr<MuArchState> State) {
+unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock * MBB) {
   unsigned CurrentId = NextNodeId;
   NextNodeId++;
   assert(NextNodeId > 0 &&
          "We used all Node ids for the state graph. Unsigned is not enough!");
-  Node Nd(CurrentId, std::move(State));
+  Node Nd(CurrentId, std::make_unique<MuArchState>(State));
+  Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
+  MBBToNodeMap[MBB] = CurrentId;
   return CurrentId;
 }
 
-void Graph::addEdge(unsigned FromNode, unsigned ToNode) {
+void MuArchStateGraph::addEdge(unsigned FromNode, unsigned ToNode) {
   assert(Nodes.count(FromNode) == 1 && Nodes.count(ToNode) == 1 &&
          "Tried adding an edge between non-existent Nodes.");
   Nodes.at(FromNode).addSuccessor(ToNode);
   Nodes.at(ToNode).addPredecessor(FromNode);
 }
 
-void Graph::removeNode(unsigned Node) {
+void MuArchStateGraph::removeNode(unsigned Node) {
   assert(Nodes.at(Node).isFree() &&
          "Tried to remove a Node which has an edge connected!");
   Nodes.erase(Node);
 }
 
-void Graph::removeEdge(unsigned FromNode, unsigned ToNode) {
+void MuArchStateGraph::removeEdge(unsigned FromNode, unsigned ToNode) {
   Nodes.at(FromNode).deleteSuccessor(ToNode);
   Nodes.at(ToNode).deletePredecessor(FromNode);
 }
 
-const std::set<unsigned> Graph::getPredecessors(unsigned NodeId) const {
+const std::set<unsigned> MuArchStateGraph::getPredecessors(unsigned NodeId) const {
   return Nodes.at(NodeId).getPredecessors();
 }
 
-const std::set<unsigned> Graph::getSuccessors(unsigned NodeId) const {
+const std::set<unsigned> MuArchStateGraph::getSuccessors(unsigned NodeId) const {
   return Nodes.at(NodeId).getSuccessors();
 }
 
-const std::map<unsigned, Node> &Graph::getNodes() const {
+const std::map<unsigned, Node> &MuArchStateGraph::getNodes() const {
   return Nodes;
 }
 
-bool Graph::isFree(unsigned Node) const {
+bool MuArchStateGraph::isFree(unsigned Node) const {
   return Nodes.at(Node).isFree();
 }
 
-bool Graph::hasEdge(unsigned FromNode, unsigned ToNode) const {
+bool MuArchStateGraph::hasEdge(unsigned FromNode, unsigned ToNode) const {
   return Nodes.at(FromNode).isSuccessor(ToNode);
 }
 
-void Graph::dump() const {
+void MuArchStateGraph::dump() const {
   for (const auto &Nd : Nodes) {
     errs() << Nd.second.getNodeDescr();
   }

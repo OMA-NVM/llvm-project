@@ -9,9 +9,11 @@
 
 namespace llvm {
 
+// Container that holds the results of the timing analysis passes
+// and makes them available to all timing analysis passes.
 static TimingAnalysisResults TAR = TimingAnalysisResults();
 
-std::list<MachineFunctionPass *> getTimingAnalysisPasses(TargetMachine &TM) {
+std::list<MachineFunctionPass *> getTimingAnalysisPasses() {
   std::list<MachineFunctionPass *> Passes;
   Passes.push_back(createAsmDumpAndCheckPass(TAR));
   Passes.push_back(createAdressResolverPass(TAR));

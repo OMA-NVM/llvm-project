@@ -1,4 +1,5 @@
 #include "TimingAnalysisResults.h"
+#include "RTTargets/MuArchStateGraph.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
@@ -21,6 +22,13 @@ class PathAnalysisPass : public MachineFunctionPass {
 public:
   static char ID;
 
+  bool FoundStartingFunction = false;
+
+  Function *StartingFunction = nullptr;
+
+
+  MuArchStateGraph MASG;
+
   // a struct that holds graphnodes and edges, which link to BBs
   // and instructions
 
@@ -41,7 +49,6 @@ public:
     AU.addRequired<ScalarEvolutionWrapperPass>();
     AU.addRequired<CallGraphWrapperPass>();
     AU.addRequired<SCEVAAWrapperPass>();
-    //AU.addRequired<InstructionLatencyPass>();
     MachineFunctionPass::getAnalysisUsage(AU);
   };
 

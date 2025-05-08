@@ -28,7 +28,8 @@
       "name": "dbg covercnt MSP430",
       "program": "${workspaceFolder}/build/bin/ir2mir",
       "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cover/cover.ll",
-      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cover/cover.elf.dump"],
+      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cover/cover.elf.dump",
+      "-start-function=main"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "build"
     }

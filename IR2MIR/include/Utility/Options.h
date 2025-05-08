@@ -9,4 +9,6 @@
  */
 extern llvm::cl::opt<std::string> DumpFilename;
 
+extern llvm::cl::opt<std::string> StartFunctionName;
+
 #endif

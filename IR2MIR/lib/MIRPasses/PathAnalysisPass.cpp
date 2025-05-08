@@ -1,14 +1,19 @@
 #include "MIRPasses/PathAnalysisPass.h"
 #include "TimingAnalysisResults.h"
+#include "Utility/Options.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Analysis/ScalarEvolutionAliasAnalysis.h"
 #include "llvm/CodeGen/GlobalISel/IRTranslator.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/Passes.h"
 #include "llvm/IR/Module.h"
 #include "llvm/Support/raw_ostream.h"
+#include <cassert>
 #include <gurobi_c++.h>
+#include <memory>
+#include <vector>
 
 namespace llvm {
 
@@ -43,6 +48,9 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
     auto *F = CGNode.second->getFunction();
     if(F == nullptr)
       continue;
+    if(!StartFunctionName.empty() && F->getName().compare(StartFunctionName)) {
+      return F;
+    }
     auto NumRef = CGNode.second->getNumReferences();
     if (NumRef < CurrentNumReferences) {
       StartingFunction = F;
@@ -67,83 +75,55 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
  * @return false
  */
 bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
-  //if (DebugPrints) {
+  if (DebugPrints)
     outs() << "MachineFunction: " << F.getName() << "\n";
-  //}
 
-  // Get CallGraph analysis results
-  if (CG == nullptr) {
-    auto &CGWP = getAnalysis<CallGraphWrapperPass>();
-    CG = &CGWP.getCallGraph();
-    CG->print(outs());
+  if(!CG) {
+    CG = &getAnalysis<CallGraphWrapperPass>().getCallGraph();
   }
-
-  // Get the starting function
-  Function *StartingFunction = getStartingFunction(*CG);
-  outs() << "StartingFunction: " << StartingFunction->getName() << "\n";
-  // do the Path analysis for the starting function ONLY!
-  if (F.getName().compare(StartingFunction->getName()) != 0) {
-    return false;
+  if (!FoundStartingFunction) {
+    StartingFunction = getStartingFunction(*CG);
+    // Get the starting function if the StartingFunctionName is empty
+    if (!StartingFunction) {
+      outs() << "No StartingFunction found\n";
+    }
+    assert(StartingFunction && "StartingFunction is null");
   }
 
   // Get the MachineLoopInfo analysisresults
   auto &MLWP = getAnalysis<MachineLoopInfoWrapperPass>();
   auto &MLI = MLWP.getLI();
+  //outs() << "MachineLoopInfo: \n";
+  //MLI.print(outs());
 
- // Create and fill MuArchGraph
+  // Get the Latency analysis results
+  auto MBBLatencyMap = TAR.getMBBLatencyMap();
+
+  // Fill MuArchGraph Nodes
   for (auto &MBB : F) {
+    //interate over MIs in MBB and find calling Instructions
     for (auto &MI : MBB) {
+      if (MI.isCall()) {
+        if (true){
+          outs() << "Found Call Instruction: " << "in Function: " << F.getName() << "\n";
+          MI.getOperand(0).dump();
+        }
+      }
+    }
+    // Create a new MuArchStateGraph and add ti the graph as unique ptr
+    MASG.addNode(MuArchState(MBBLatencyMap[&MBB], MBBLatencyMap[&MBB]), &MBB);
+  }
+  // Fill MuArchGraph Edges
+  for (auto &MBB : F) {
+    for (auto &Succ : MBB.successors()) {
+      //if (Succ->getParent() == MBB.getParent()){
+        unsigned FromNode = MASG.MBBToNodeMap[&MBB];
+        unsigned ToNode = MASG.MBBToNodeMap[Succ];
+        MASG.addEdge(FromNode, ToNode);
+        //}
+
     }
   }
-  // Get the ScalarEvolution analysis results
-  // auto &SEWP = getAnalysis<ScalarEvolutionWrapperPass>();
-  // auto &SE = SEWP.getSE();
-  //SE.print(outs());
-
-  // Get the LoopInfo analysis results
-  // auto &LWP = getAnalysis<LoopInfoWrapperPass>();
-  // auto &LI = LWP.getLoopInfo();
-  //LI.print(outs());
-
-  // access print the exitKind for each Loop from SCalarEveolution
-  // for (auto &L : LI) {
-  // // check for nested loops
-  //   if (L->getLoopDepth() >= 1) {
-  //     outs() << "UpperTripCnts:"<< SE.getSmallConstantMaxTripCount(L) << "\n";
-  //     auto SLs = L->getSubLoops();
-  //     for (auto &SL : SLs) {
-  //       outs() << "SubLoop: " << SL->getHeader()->getName() << "\n";
-  //       outs() << "UpperTripCnts:"<< SE.getSmallConstantMaxTripCount(L) << "\n";
-  //       auto *Bound = SE.getExitCount(SL, SL->getExitBlock(), ScalarEvolution::ExitCountKind::ConstantMaximum);
-  //       if (Bound) {
-  //         outs() << "SLExitKind: " << *Bound << "\n";
-  //       } else {
-  //         outs() << "No SLExitKind\n";
-  //       }
-  //     }
-  //   }
-  //   auto *Bound = SE.getExitCount(L, L->getExitBlock(), ScalarEvolution::ExitCountKind::ConstantMaximum);
-  //   if (Bound) {
-  //     outs() << "ExitKind: " << *Bound << "\n";
-  //   } else {
-  //     outs() << "No ExitKind\n";
-  //   }
-  // }
-
-  // if (DebugPrints) {
-  //   outs() << "MachineLoopInfo: \n";
-  //   MLI.print(outs());
-  // }
-
-  // if (DebugPrints) {
-  //   outs() << "LoopInfo: \n";
-  //   LI.print(outs());
-  // }
-
-  // if (DebugPrints & !LI.empty()) {
-  //   outs() << "ScalarEvolution: \n";
-  //   SE.print(outs());
-  // }
   return false;
 }
 

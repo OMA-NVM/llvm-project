@@ -2,7 +2,6 @@
 #define TIMING_ANALYSIS_RESULTS_H
 
 #include "llvm/CodeGen/MachineBasicBlock.h"
-#include <memory>
 #include <unordered_map>
 namespace llvm {
 
@@ -11,15 +10,15 @@ namespace llvm {
 // It is used to store the results of the Timing Analysis passes.
 class TimingAnalysisResults {
 public:
-    std::unique_ptr<std::unordered_map<MachineBasicBlock *, unsigned int>> MBBLatencyMap = nullptr;
 
-    void setMBBLatencyMap(std::unique_ptr<std::unordered_map<MachineBasicBlock *, unsigned int>> MBBLatencyMap) {
-        this->MBBLatencyMap = std::move(MBBLatencyMap);
-    }
+    // START: Instruction Latency Pass Containers
+    std::unordered_map<const MachineBasicBlock *, unsigned int> MBBLatencyMap;
+    bool MBBLatencyMapSet = false;
 
-    std::unique_ptr<std::unordered_map<MachineBasicBlock *, unsigned int>> getMBBLatencyMap() {
-        return std::move(MBBLatencyMap);
-    }
+    void setMBBLatencyMap(std::unordered_map<const MachineBasicBlock *, unsigned int> MBBLatencyMap);
+
+    std::unordered_map<const MachineBasicBlock *, unsigned int> getMBBLatencyMap();
+    // END: Instruction Latency Pass Containers
 };
 
 } // namespace llvm
