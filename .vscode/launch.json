@@ -18,8 +18,17 @@
       "request": "launch",
       "name": "dbg cnt MSP430",
       "program": "${workspaceFolder}/build/bin/ir2mir",
-      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cnt/cnt.ll",
-      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cnt/cnt.elf.dump"],
+      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cnt/msp.ll",
+      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cnt/msp.elf.dump"],
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "build"
+    }, {
+      "type": "lldb",
+      "request": "launch",
+      "name": "dbg cover MSP430",
+      "program": "${workspaceFolder}/build/bin/ir2mir",
+      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cover/msp.ll",
+      "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cover/msp.elf.dump"],
       "cwd": "${workspaceFolder}",
       "preLaunchTask": "build"
     }

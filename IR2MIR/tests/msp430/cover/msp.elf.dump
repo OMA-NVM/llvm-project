@@ -1,0 +1,432 @@
+
+build/msp.elf:     file format elf32-msp430
+
+
+Disassembly of section __reset_vector:
+
+0000fffe <__msp430_resetvec_hook>:
+__msp430_resetvec_hook():
+    fffe:	02 40       	interrupt service routine at 0x4002
+
+Disassembly of section .upper.data:
+
+00010000 <__high_dataend-0x2>:
+   10000:	01 00       	mova	@r0,	r1	;
+
+Disassembly of section .heap:
+
+00001c00 <__heap_start__>:
+__heap_start__():
+    1c00:	00 00       	beq			
+	...
+
+Disassembly of section .text:
+
+00004002 <__crt0_start>:
+__crt0_start():
+    4002:	81 00 00 2c 	mova	#11264,	r1	;0x02c00
+
+00004006 <__crt0_call_main>:
+__crt0_call_main():
+    4006:	0c 43       	clr	r12		;
+
+00004008 <.Loc.254.1>:
+    4008:	b0 13 60 40 	calla	#16480		;0x04060
+
+0000400c <swi120>:
+swi120():
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:2
+    400c:	0d 43       	clr	r13		;
+
+0000400e <.Ltmp0>:
+    400e:	05 3c       	jmp	$+12     	;abs 0x401a
+
+00004010 <.LBB0_1>:
+    4010:	0c 5e       	add	r14,	r12	;
+
+00004012 <.Loc.4.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:4
+    4012:	1d 53       	inc	r13		;
+
+00004014 <.Loc.4.1>:
+    4014:	3d 90 78 00 	cmp	#120,	r13	;#0x0078
+    4018:	06 24       	jz	$+14     	;abs 0x4026
+
+0000401a <.LBB0_2>:
+    401a:	1e 43       	mov	#1,	r14	;r3 As==01
+    401c:	3d 90 78 00 	cmp	#120,	r13	;#0x0078
+    4020:	f7 2b       	jnc	$-16     	;abs 0x4010
+    4022:	3e 43       	mov	#-1,	r14	;r3 As==11
+    4024:	f5 3f       	jmp	$-20     	;abs 0x4010
+
+00004026 <.LBB0_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:129
+    4026:	30 41       	ret			
+
+00004028 <swi50>:
+swi50():
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:134
+    4028:	0d 43       	clr	r13		;
+
+0000402a <.Ltmp9>:
+    402a:	05 3c       	jmp	$+12     	;abs 0x4036
+
+0000402c <.LBB1_1>:
+    402c:	0c 5e       	add	r14,	r12	;
+
+0000402e <.Loc.136.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:136
+    402e:	1d 53       	inc	r13		;
+
+00004030 <.Loc.136.1>:
+    4030:	3d 90 32 00 	cmp	#50,	r13	;#0x0032
+    4034:	06 24       	jz	$+14     	;abs 0x4042
+
+00004036 <.LBB1_2>:
+    4036:	1e 43       	mov	#1,	r14	;r3 As==01
+    4038:	3d 90 32 00 	cmp	#50,	r13	;#0x0032
+    403c:	f7 2b       	jnc	$-16     	;abs 0x402c
+    403e:	3e 43       	mov	#-1,	r14	;r3 As==11
+    4040:	f5 3f       	jmp	$-20     	;abs 0x402c
+
+00004042 <.LBB1_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:201
+    4042:	30 41       	ret			
+
+00004044 <swi10>:
+swi10():
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:206
+    4044:	0d 43       	clr	r13		;
+
+00004046 <.Ltmp18>:
+    4046:	05 3c       	jmp	$+12     	;abs 0x4052
+
+00004048 <.LBB2_1>:
+    4048:	0c 5e       	add	r14,	r12	;
+
+0000404a <.Loc.208.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:208
+    404a:	1d 53       	inc	r13		;
+
+0000404c <.Loc.208.1>:
+    404c:	3d 90 0a 00 	cmp	#10,	r13	;#0x000a
+    4050:	06 24       	jz	$+14     	;abs 0x405e
+
+00004052 <.LBB2_2>:
+    4052:	1e 43       	mov	#1,	r14	;r3 As==01
+    4054:	3d 90 0a 00 	cmp	#10,	r13	;#0x000a
+    4058:	f7 2b       	jnc	$-16     	;abs 0x4048
+    405a:	3e 43       	mov	#-1,	r14	;r3 As==11
+    405c:	f5 3f       	jmp	$-20     	;abs 0x4048
+
+0000405e <.LBB2_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:223
+    405e:	30 41       	ret			
+
+00004060 <main>:
+main():
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:227
+    4060:	21 83       	decd	r1		;
+    4062:	0c 43       	clr	r12		;
+
+00004064 <.Loc.228.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:228
+    4064:	81 43 00 00 	mov	#0,	0(r1)	;r3 As==00
+
+00004068 <.Loc.230.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:230
+    4068:	2d 41       	mov	@r1,	r13	;
+    406a:	05 3c       	jmp	$+12     	;abs 0x4076
+
+0000406c <.LBB3_1>:
+swi10():
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:230
+    406c:	0d 5e       	add	r14,	r13	;
+
+0000406e <.Loc.208.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:208
+    406e:	1c 53       	inc	r12		;
+
+00004070 <.Loc.208.1>:
+    4070:	3c 90 0a 00 	cmp	#10,	r12	;#0x000a
+    4074:	06 24       	jz	$+14     	;abs 0x4082
+
+00004076 <.LBB3_2>:
+    4076:	1e 43       	mov	#1,	r14	;r3 As==01
+
+00004078 <.Ltmp32>:
+    4078:	3c 90 0a 00 	cmp	#10,	r12	;#0x000a
+    407c:	f7 2b       	jnc	$-16     	;abs 0x406c
+
+0000407e <.Ltmp33>:
+main():
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:208
+    407e:	3e 43       	mov	#-1,	r14	;r3 As==11
+    4080:	f5 3f       	jmp	$-20     	;abs 0x406c
+
+00004082 <.LBB3_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:230
+    4082:	81 4d 00 00 	mov	r13,	0(r1)	;
+
+00004086 <.Loc.231.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:231
+    4086:	2c 41       	mov	@r1,	r12	;
+
+00004088 <.Loc.231.1>:
+    4088:	b0 12 28 40 	call	#16424		;#0x4028
+
+0000408c <.Loc.231.1>:
+    408c:	81 4c 00 00 	mov	r12,	0(r1)	;
+
+00004090 <.Loc.232.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:232
+    4090:	2c 41       	mov	@r1,	r12	;
+
+00004092 <.Loc.232.1>:
+    4092:	b0 12 0c 40 	call	#16396		;#0x400c
+
+00004096 <.Loc.232.1>:
+    4096:	81 4c 00 00 	mov	r12,	0(r1)	;
+
+0000409a <.Loc.236.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/cover.c:236
+    409a:	2c 41       	mov	@r1,	r12	;
+
+0000409c <.Loc.236.1>:
+    409c:	21 53       	incd	r1		;
+    409e:	30 41       	ret			
+
+Disassembly of section .MSP430.attributes:
+
+00000000 <.MSP430.attributes>:
+   0:	41 16       	popm.a	#5,	r5	;20-bit words
+   2:	00 00       	beq			
+   4:	00 6d       	addc	r13,	r0	;
+   6:	
+Disassembly of section .comment:
+
+00000000 <.comment>:
+   0:	
+Disassembly of section .debug_info:
+
+00000000 <.debug_info>:
+   0:	2f 01 00 00 	mova	&65536,	r15	;0x10000
+   4:	04 00       	mova	@r0,	r4	;
+   6:	00 00       	beq			
+   8:	00 00       	beq			
+   a:	04 01       	mova	@r1,	r4	;
+   c:	00 00       	beq			
+   e:	00 00       	beq			
+  10:	0c 00       	mova	@r0,	r12	;
+  12:	6b 00 00 00 	mova	r0,	&720896	; 0xb0000
+  16:	00 00       	beq			
+  18:	00 00       	beq			
+  1a:	77 00 00 00 	mova	r0,	0(r7)	;
+  1e:	0c 40       	mov	r0,	r12	;
+  20:	00 00       	beq			
+  22:	94 00 00 00 	cmpa	#0,	r4	;
+  26:	02 0c       	mova	@r12,	r2	;
+  28:	40 00       	rrcm.a	#1,	r0	;
+  2a:	00 1c 00 00 	beqx			
+  2e:	00 01       	bra	@r1		;
+  30:	51 b2 00 00 	bit.b	&0x0000,r1	;0x0000
+  34:	00 01       	bra	@r1		;
+  36:	01 cd       	bic	r13,	r1	;
+  38:	00 00       	beq			
+  3a:	00 03       	bra	@r3		;
+  3c:	01 5c       	add	r12,	r1	;
+  3e:	75 00 00 00 	mova	r0,	0(r5)	;
+  42:	01 01       	mova	@r1,	r1	;
+  44:	cd 00       	mova	r0,	r13	;
+  46:	00 00       	beq			
+  48:	04 00       	mova	@r0,	r4	;
+  4a:	00 00       	beq			
+  4c:	00 b0       	bit	r0,	r0	;
+  4e:	00 00       	beq			
+  50:	00 01       	bra	@r1		;
+  52:	
+Disassembly of section .debug_abbrev:
+
+00000000 <.debug_abbrev>:
+   0:	01 11       	rra	r1		;
+   2:	01 25       	jz	$+516    	;abs 0x206
+   4:	0e 13       	reti			;return from interupt
+   6:	05 03       	mova	@r3,	r5	;
+   8:	0e 10       	rrc	r14		;
+   a:	17 1b 0e 11 	rpt #8 { rrax.?	r14		; Warning: reserved use of A/L and B/W bits detected
+   e:	01 12       	push	r1		;
+  10:	06 00       	mova	@r0,	r6	;
+  12:	00 02       	bra	@r2		;
+  14:	2e 01 11 01 	mova	&65809,	r14	;0x10111
+  18:	12 06       	mova	@r6+,	r2	;
+  1a:	40 18 97 42 	movx.w	&0x00319,14862(r7); 0x03a0e
+  1e:	19 03 0e 3a 
+  22:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe3a
+  24:	0b 27       	jz	$-488    	;abs 0xfffffffffffffe3c
+  26:	19 49 13 3f 	mov	16147(r9),r9	;0x03f13
+  2a:	19 00       	mova	@r0+,	r9	;
+  2c:	00 03       	bra	@r3		;
+  2e:	05 00       	mova	@r0,	r5	;
+  30:	02 18 03 0e 	rpt #3 { movax	@r14,	r3	;
+  34:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  38:	49 13       	calla	r9		;
+  3a:	00 00       	beq			
+  3c:	04 34       	jge	$+10     	;abs 0x46
+  3e:	00 02       	bra	@r2		;
+  40:	17 03       	mova	@r3+,	r7	;
+  42:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffc60
+  44:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe5c
+  46:	0b 49       	mov	r9,	r11	;
+  48:	13 00       	mova	@r0+,	r3	;
+  4a:	00 05       	bra	@r5		;
+  4c:	2e 01 11 01 	mova	&65809,	r14	;0x10111
+  50:	12 06       	mova	@r6+,	r2	;
+  52:	40 18 97 42 	movx.w	&0x03119,19(r7)	; 0x00013
+  56:	19 31 13 00 
+  5a:	00 06       	bra	@r6		;
+  5c:	05 00       	mova	@r0,	r5	;
+  5e:	02 18 31 13 	rpt #3 { retix			;return from interupt
+  62:	00 00       	beq			
+  64:	07 34       	jge	$+16     	;abs 0x74
+  66:	00 02       	bra	@r2		;
+  68:	17 31       	jn	$+560    	;abs 0x298
+  6a:	13 00       	mova	@r0+,	r3	;
+  6c:	00 08       	bra	@r8		;
+  6e:	2e 01 03 0e 	mova	&69123,	r14	;0x10e03
+  72:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  76:	27 19 49 13 	rpt #8 { callax	r9		;
+  7a:	3f 19 20 0b 	brax	&720896	;0xb0000
+  7e:	00 00 
+  80:	09 05       	mova	@r5,	r9	;
+  82:	00 03       	bra	@r3		;
+  84:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffca2
+  86:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe9e
+  88:	0b 49       	mov	r9,	r11	;
+  8a:	13 00       	mova	@r0+,	r3	;
+  8c:	00 0a       	bra	@r10		;
+  8e:	34 00 03 0e 	mova	3587(r0),r4	;PC rel. 0x00e93
+  92:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  96:	49 13       	calla	r9		;
+  98:	00 00       	beq			
+  9a:	0b 24       	jz	$+24     	;abs 0xb2
+  9c:	00 03       	bra	@r3		;
+  9e:	0e 3e       	jmp	$-994    	;abs 0xfffffffffffffcbc
+  a0:	0b 0b       	mova	@r11,	r11	;
+  a2:	0b 00       	mova	@r0,	r11	;
+  a4:	00 0c       	bra	@r12		;
+  a6:	2e 01 11 01 	mova	&65809,	r14	;0x10111
+  aa:	12 06       	mova	@r6+,	r2	;
+  ac:	40 18 97 42 	movx.w	&0x00319,14862(r7); 0x03a0e
+  b0:	19 03 0e 3a 
+  b4:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffecc
+  b6:	0b 49       	mov	r9,	r11	;
+  b8:	13 3f       	jmp	$-472    	;abs 0xfffffffffffffee0
+  ba:	19 00       	mova	@r0+,	r9	;
+  bc:	00 0d       	bra	@r13		;
+  be:	34 00 02 18 	mova	6146(r0),r4	;PC rel. 0x018c2
+  c2:	03 0e       	mova	@r14,	r3	;
+  c4:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  c8:	49 13       	calla	r9		;
+  ca:	00 00       	beq			
+  cc:	0e 1d 01 31 	rpt #15 { jnx.?	$+516    	;abs 0x2d2, Warning: reserved use of A/L and B/W bits detected
+  d0:	13 11       	rra	#1		;r3 As==01
+  d2:	01 12       	push	r1		;
+  d4:	06 58       	add	r8,	r6	;
+  d6:	0b 59       	add	r9,	r11	;
+  d8:	0b 57       	add	r7,	r11	;
+  da:	0b 00       	mova	@r0,	r11	;
+  dc:	00 0f       	bra	@r15		;
+  de:	05 00       	mova	@r0,	r5	;
+  e0:	02 17       	popm	#1,	r2	;16-bit words
+  e2:	31 13       	reti			;return from interupt
+  e4:	00 00       	beq			
+  e6:	10 89 82 01 	sub	386(r9),r0	;0x00182
+  ea:	00 31       	jn	$+514    	;abs 0x2ec
+  ec:	13 11       	rra	#1		;r3 As==01
+  ee:	01 00       	mova	@r0,	r1	;
+  f0:	00 11       	rra	r0		;
+  f2:	35 00 49 13 	mova	4937(r0),r5	;PC rel. 0x0143d
+  f6:	00 00       	beq			
+	...
+
+Disassembly of section .debug_line:
+
+00000000 <L0^A>:
+L0^A():
+   0:	0c 01       	mova	@r1,	r12	;
+   2:	00 00       	beq			
+   4:	03 00       	mova	@r0,	r3	;
+   6:	22 00 00 00 	mova	&0,	r2	;
+
+0000000a <L0^A>:
+   a:	01 01       	mova	@r1,	r1	;
+   c:	fb 0e       	suba	r14,	r11	;
+   e:	0d 00       	mova	@r0,	r13	;
+  10:	01 01       	mova	@r1,	r1	;
+  12:	01 01       	mova	@r1,	r1	;
+  14:	00 00       	beq			
+  16:	00 01       	bra	@r1		;
+  18:	00 00       	beq			
+  1a:	01 73       	sbc	r1		;
+  1c:	72 63       	addc.b	#-1,	r2	;r3 As==11
+  1e:	00 00       	beq			
+  20:	
+Disassembly of section .debug_str:
+
+00000000 <.debug_str>:
+   0:	
+Disassembly of section .debug_loc:
+
+00000000 <.debug_loc>:
+   0:	02 00       	mova	@r0,	r2	;
+   2:	00 00       	beq			
+   4:	04 00       	mova	@r0,	r4	;
+   6:	00 00       	beq			
+   8:	03 00       	mova	@r0,	r3	;
+   a:	11 00       	mova	@r0+,	r1	;
+   c:	9f 04 00 00 	cmpa	#262144,r15	;0x40000
+  10:	00 1c 00 00 	beqx			
+  14:	00 01       	bra	@r1		;
+  16:	00 5d       	add	r13,	r0	;
+	...
+  20:	1e 00       	mova	@r0+,	r14	;
+  22:	00 00       	beq			
+  24:	20 00 00 00 	bra	&0		;
+  28:	03 00       	mova	@r0,	r3	;
+  2a:	11 00       	mova	@r0+,	r1	;
+  2c:	9f 20       	jnz	$+320    	;abs 0x16c
+  2e:	00 00       	beq			
+  30:	00 38       	jl	$+2      	;abs 0x32
+  32:	00 00       	beq			
+  34:	00 01       	bra	@r1		;
+  36:	00 5d       	add	r13,	r0	;
+	...
+  40:	3a 00 00 00 	mova	0(r0),	r10	;
+  44:	3c 00 00 00 	mova	0(r0),	r12	;
+  48:	03 00       	mova	@r0,	r3	;
+  4a:	11 00       	mova	@r0+,	r1	;
+  4c:	9f 3c       	jmp	$+320    	;abs 0x18c
+  4e:	00 00       	beq			
+  50:	00 54       	add	r4,	r0	;
+  52:	00 00       	beq			
+  54:	00 01       	bra	@r1		;
+  56:	00 5d       	add	r13,	r0	;
+	...
+  60:	60 00 00 00 	mova	r0,	&0	;
+  64:	6a 00 00 00 	mova	r0,	&655360	; 0xa0000
+  68:	01 00       	mova	@r0,	r1	;
+  6a:	5c 6c 00 00 	addc.b	0(r12),	r12	;
+  6e:	00 72       	subc	r2,	r0	;
+  70:	00 00       	beq			
+  72:	00 01       	bra	@r1		;
+  74:	00 5c       	add	r12,	r0	;
+	...
+  7e:	60 00 00 00 	mova	r0,	&0	;
+  82:	6a 00 00 00 	mova	r0,	&655360	; 0xa0000
+  86:	01 00       	mova	@r0,	r1	;
+  88:	5d 6c 00 00 	addc.b	0(r12),	r13	;
+  8c:	00 72       	subc	r2,	r0	;
+  8e:	00 00       	beq			
+  90:	00 01       	bra	@r1		;
+  92:	00 5d       	add	r13,	r0	;
+	...

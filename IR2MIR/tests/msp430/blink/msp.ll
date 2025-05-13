@@ -1,5 +1,5 @@
-; ModuleID = 'src/blink.c'
-source_filename = "src/blink.c"
+; ModuleID = 'llvm-link'
+source_filename = "llvm-link"
 target datalayout = "e-m:e-p:16:16-i32:16-i64:16-f32:16-f64:16-a:8-n8:16-S16"
 target triple = "msp430"
 
@@ -45,26 +45,26 @@ do.end:                                           ; preds = %do.body
   br label %for.cond, !dbg !44, !llvm.loop !45
 }
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.start.p0(i64 immarg, ptr nocapture) #1
 
-; Function Attrs: mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
+; Function Attrs: nocallback nofree nosync nounwind willreturn memory(argmem: readwrite)
 declare void @llvm.lifetime.end.p0(i64 immarg, ptr nocapture) #1
 
 attributes #0 = { nofree norecurse noreturn nounwind memory(readwrite, argmem: none) "no-trapping-math"="true" "stack-protector-buffer-size"="8" }
-attributes #1 = { mustprogress nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
+attributes #1 = { nocallback nofree nosync nounwind willreturn memory(argmem: readwrite) }
 
 !llvm.dbg.cu = !{!0}
-!llvm.module.flags = !{!2, !3, !4, !5}
-!llvm.ident = !{!6}
+!llvm.ident = !{!2}
+!llvm.module.flags = !{!3, !4, !5, !6}
 
-!0 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git eec801ec2488509bd805f616670f025d9f4e5901)", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
+!0 = distinct !DICompileUnit(language: DW_LANG_C99, file: !1, producer: "clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git 3ceb1336deeeff77040d9920940fe6d2915db27f)", isOptimized: true, runtimeVersion: 0, emissionKind: FullDebug, splitDebugInlining: false, nameTableKind: None)
 !1 = !DIFile(filename: "src/blink.c", directory: "/Users/nilsholscher/workspaces/msp430_template")
-!2 = !{i32 7, !"Dwarf Version", i32 4}
-!3 = !{i32 2, !"Debug Info Version", i32 3}
-!4 = !{i32 1, !"wchar_size", i32 2}
-!5 = !{i32 7, !"debug-info-assignment-tracking", i1 true}
-!6 = !{!"clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git eec801ec2488509bd805f616670f025d9f4e5901)"}
+!2 = !{!"clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git 3ceb1336deeeff77040d9920940fe6d2915db27f)"}
+!3 = !{i32 7, !"Dwarf Version", i32 4}
+!4 = !{i32 2, !"Debug Info Version", i32 3}
+!5 = !{i32 1, !"wchar_size", i32 2}
+!6 = !{i32 7, !"debug-info-assignment-tracking", i1 true}
 !7 = distinct !DISubprogram(name: "main", scope: !1, file: !1, line: 3, type: !8, scopeLine: 3, flags: DIFlagPrototyped | DIFlagAllCallsDescribed, spFlags: DISPFlagDefinition | DISPFlagOptimized, unit: !0, retainedNodes: !11)
 !8 = !DISubroutineType(types: !9)
 !9 = !{!10}
