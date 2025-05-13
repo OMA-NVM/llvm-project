@@ -105,8 +105,12 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
     for (auto &MI : MBB) {
       if (MI.isCall()) {
         if (true){
+          // split MBB before and after the call
+          outs() << "MBB: " << MBB.getName() << ", MBB size: " << MBB.size() << "\n";
           outs() << "Found Call Instruction: " << "in Function: " << F.getName() << "\n";
           MI.getOperand(0).dump();
+          // split MBB before and after the call
+          //TODO add inter function edge to graph
         }
       }
     }
