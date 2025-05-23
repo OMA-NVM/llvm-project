@@ -94,27 +94,29 @@ bool AdressResolverPass::runOnMachineFunction(MachineFunction &F) {
   }
   //}
   /*output*/
+  llvm::outs() << "\n";
+
   for (auto It = InstructionRelationData.begin();
        It != InstructionRelationData.end(); ++It) {
     if (It->second.Instruction != NULL) {
       if (It->second.Address > 0) {
         std::stringstream Sstream;
         Sstream << std::hex << It->second.Address;
-        // llvm::outs() << "Line: " << It->first << " Instruction: " <<
-        // It->second.Instruction->getOpcodeName() << " Function: " <<
-        // It->second.Instruction->getFunction()->getName() << " - Address: 0x"
-        // << Sstream.str() << " MachineCode: " << It->second.MachineCode << "
-        // AssemblerCode: " << It->second.AssemblerCode <<"\n";
+        llvm::outs() << "Line: " << It->first << " Instruction: " 
+        << It->second.Instruction->getOpcode() << " Function: " 
+        << It->second.Instruction->getMF()->getName() << " - Address: 0x" 
+        << Sstream.str() << " MachineCode: " << It->second.MachineCode 
+        << " AssemblerCode: " << It->second.AssemblerCode <<"\n";
       } else {
-        // llvm::outs() << "Line: " << It->first << " Instruction: " <<
-        // It->second.Instruction->getOpcodeName() << " Function: " <<
-        // It->second.Instruction->getFunction()->getName() << " - no address
-        // information found\n";
+        llvm::outs() << "Line: " << It->first << " Instruction: " <<
+        It->second.Instruction->getOpcode() << " Function: " <<
+        It->second.Instruction->getMF()->getName() <<
+        " - no address information found\n";
       }
     }
   }
   if (DebugPrints)
-    llvm::outs() << NumberInstructionMapped << " instructions mapped to "
+    llvm::outs() << "\n" << NumberInstructionMapped << " instructions mapped to "
                  << NumberObjdumpEntries << " address information entries\n"
                  << NumberInstructionsNotMapped
                  << " instructions could not be mapped to address "
@@ -125,29 +127,15 @@ bool AdressResolverPass::runOnMachineFunction(MachineFunction &F) {
 /*scans file for address information and saves it in the CompilerData
  * datastructure*/
 void AdressResolverPass::parseFile(std::string ModuleIdentifier) {
-  /*get input filename and remove file suffix*/
-  std::string Filename = ModuleIdentifier;
-  std::size_t Pos = Filename.find_last_of(".");
-  Filename = Filename.substr(0, Pos);
-  /*create debug output with debugir and objdump*/
-  std::string CommandString =
-      "./build/bin/clang -g -O0 " + Filename + ".ll -o " + Filename + ".out";
-  CommandString = CommandString +
-                  "&& ./build/bin/llvm-objdump -d --demangle -S -l " +
-                  Filename + ".out > " + Filename + ".txt";
-
-  char *Command = new char[CommandString.size() + 1];
-  strcpy(Command, CommandString.c_str());
-  std::system(Command);
   /*parse debug output*/
   if (DebugPrints)
-    llvm::outs() << "Scanning " << Filename
-                 << ".ll for address and line information\n";
-  // filename = filename + ".txt";
+    llvm::outs() << "Scanning " << ModuleIdentifier
+                 << "for address and line information\n";
+  
   int LineNumber = -1;
   int NewLineNumber;
   std::string Line;
-  std::ifstream ConfigFile((Filename + ".txt").c_str());
+  std::ifstream ConfigFile(DumpFilename.c_str());
   std::string Subline;
   /*scans each line of the file for information*/
   if (ConfigFile.is_open()) {
@@ -173,11 +161,6 @@ void AdressResolverPass::parseFile(std::string ModuleIdentifier) {
     if (DebugPrints)
       llvm::outs() << "Could not parse information from the input file.\n";
   }
-  /*delete unneccessary files*/
-  CommandString = "rm " + Filename + ".out && rm " + Filename + ".txt";
-  char *CommandDelete = new char[CommandString.size() + 1];
-  strcpy(CommandDelete, CommandString.c_str());
-  std::system(CommandDelete);
 }
 /*parses a line with address information, if the line contains it; returns true
  * if line is successfully parsed*/
@@ -278,13 +261,13 @@ int AdressResolverPass::lineHasLineNumber(std::string Line) {
   std::string::size_type StartPos = 0;
 
   /*try to find filename in line*/
-  StartPos = Line.find(".ll", StartPos);
+  StartPos = Line.find(".c", StartPos);
   if (StartPos > 0 && StartPos != std::string::npos) {
     std::string PossibleLineNumber = Line.substr(StartPos, Line.length());
     /*try to cast line number after filename*/
-    if (PossibleLineNumber.substr(0, 4) == ".ll:") {
+    if (PossibleLineNumber.substr(0, 3) == ".c:") {
       LineNumber =
-          std::stoi(PossibleLineNumber.substr(4, PossibleLineNumber.length()));
+          std::stoi(PossibleLineNumber.substr(3, PossibleLineNumber.length()));
       return LineNumber;
     }
   }
