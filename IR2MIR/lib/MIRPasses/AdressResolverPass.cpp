@@ -100,18 +100,18 @@ bool AdressResolverPass::runOnMachineFunction(MachineFunction &F) {
        It != InstructionRelationData.end(); ++It) {
     if (It->second.Instruction != NULL) {
       if (It->second.Address > 0) {
-        std::stringstream Sstream;
-        Sstream << std::hex << It->second.Address;
-        llvm::outs() << "Line: " << It->first << " Instruction: " 
-        << It->second.Instruction->getOpcode() << " Function: " 
-        << It->second.Instruction->getMF()->getName() << " - Address: 0x" 
-        << Sstream.str() << " MachineCode: " << It->second.MachineCode 
-        << " AssemblerCode: " << It->second.AssemblerCode <<"\n";
+        // std::stringstream Sstream;
+        // Sstream << std::hex << It->second.Address;
+        // llvm::outs() << "Line: " << It->first << " Instruction: " 
+        // << It->second.Instruction->getOpcode() << " Function: " 
+        // << It->second.Instruction->getMF()->getName() << " - Address: 0x" 
+        // << Sstream.str() << " MachineCode: " << It->second.MachineCode 
+        // << " AssemblerCode: " << It->second.AssemblerCode <<"\n";
       } else {
-        llvm::outs() << "Line: " << It->first << " Instruction: " <<
-        It->second.Instruction->getOpcode() << " Function: " <<
-        It->second.Instruction->getMF()->getName() <<
-        " - no address information found\n";
+        // llvm::outs() << "Line: " << It->first << " Instruction: " <<
+        // It->second.Instruction->getOpcode() << " Function: " <<
+        // It->second.Instruction->getMF()->getName() <<
+        // " - no address information found\n";
       }
     }
   }
