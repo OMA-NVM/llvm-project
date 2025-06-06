@@ -67,10 +67,68 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
     SE.print(outs());
   }
 
-  for (auto &MBB : F) {
+
+  /*output*/
+  outs() << "\nBefore Splitting:\n\n";
+  unsigned count = 0;
+  for (auto &MBB : F){
+    outs() << "MBB: " << MBB.getName() << ": \n";
     for (auto &MI : MBB) {
+      outs() << "MI: " << MI << " -";
     }
+    outs() << "\n";
+    count++;
   }
+
+  /*split basic blocks before and after calls*/
+  for (auto &MBB : F) {
+
+    //split block after call
+    for (auto &MI : MBB) {
+      if (MI.isCall()){
+        MBB.splitAt(MI);
+      }
+    }
+
+    //get position of instruction before call (if present)
+    int position_before_call = -1;
+    int counter = 0;
+  
+    for (auto &MI : MBB) {
+      if (MI.isCall()){
+        position_before_call = counter - 1;
+      }
+      ++counter;
+    }
+
+    //split block before call, if a call exists and is not the first instruction
+    counter = 0;
+    if (position_before_call >= 0){
+      for (auto &MI : MBB) {
+        if (counter == position_before_call){
+          MBB.splitAt(MI);
+        }
+        ++counter;
+      }
+    }
+
+  }
+
+  /*output*/
+  outs() << "\nNumber BB: " << count;
+  count = 0;
+  outs() << "\n\nAfter splitting:\n\n";
+
+  for (auto &MBB : F){
+    outs() << "MBB: " << MBB.getName() << ": \n";
+    for (auto &MI : MBB) {
+      outs() << "MI: " << MI << " -";
+    }
+    outs() << "\n";
+    count++;
+  }
+  outs() << "\nNumber BB: " << count << "\n-----------------\n";
+
   return false;
 }
 
