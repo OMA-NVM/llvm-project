@@ -5,6 +5,7 @@
 #include "MIRPasses/InstructionLatencyPass.h"
 #include "MIRPasses/PathAnalysisPass.h"
 #include "MIRPasses/Mir2IrPass.h"
+#include "MIRPasses/CallSplitterPass.h"
 
 namespace llvm {
 
@@ -12,6 +13,7 @@ std::list<MachineFunctionPass *> getTimingAnalysisPasses(TargetMachine &TM) {
   std::list<MachineFunctionPass *> Passes;
   Passes.push_back(createAsmDumpAndCheckPass(TM));
   Passes.push_back(createAdressResolverPass(TM));
+  Passes.push_back(createCallSplitterPass(TM));
   Passes.push_back(createInstructionLatencyPass(TM));
   //Passes.push_back(createAccessAnalysesPass(TM));
   Passes.push_back(createPathAnalysisPass(TM));
