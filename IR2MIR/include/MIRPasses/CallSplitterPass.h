@@ -1,3 +1,4 @@
+#include "TimingAnalysisResults.h"
 #include "llvm/Analysis/CallGraph.h"
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
@@ -18,8 +19,8 @@ public:
   static char ID;
 
   const bool DebugPrints = false;
-  TargetMachine &TM;
-  CallSplitterPass(TargetMachine &TM);
+  TimingAnalysisResults &TAR;
+  CallSplitterPass(TimingAnalysisResults &TAR);
 
 
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
@@ -42,5 +43,5 @@ public:
 } // namespace llvm
 
 namespace llvm {
-MachineFunctionPass *createCallSplitterPass(TargetMachine &TM);
+MachineFunctionPass *createCallSplitterPass(TimingAnalysisResults &TAR);
 } // namespace llvm

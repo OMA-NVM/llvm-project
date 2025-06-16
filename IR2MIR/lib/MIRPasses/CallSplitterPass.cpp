@@ -16,8 +16,8 @@ char CallSplitterPass::ID = 0;
  *
  * @param TM
  */
-CallSplitterPass::CallSplitterPass(TargetMachine &TM)
-    : MachineFunctionPass(ID), TM(TM) {}
+CallSplitterPass::CallSplitterPass(TimingAnalysisResults &TAR)
+    : MachineFunctionPass(ID), TAR(TAR) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -93,7 +93,7 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
     //get position of instruction before call (if present)
     int position_before_call = -1;
     int counter = 0;
-  
+
     for (auto &MI : MBB) {
       if (MI.isCall()){
         position_before_call = counter - 1;
@@ -133,7 +133,7 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
 }
 
 
-MachineFunctionPass *llvm::createCallSplitterPass(TargetMachine &TM) {
-  return new CallSplitterPass(TM);
+MachineFunctionPass *createCallSplitterPass(TimingAnalysisResults &TAR) {
+  return new CallSplitterPass(TAR);
 }
 } // namespace llvm
