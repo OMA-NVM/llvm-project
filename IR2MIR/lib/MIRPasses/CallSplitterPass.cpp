@@ -40,57 +40,32 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
     outs() << "MachineFunction: " << F.getName() << "\n";
   }
 
-  // Get the MachineLoopInfo analysisresults
-  auto &MLWP = getAnalysis<MachineLoopInfoWrapperPass>();
-  auto &MLI = MLWP.getLI();
-
-  // Get the LoopInfo analysis results
-  auto &LWP = getAnalysis<LoopInfoWrapperPass>();
-  auto &LI = LWP.getLoopInfo();
-
-  // Get the ScalarEvolution analysis results
-  auto &SEWP = getAnalysis<ScalarEvolutionWrapperPass>();
-  auto &SE = SEWP.getSE();
-
-  if (DebugPrints) {
-    outs() << "MachineLoopInfo: \n";
-    MLI.print(outs());
-  }
-
-  if (DebugPrints) {
-    outs() << "LoopInfo: \n";
-    LI.print(outs());
-  }
-
-  if (DebugPrints & !LI.empty()) {
-    outs() << "ScalarEvolution: \n";
-    SE.print(outs());
-  }
-
-
-  /*output*/
-  outs() << "\nBefore Splitting:\n\n";
+  /*output basic blocks before splitting*/
   unsigned count = 0;
-  for (auto &MBB : F){
-    outs() << "MBB: " << MBB.getName() << ": \n";
-    for (auto &MI : MBB) {
-      outs() << "MI: " << MI << " -";
+  if(DebugPrints){
+    outs() << "\nBefore Splitting:\n\n";
+    for (auto &MBB : F){
+      outs() << "MBB: " << MBB.getName() << ": \n";
+      for (auto &MI : MBB) {
+        outs() << "MI: " << MI << " -";
+      }
+      outs() << "\n";
+      count++;
     }
-    outs() << "\n";
-    count++;
   }
+  
 
   /*split basic blocks before and after calls*/
   for (auto &MBB : F) {
 
-    //split block after call
+    /*split block after call*/
     for (auto &MI : MBB) {
       if (MI.isCall()){
         MBB.splitAt(MI);
       }
     }
 
-    //get position of instruction before call (if present)
+    /*get position of instruction before call (if present)*/
     int position_before_call = -1;
     int counter = 0;
 
@@ -101,7 +76,7 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
       ++counter;
     }
 
-    //split block before call, if a call exists and is not the first instruction
+    /*split block before call, if a call exists and is not the first instruction*/
     counter = 0;
     if (position_before_call >= 0){
       for (auto &MI : MBB) {
@@ -114,20 +89,23 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
 
   }
 
-  /*output*/
-  outs() << "\nNumber BB: " << count;
-  count = 0;
-  outs() << "\n\nAfter splitting:\n\n";
+  /*output basic blocks after splitting*/
+  if(DebugPrints){
+    outs() << "\nNumber BB: " << count;
+    count = 0;
+    outs() << "\n\nAfter splitting:\n\n";
 
-  for (auto &MBB : F){
-    outs() << "MBB: " << MBB.getName() << ": \n";
-    for (auto &MI : MBB) {
-      outs() << "MI: " << MI << " -";
+    for (auto &MBB : F){
+      outs() << "MBB: " << MBB.getName() << ": \n";
+      for (auto &MI : MBB) {
+        outs() << "MI: " << MI << " -";
+      }
+      outs() << "\n";
+      count++;
     }
-    outs() << "\n";
-    count++;
+    outs() << "\nNumber BB: " << count << "\n-----------------\n";
   }
-  outs() << "\nNumber BB: " << count << "\n-----------------\n";
+  
 
   return false;
 }
