@@ -8,6 +8,6 @@ add_llvm_library(ir2mirMPasses
   AccessAnalyses.cpp
   PathAnalysisPass.cpp
   Mir2IrPass.cpp
-  CallSPlitterPass.cpp
+  CallSplitterPass.cpp
   DEPENDS LLVMAnalysis LLVMCodeGen LLVMCore LLVMSupport LLVMTarget
 )
