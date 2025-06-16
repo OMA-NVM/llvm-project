@@ -3,21 +3,26 @@
 #include "MIRPasses/AdressResolverPass.h"
 #include "MIRPasses/AsmDumpAndCheckPass.h"
 #include "MIRPasses/InstructionLatencyPass.h"
-#include "MIRPasses/PathAnalysisPass.h"
 #include "MIRPasses/Mir2IrPass.h"
+#include "MIRPasses/PathAnalysisPass.h"
+#include "TimingAnalysisResults.h"
 #include "MIRPasses/CallSplitterPass.h"
 
 namespace llvm {
 
-std::list<MachineFunctionPass *> getTimingAnalysisPasses(TargetMachine &TM) {
+// Container that holds the results of the timing analysis passes
+// and makes them available to all timing analysis passes.
+static TimingAnalysisResults TAR = TimingAnalysisResults();
+
+std::list<MachineFunctionPass *> getTimingAnalysisPasses() {
   std::list<MachineFunctionPass *> Passes;
-  Passes.push_back(createAsmDumpAndCheckPass(TM));
-  Passes.push_back(createAdressResolverPass(TM));
-  Passes.push_back(createCallSplitterPass(TM));
-  Passes.push_back(createInstructionLatencyPass(TM));
+  Passes.push_back(createAsmDumpAndCheckPass(TAR));
+  Passes.push_back(createAdressResolverPass(TAR));
+  Passes.push_back(createCallSplitterPass(TAR));
+  Passes.push_back(createInstructionLatencyPass(TAR));
   //Passes.push_back(createAccessAnalysesPass(TM));
-  Passes.push_back(createPathAnalysisPass(TM));
-  Passes.push_back(createMIRtoIRPass(TM));
+  Passes.push_back(createPathAnalysisPass(TAR));
+  Passes.push_back(createMIRtoIRPass(TAR));
   return Passes;
 }
 

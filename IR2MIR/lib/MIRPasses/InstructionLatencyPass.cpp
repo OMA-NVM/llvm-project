@@ -1,7 +1,13 @@
 #include "MIRPasses/InstructionLatencyPass.h"
 #include <cassert>
+#include <optional>
+#include <utility>
 
 #include "MCTargetDesc/MSP430MCTargetDesc.h"
+#include "TimingAnalysisResults.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
+#include "llvm/Support/raw_ostream.h"
+#include "llvm/Target/TargetMachine.h"
 
 namespace llvm {
 
@@ -13,8 +19,8 @@ char InstructionLatencyPass::ID = 0;
  *
  * @param TM
  */
-InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
-    : MachineFunctionPass(ID), TM(TM) {}
+InstructionLatencyPass::InstructionLatencyPass(TimingAnalysisResults &TAR)
+    : MachineFunctionPass(ID), TAR(TAR), MBBLatencyMap(std::unordered_map<const MachineBasicBlock *, unsigned int>()) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -22,7 +28,7 @@ InstructionLatencyPass::InstructionLatencyPass(TargetMachine &TM)
  *
  * @return false
  */
-bool InstructionLatencyPass::doFinalization(Module &M) { return false; }
+//bool InstructionLatencyPass::doFinalization(Module &M) { return false; }
 
 /**
  * @brief Iterates over MachineFunction
@@ -33,12 +39,17 @@ bool InstructionLatencyPass::doFinalization(Module &M) { return false; }
  * @return false
  */
 bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
-  auto Arch = TM.getTargetTriple().getArch();
+  if (DebugPrints)
+    outs() << "Running InstructionLatencyPass on Function: " << F.getName() << "\n";
+  auto Arch = F.getTarget().getTargetTriple().getArch();
   for (auto &MBB : F) {
+    // Sum up the latencies of all instructions in the basic block
+    unsigned int Latency = 0;
     for (auto &MI : MBB) {
+      unsigned int InstructionLatency = 0;
       switch (Arch) {
       case Triple::ArchType::msp430:
-        getMSP430Latency(MI);
+        InstructionLatency = getMSP430Latency(MI);
         if (DebugPrints)
           outs() << "Instruction: " << MI << "Latency: " << getMSP430Latency(MI)
                  << "\n";
@@ -47,15 +58,26 @@ bool InstructionLatencyPass::runOnMachineFunction(MachineFunction &F) {
         errs() << "Unknown Arch: " << Arch;
         assert(false && "not implemented");
       }
+      Latency += InstructionLatency;
     }
+    std::pair<const MachineBasicBlock *, unsigned int> MBBLatencyPair=std::make_pair(&MBB, Latency);
+    auto NoDuplicate = MBBLatencyMap.insert(MBBLatencyPair);
+    if (!NoDuplicate.second) {
+      // If the pair already exists, print a warning
+      errs() << "Warning: Duplicate MBB found: " << MBB.getName()
+             << " with Latency: " << Latency << "\n";
+    }
+    assert(NoDuplicate.second && "Duplicate MBB found in MBBLatencyMap");
+
   }
+  TAR.setMBBLatencyMap(MBBLatencyMap);
   return false;
 }
 
 // TODO I dont know how the latencies will be represented if the FRAM Controller
 // is analysed. Mayube use struct instead if simple unsigned int.
 
-// TODO Currently we assume CPUx on the MSP430, this should be corrected, when
+// FIXME Currently we assume CPUx on the MSP430, this should be corrected, when
 // llvm also supports the MSP430 CPUX. Issue with this is latencies only hold
 // for the upper 64kb of memory on MSP430 CPUx
 unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
@@ -117,7 +139,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     return 1;
 
   case MSP430::CALLm:
-    return 5; // TODO &EDE is 6
+    return 5; // FIXME &EDE is 6
 
   case MSP430::CALLi: // 5 on Non MSP430X
   case MSP430::CALLn:
@@ -484,7 +506,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
     // End Format-I Instructions
 
   case MSP430::CFI_INSTRUCTION:
-    return 0; // TODO ????
+    return 0;
 
   default:
     errs() << "No Latency assigned to Inst: " << I << "\n";
@@ -494,7 +516,7 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   return 0;
 }
 
-MachineFunctionPass *createInstructionLatencyPass(TargetMachine &TM) {
-  return new InstructionLatencyPass(TM);
+MachineFunctionPass *createInstructionLatencyPass(TimingAnalysisResults &TAR) {
+  return new InstructionLatencyPass(TAR);
 }
 } // namespace llvm

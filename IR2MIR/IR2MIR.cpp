@@ -742,7 +742,7 @@ static int compileModule(char **argv, LLVMContext &Context) {
     // MODIFICATION: Add the passes needed for timing analysis to the pass
     // manager
     // add stack lowering
-    for (auto *TAPass : getTimingAnalysisPasses(*Target)) {
+    for (auto *TAPass : getTimingAnalysisPasses()) {
       PM.add(TAPass);
     }
     // add MIR printer pass

@@ -15,7 +15,7 @@ char MIRtoIRPass::ID = 0;
  *
  * @param TM
  */
-MIRtoIRPass::MIRtoIRPass(TargetMachine &TM) : MachineFunctionPass(ID), TM(TM) {}
+MIRtoIRPass::MIRtoIRPass(TimingAnalysisResults &TAR) : MachineFunctionPass(ID), TAR(TAR) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -26,7 +26,7 @@ MIRtoIRPass::MIRtoIRPass(TargetMachine &TM) : MachineFunctionPass(ID), TM(TM) {}
 bool MIRtoIRPass::doFinalization(Module &M) { return false; }
 
 bool MIRtoIRPass::runOnMachineFunction(MachineFunction &MF) {
-  errs() << "Processing Machine Function: " << MF.getName() << "\n";
+  // errs() << "Processing Machine Function: " << MF.getName() << "\n";
 
   MachineRegisterInfo &MRI = MF.getRegInfo(); // To track virtual registers
 
@@ -63,8 +63,8 @@ bool MIRtoIRPass::runOnMachineFunction(MachineFunction &MF) {
   return false; // No modification to the MachineFunction
 }
 
-MachineFunctionPass *createMIRtoIRPass(TargetMachine &TM) {
-  return new MIRtoIRPass(TM);
+MachineFunctionPass *createMIRtoIRPass(TimingAnalysisResults &TAR) {
+  return new MIRtoIRPass(TAR);
 }
 } // namespace llvm
 // Register the pass

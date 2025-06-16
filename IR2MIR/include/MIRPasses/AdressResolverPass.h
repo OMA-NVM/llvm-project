@@ -1,5 +1,6 @@
 #ifndef IR2MIR_ADRESS_RESOLVER_H
 #define IR2MIR_ADRESS_RESOLVER_H
+#include "TimingAnalysisResults.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 
 namespace llvm {
@@ -8,8 +9,8 @@ public:
   static char ID;
 
   const bool DebugPrints = false;
-  TargetMachine &TM;
-  AdressResolverPass(TargetMachine &TM);
+  TimingAnalysisResults &TAR;
+  AdressResolverPass(TimingAnalysisResults &TAR);
 
   // PreservedAnalyses run(Module &M, ModuleAnalysisManager &MAM);
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
@@ -34,6 +35,6 @@ public:
 } // namespace llvm,
 
 namespace llvm {
-MachineFunctionPass *createAdressResolverPass(TargetMachine &TM);
+MachineFunctionPass *createAdressResolverPass(TimingAnalysisResults &TAR);
 } // namespace llvm
 #endif

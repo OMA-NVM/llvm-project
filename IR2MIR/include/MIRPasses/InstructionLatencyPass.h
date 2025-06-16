@@ -1,41 +1,56 @@
-#include "llvm/CodeGen/LiveIntervals.h"
-#include "llvm/CodeGen/LiveStacks.h"
+#ifndef LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H
+#define LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H
+
+#include "TimingAnalysisResults.h"
+#include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
-#include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
+
+#include <cstddef>
+#include <unordered_map>
 
 namespace llvm {
 
 /**
- * Pass that prints the resulting assembler for the given program if option
- * enable-asm-dump is true. In any case, it checks that the program with its
- * instructions adheres to our implicit assumptions and gives reasonable error
- * messages to the user.
+ * This pass sums up the instruction Latency of each basic block in a
+ * function. It is used to check if the instruction latencies are implemented.
+ * TODO: The current implementation assumes that MSP430X is used.
+ * It further assumes no Pipeline, which is true for the MSP430X.
  */
 class InstructionLatencyPass : public MachineFunctionPass {
 public:
   static char ID;
   const bool DebugPrints = false;
-  TargetMachine &TM;
-  InstructionLatencyPass(TargetMachine &TM);
+  TimingAnalysisResults &TAR;
 
-  bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
-  bool runOnMachineFunction(MachineFunction &F) override;
-  bool doFinalization(Module &) override;
+  std::unordered_map<const MachineBasicBlock *, unsigned int> MBBLatencyMap;
+
+  InstructionLatencyPass(TimingAnalysisResults &TAR);
+
+  const std::unordered_map<const MachineBasicBlock *, unsigned int> &getMBBLatencyMap() const {
+    return MBBLatencyMap;
+  }
+  std::unordered_map<const MachineBasicBlock *, unsigned int> &getMBBLatencyMap() {
+    return MBBLatencyMap;
+  }
+
+
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesAll();
     MachineFunctionPass::getAnalysisUsage(AU);
   };
 
+  bool runOnMachineFunction(MachineFunction &F) override;
+
   virtual llvm::StringRef getPassName() const override {
     return "ARM Timing Analysis Result Dump Pass";
   }
-  // bool containsPC(const MachineInstr &I);
+
   unsigned int getMSP430Latency(const MachineInstr &I);
 };
 
+
+MachineFunctionPass *createInstructionLatencyPass(TimingAnalysisResults &TAR);
 } // namespace llvm
 
-namespace llvm {
-MachineFunctionPass *createInstructionLatencyPass(TargetMachine &TM);
-} // namespace llvm
+#endif // LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H

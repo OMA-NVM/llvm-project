@@ -16,8 +16,8 @@ char AsmDumpAndCheckPass::ID = 0;
  *
  * @param TM
  */
-AsmDumpAndCheckPass::AsmDumpAndCheckPass(TargetMachine &TM)
-    : MachineFunctionPass(ID), TM(TM) {}
+AsmDumpAndCheckPass::AsmDumpAndCheckPass(TimingAnalysisResults &TAR)
+    : MachineFunctionPass(ID), TAR(TAR) {}
 
 /**
  * @brief Checks if unknown Instructions were found.
@@ -36,7 +36,7 @@ bool AsmDumpAndCheckPass::doFinalization(Module &M) { return false; }
  * @return false
  */
 bool AsmDumpAndCheckPass::runOnMachineFunction(MachineFunction &F) {
-  auto Arch = TM.getTargetTriple().getArch();
+  auto Arch = F.getTarget().getTargetTriple().getArch();
   for (auto &MBB : F) {
     for (auto &MI : MBB) {
       switch (Arch) {
@@ -421,7 +421,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
     break;
   case TargetOpcode::CFI_INSTRUCTION:
     // TODO We should be able to ignore those but better make sure
-    errs() << "Found CFI";
+    // errs() << "Found CFI\n";
     break;
   default:
     errs() << "UNKNOWN: " << I << "\n";
@@ -431,7 +431,7 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
   }
 }
 
-MachineFunctionPass *llvm::createAsmDumpAndCheckPass(TargetMachine &TM) {
-  return new AsmDumpAndCheckPass(TM);
+MachineFunctionPass *createAsmDumpAndCheckPass(TimingAnalysisResults &TAR) {
+  return new AsmDumpAndCheckPass(TAR);
 }
 } // namespace llvm
