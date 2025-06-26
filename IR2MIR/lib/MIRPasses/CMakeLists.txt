@@ -9,5 +9,6 @@ add_llvm_library(ir2mirMPasses
   PathAnalysisPass.cpp
   Mir2IrPass.cpp
   CallSplitterPass.cpp
+  DebugIRPass.cpp
   DEPENDS LLVMAnalysis LLVMCodeGen LLVMCore LLVMSupport LLVMTarget
 )

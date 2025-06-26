@@ -11,4 +11,6 @@ extern llvm::cl::opt<std::string> DumpFilename;
 
 extern llvm::cl::opt<std::string> StartFunctionName;
 
+extern llvm::cl::opt<bool> DebugIR;
+
 #endif
