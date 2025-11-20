@@ -1,6 +1,8 @@
 #include "RTTargets/MuArchStateGraph.h"
+#include "llvm/ADT/StringRef.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/Support/Debug.h"
+#include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_ostream.h"
 #include <cassert>
 #include <map>
@@ -79,7 +81,7 @@ bool Node::isFree() const {
 
 // Get a description of the Node
 std::string Node::getNodeDescr() const {
-  return "Node ID: " + std::to_string(Id);
+  return "ID: " + std::to_string(Id) + ", Name: "+ Name.str();
 }
 
 // Get the architectural state of the Node
@@ -102,6 +104,20 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock * MBB) {
   assert(NextNodeId > 0 &&
          "We used all Node ids for the state graph. Unsigned is not enough!");
   Node Nd(CurrentId, std::make_unique<MuArchState>(State));
+  Nd.setName(MBB->getName());
+  Nodes.insert(std::make_pair(CurrentId, Nd));
+  DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
+  MBBToNodeMap[MBB] = CurrentId;
+  return CurrentId;
+}
+
+unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock * MBB, StringRef NodeName) {
+  unsigned CurrentId = NextNodeId;
+  NextNodeId++;
+  assert(NextNodeId > 0 &&
+         "We used all Node ids for the state graph. Unsigned is not enough!");
+  Node Nd(CurrentId, std::make_unique<MuArchState>(State));
+  Nd.setName(NodeName);
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
   MBBToNodeMap[MBB] = CurrentId;
@@ -150,6 +166,36 @@ void MuArchStateGraph::dump() const {
   for (const auto &Nd : Nodes) {
     errs() << Nd.second.getNodeDescr();
   }
+}
+
+
+
+bool MuArchStateGraph::dump2Dot(StringRef FileName) {
+  std::error_code EC;
+  raw_fd_ostream File(FileName, EC, sys::fs::OF_Text);
+  if (EC) {
+    errs() << "Error opening file: " << EC.message() << "\n";
+    return false;
+  }
+  // write the header
+  File << "digraph MuArchStateGraph {\n";
+  // write the nodes
+  for (const auto &NodePair : Nodes) {
+    const auto &Node = NodePair.second;
+    File << "  " << Node.getId() << " [label=\"" << Node.getNodeDescr()
+         << "\"];\n";
+  }
+  // write the edges
+  for (const auto &NodePair : Nodes) {
+    const auto &Node = NodePair.second;
+    for (unsigned Succ : Node.getSuccessors()) {
+      File << "  " << Node.getId() << " -> " << Succ << ";\n";
+    }
+  }
+  // write the footer
+  File << "}\n";
+  File.close();
+  return true;
 }
 
 } // end namespace llvm

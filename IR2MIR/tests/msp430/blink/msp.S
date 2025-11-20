@@ -1,14 +1,17 @@
 	.text
-	.file	"blink.c"
+	.file	"llvm-link"
 	.globl	main                            ; -- Begin function main
 	.p2align	1
 	.type	main,@function
 main:                                   ; @main
 .Lfunc_begin0:
-.file 1 "src/blink.c"
+	.file	1 "/Users/nilsholscher/workspaces/msp430_template" "src/blink.c"
 	.loc	1 3 0                           ; src/blink.c:3:0
+	.cfi_sections .debug_frame
+	.cfi_startproc
 ; %bb.0:                                ; %entry
 	sub	#2, r1
+	.cfi_def_cfa_offset 4
 	.loc	1 4 12 prologue_end             ; src/blink.c:4:12
 	mov	#23168, &WDTCTL
 	.loc	1 5 13                          ; src/blink.c:5:13
@@ -35,6 +38,7 @@ main:                                   ; @main
 .Ltmp1:
 .Lfunc_end0:
 	.size	main, .Lfunc_end0-main
+	.cfi_endproc
                                         ; -- End function
 	.section	.debug_abbrev,"",@progbits
 	.byte	1                               ; Abbreviation Code
@@ -178,7 +182,7 @@ main:                                   ; @main
 .Ldebug_info_end0:
 	.section	.debug_str,"MS",@progbits,1
 .Linfo_string0:
-	.asciz	"clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git eec801ec2488509bd805f616670f025d9f4e5901)" ; string offset=0
+	.asciz	"clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git 3ceb1336deeeff77040d9920940fe6d2915db27f)" ; string offset=0
 .Linfo_string1:
 	.asciz	"src/blink.c"                   ; string offset=107
 .Linfo_string2:
@@ -191,7 +195,7 @@ main:                                   ; @main
 	.asciz	"i"                             ; string offset=175
 .Linfo_string6:
 	.asciz	"unsigned int"                  ; string offset=177
-	.ident	"clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git eec801ec2488509bd805f616670f025d9f4e5901)"
+	.ident	"clang version 20.0.0git (git@github.com:OMA-NVM/llvm-project.git 3ceb1336deeeff77040d9920940fe6d2915db27f)"
 	.section	".note.GNU-stack","",@progbits
 	.section	.debug_line,"",@progbits
 .Lline_table_start0:

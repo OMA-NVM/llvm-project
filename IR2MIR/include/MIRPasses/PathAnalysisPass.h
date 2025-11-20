@@ -6,6 +6,7 @@
 #include "llvm/Analysis/ScalarEvolutionAliasAnalysis.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
+#include "llvm/CodeGen/MachineModuleInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
 #include "llvm/Target/TargetMachine.h"
 
@@ -32,7 +33,7 @@ public:
   // a struct that holds graphnodes and edges, which link to BBs
   // and instructions
 
-  const bool DebugPrints = false;
+  const bool DebugPrints = true;
   TimingAnalysisResults &TAR;
   PathAnalysisPass(TimingAnalysisResults &TAR);
 
@@ -41,6 +42,7 @@ public:
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
   bool doFinalization(Module &) override;
+  bool dumpMuGraphToDotFile(MuArchStateGraph &MASG, StringRef FileName);
   Function *getStartingFunction(CallGraph &CG);
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesCFG();
@@ -49,6 +51,7 @@ public:
     AU.addRequired<ScalarEvolutionWrapperPass>();
     AU.addRequired<CallGraphWrapperPass>();
     AU.addRequired<SCEVAAWrapperPass>();
+    AU.addRequired<MachineModuleInfoWrapperPass>();
     MachineFunctionPass::getAnalysisUsage(AU);
   };
 

@@ -1,3 +1,4 @@
+#include "llvm/ADT/StringRef.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include <cassert>
 #include <map>
@@ -50,6 +51,8 @@ public:
 
   bool isFree() const;
 
+  void setName(StringRef NewName) { Name = NewName; }
+
   std::string getNodeDescr() const;
 
   MuArchState &getState() const;
@@ -63,6 +66,12 @@ public:
    * Stores the id of this Node.
    */
   unsigned Id;
+
+  /**
+   * Stores the name of this Node, e.g. the name of the MachineBasicBlock
+   * it represents.
+   */
+  StringRef Name;
 
   /**
    * Stores all ids of succeeding vertices.
@@ -90,6 +99,7 @@ public:
   ~MuArchStateGraph();
 
   unsigned addNode(MuArchState State, MachineBasicBlock * MBB);
+  unsigned addNode(MuArchState State, MachineBasicBlock * MBB, StringRef NodeName);
 
   /**
    * Adds an edge to the graph from the Node with id start to the Node with
@@ -123,6 +133,9 @@ public:
   }
   return Stream;
   }
+
+
+  bool dump2Dot(StringRef FileName);
 
   /**
    * The set vertices in the graph.
