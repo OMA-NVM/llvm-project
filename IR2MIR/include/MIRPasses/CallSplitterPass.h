@@ -5,7 +5,6 @@
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/TargetInstrInfo.h"
-#include "llvm/Target/TargetMachine.h"
 namespace llvm {
 
 /**
