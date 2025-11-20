@@ -17,7 +17,7 @@ class CallSplitterPass : public MachineFunctionPass {
 public:
   static char ID;
 
-  const bool DebugPrints = true;
+  const bool DebugPrints = false;
   TimingAnalysisResults &TAR;
   CallSplitterPass(TimingAnalysisResults &TAR);
 

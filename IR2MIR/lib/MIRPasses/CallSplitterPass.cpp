@@ -41,18 +41,18 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
   }
 
   /*output basic blocks before splitting*/
-  unsigned Count = 0;
-  if(DebugPrints){
-    outs() << "\nBefore Splitting:\n\n";
-    for (auto &MBB : F){
-      outs() << "MBB: " << MBB.getName() << ": \n";
-      for (auto &MI : MBB) {
-        outs() << "MI: " << MI << " -";
-      }
-      outs() << "\n";
-      Count++;
-    }
-  }
+  // unsigned Count = 0;
+  // if(DebugPrints){
+  //   outs() << "\nBefore Splitting:\n\n";
+  //   for (auto &MBB : F){
+  //     outs() << "MBB: " << MBB.getName() << ": \n";
+  //     for (auto &MI : MBB) {
+  //       outs() << "MI: " << MI << " -";
+  //     }
+  //     outs() << "\n";
+  //     Count++;
+  //   }
+  // }
 
 
   /*split basic blocks before and after calls*/
@@ -66,45 +66,45 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
     }
 
     /*get position of instruction before call (if present)*/
-    int PositionBeforeCall = -1;
-    int Counter = 0;
+    // int PositionBeforeCall = -1;
+    // int Counter = 0;
 
-    for (auto &MI : MBB) {
-      if (MI.isCall()){
-        PositionBeforeCall = Counter - 1;
-      }
-      ++Counter;
-    }
+    // for (auto &MI : MBB) {
+    //   if (MI.isCall()){
+    //     PositionBeforeCall = Counter - 1;
+    //   }
+    //   ++Counter;
+    // }
 
-    /*split block before call, if a call exists and is not the first instruction*/
-    Counter = 0;
-    if (PositionBeforeCall >= 0){
-      for (auto &MI : MBB) {
-        if (Counter == PositionBeforeCall){
-          MBB.splitAt(MI);
-        }
-        ++Counter;
-      }
-    }
+    // /*split block before call, if a call exists and is not the first instruction*/
+    // Counter = 0;
+    // if (PositionBeforeCall >= 0){
+    //   for (auto &MI : MBB) {
+    //     if (Counter == PositionBeforeCall){
+    //       MBB.splitAt(MI);
+    //     }
+    //     ++Counter;
+    //   }
+    // }
 
   }
 
   /*output basic blocks after splitting*/
-  if(DebugPrints){
-    outs() << "\nNumber BB: " << Count;
-    Count = 0;
-    outs() << "\n\nAfter splitting:\n\n";
+  // if(DebugPrints){
+  //   outs() << "\nNumber BB: " << Count;
+  //   Count = 0;
+  //   outs() << "\n\nAfter splitting:\n\n";
 
-    for (auto &MBB : F){
-      outs() << "MBB: " << MBB.getName() << ": \n";
-      for (auto &MI : MBB) {
-        outs() << "MI: " << MI << " -";
-      }
-      outs() << "\n";
-      Count++;
-    }
-    outs() << "\nNumber BB: " << Count << "\n-----------------\n";
-  }
+  //   for (auto &MBB : F){
+  //     outs() << "MBB: " << MBB.getName() << ": \n";
+  //     for (auto &MI : MBB) {
+  //       outs() << "MI: " << MI << " -";
+  //     }
+  //     outs() << "\n";
+  //     Count++;
+  //   }
+  //   outs() << "\nNumber BB: " << Count << "\n-----------------\n";
+  // }
 
 
   return false;
