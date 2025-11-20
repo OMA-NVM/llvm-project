@@ -41,7 +41,7 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
   }
 
   /*output basic blocks before splitting*/
-  unsigned count = 0;
+  unsigned Count = 0;
   if(DebugPrints){
     outs() << "\nBefore Splitting:\n\n";
     for (auto &MBB : F){
@@ -50,10 +50,10 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
         outs() << "MI: " << MI << " -";
       }
       outs() << "\n";
-      count++;
+      Count++;
     }
   }
-  
+
 
   /*split basic blocks before and after calls*/
   for (auto &MBB : F) {
@@ -66,24 +66,24 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
     }
 
     /*get position of instruction before call (if present)*/
-    int position_before_call = -1;
-    int counter = 0;
+    int PositionBeforeCall = -1;
+    int Counter = 0;
 
     for (auto &MI : MBB) {
       if (MI.isCall()){
-        position_before_call = counter - 1;
+        PositionBeforeCall = Counter - 1;
       }
-      ++counter;
+      ++Counter;
     }
 
     /*split block before call, if a call exists and is not the first instruction*/
-    counter = 0;
-    if (position_before_call >= 0){
+    Counter = 0;
+    if (PositionBeforeCall >= 0){
       for (auto &MI : MBB) {
-        if (counter == position_before_call){
+        if (Counter == PositionBeforeCall){
           MBB.splitAt(MI);
         }
-        ++counter;
+        ++Counter;
       }
     }
 
@@ -91,8 +91,8 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
 
   /*output basic blocks after splitting*/
   if(DebugPrints){
-    outs() << "\nNumber BB: " << count;
-    count = 0;
+    outs() << "\nNumber BB: " << Count;
+    Count = 0;
     outs() << "\n\nAfter splitting:\n\n";
 
     for (auto &MBB : F){
@@ -101,11 +101,11 @@ bool CallSplitterPass::runOnMachineFunction(MachineFunction &F) {
         outs() << "MI: " << MI << " -";
       }
       outs() << "\n";
-      count++;
+      Count++;
     }
-    outs() << "\nNumber BB: " << count << "\n-----------------\n";
+    outs() << "\nNumber BB: " << Count << "\n-----------------\n";
   }
-  
+
 
   return false;
 }

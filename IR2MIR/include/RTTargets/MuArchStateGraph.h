@@ -92,6 +92,8 @@ public:
 class MuArchStateGraph {
 
 public:
+  const bool DebugPrints = false;
+
   MuArchStateGraph();
 
   MuArchStateGraph(MuArchStateGraph &G2);

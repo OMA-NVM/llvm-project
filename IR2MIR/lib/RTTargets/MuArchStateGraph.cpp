@@ -184,7 +184,8 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
 
     if (F) {
       FunctionToNodes[F].push_back(NodeId);
-      outs() << "Mapping MBB " << MBB->getName() << " to Node ID " << NodeId
+      if(DebugPrints)
+        outs() << "Mapping MBB " << MBB->getName() << " to Node ID " << NodeId
              << " in Function " << F->getName() << "\n";
     } else {
       NodesWithoutFunction.push_back(NodeId);
