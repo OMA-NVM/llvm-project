@@ -96,6 +96,7 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock *MBB) {
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
   MBBToNodeMap[MBB] = CurrentId;
+  Nd.setMBB(MBB);
   return CurrentId;
 }
 
@@ -110,6 +111,8 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock *MBB,
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
   MBBToNodeMap[MBB] = CurrentId;
+  Nd.setMBB(MBB);
+  MBB->print(outs());
   return CurrentId;
 }
 
@@ -184,9 +187,9 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
 
     if (F) {
       FunctionToNodes[F].push_back(NodeId);
-      if(DebugPrints)
+      if (DebugPrints)
         outs() << "Mapping MBB " << MBB->getName() << " to Node ID " << NodeId
-             << " in Function " << F->getName() << "\n";
+               << " in Function " << F->getName() << "\n";
     } else {
       NodesWithoutFunction.push_back(NodeId);
       if (!MBB) {
@@ -214,8 +217,12 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
     // Write nodes in this cluster
     for (unsigned NodeId : NodeIds) {
       const auto &Node = Nodes.at(NodeId);
-      File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr()
-           << "\"];\n";
+      File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr();
+      if (Verbose) {
+        File << "\n";
+        // Node.getMBB()->print(File);
+      }
+      File << "\"];\n";
     }
 
     File << "  }\n";

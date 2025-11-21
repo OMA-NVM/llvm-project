@@ -39,11 +39,11 @@ PathAnalysisPass::PathAnalysisPass(TimingAnalysisResults &TAR)
  *
  * @return false
  */
-bool PathAnalysisPass::doFinalization(Module &M) {
-  auto *MMI = &getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
+bool PathAnalysisPass::finalize(MachineFunction &MF, MuArchStateGraph &MASG,
+                                MachineModuleInfo *MMI) {
   // create list of MachineFunctions
   std::vector<MachineFunction *> MachineFunctions;
-  for (auto &F : M) {
+  for (auto &F : MMI->getModule()->getFunctionList()) {
     if (auto *MF = MMI->getMachineFunction(F)) {
       // write Machine Functions into list I can iterate over later
       // for(auto &MBB : *MF) {
@@ -74,7 +74,6 @@ bool PathAnalysisPass::doFinalization(Module &M) {
 
               unsigned FromNode = MASG.MBBToNodeMap[&MBB];
               // Get first MachineBasicBlock from Callee
-              auto *MMI = &getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
               assert(MMI != nullptr &&
                      "Expected MachineModuleInfo to be available!");
               auto *CalleeMF = MMI->getMachineFunction(*Callee);
@@ -97,10 +96,38 @@ bool PathAnalysisPass::doFinalization(Module &M) {
   return false;
 }
 
+bool PathAnalysisPass::fillMuGraph(MachineFunction &MF) {
+  // Get the Latency analysis results
+  auto MBBLatencyMap = TAR.getMBBLatencyMap();
+
+  // Fill MuArchGraph Nodes
+  for (auto &MBB : MF) {
+    // interate over MIs in MBB and find calling Instructions
+    //  represented correctly by the dot file. Create a new MuArchStateGraph and
+    //  add ti the graph as unique ptr
+    MASG.addNode(MuArchState(MBBLatencyMap[&MBB], MBBLatencyMap[&MBB]), &MBB);
+    auto CurrentNode = MASG.MBBToNodeMap[&MBB];
+    // Add name for the node + Function name
+    MASG.Nodes.at(CurrentNode).setName(MBB.getName());
+  }
+  // Fill MuArchGraph Edges
+  for (auto &MBB : MF) {
+    for (auto &Succ : MBB.successors()) {
+      // if (Succ->getParent() == MBB.getParent()){
+      unsigned FromNode = MASG.MBBToNodeMap[&MBB];
+      unsigned ToNode = MASG.MBBToNodeMap[Succ];
+      MASG.addEdge(FromNode, ToNode);
+      //}
+    }
+  }
+  return true;
+}
+
 Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
   // We assume that the Function with the minimal number of References might be
   // the starting Function, e.g. main. If multiple Functions have the same
   // number of references, we can not be sure and return nullptr.
+  // TODO still returns the wrong function...
   Function *StartingFunction = nullptr;
   unsigned int CurrentNumReferences = UINT_MAX;
   bool SeenNumRefsTwice = false;
@@ -137,7 +164,9 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
  */
 bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   if (DebugPrints)
-    outs() << "MachineFunction: " << F.getName() << "\n";
+    // outs() << "MachineFunction: " << F.getName() << "\n";
+    if (StartFunctionName != "")
+      FoundStartingFunction = true;
 
   if (!CG) {
     CG = &getAnalysis<CallGraphWrapperPass>().getCallGraph();
@@ -151,37 +180,31 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
     assert(StartingFunction && "StartingFunction is null");
   }
 
+  // Only continue when StartFunction is not set as parameter.
+  if (!(&F.getFunction() == StartingFunction) && StartFunctionName == "") {
+    return false;
+  }
+  if (StartFunctionName != F.getName() && StartFunctionName != "") {
+    return false;
+  }
+  outs() << "Starting Function: " << F.getName() << "\n";
+  outs() << "Should Be: " << StartFunctionName << "\n";
+
+  // Get MachineModuleInfo
+  auto *MMI = &getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
   // Get the MachineLoopInfo analysisresults
   auto &MLWP = getAnalysis<MachineLoopInfoWrapperPass>();
   auto &MLI = MLWP.getLI();
   // outs() << "MachineLoopInfo: \n";
   // MLI.print(outs());
-
-  // Get the Latency analysis results
-  auto MBBLatencyMap = TAR.getMBBLatencyMap();
-
-  // Fill MuArchGraph Nodes
-  for (auto &MBB : F) {
-    // interate over MIs in MBB and find calling Instructions
-    //  TODO add as cluster, so that everyfunction is in its own square.
-    //  TODO add cluster for each MBB, so that splitted MuArch States are also
-    //  represented correctly by the dot file. Create a new MuArchStateGraph and
-    //  add ti the graph as unique ptr
-    MASG.addNode(MuArchState(MBBLatencyMap[&MBB], MBBLatencyMap[&MBB]), &MBB);
-    auto CurrentNode = MASG.MBBToNodeMap[&MBB];
-    // Add name for the node + Function name
-    MASG.Nodes.at(CurrentNode).setName(MBB.getName());
-  }
-  // Fill MuArchGraph Edges
-  for (auto &MBB : F) {
-    for (auto &Succ : MBB.successors()) {
-      // if (Succ->getParent() == MBB.getParent()){
-      unsigned FromNode = MASG.MBBToNodeMap[&MBB];
-      unsigned ToNode = MASG.MBBToNodeMap[Succ];
-      MASG.addEdge(FromNode, ToNode);
-      //}
+  for (auto &F : MMI->getModule()->getFunctionList()) {
+    if (auto *MF = MMI->getMachineFunction(F)) {
+      outs() << "Fill MuGraph for Function: " << MF->getName() << "\n";
+      fillMuGraph(*MF);
     }
   }
+
+  finalize(F, MASG, MMI);
   return false;
 }
 

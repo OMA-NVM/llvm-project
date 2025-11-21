@@ -53,6 +53,10 @@ public:
 
   void setName(StringRef NewName) { Name = NewName; }
 
+  void setMBB(MachineBasicBlock *NewMBB) { MBB = NewMBB; }
+
+  MachineBasicBlock *getMBB() const { return MBB; }
+
   std::string getNodeDescr() const;
 
   MuArchState &getState() const;
@@ -87,12 +91,18 @@ public:
    * Stores the architectural state associated with this Node.
    */
   std::unique_ptr<MuArchState> State;
+
+  /**
+   * Stores a pointer to the MachineBasicBlock this Node represents.
+   */
+  MachineBasicBlock *MBB;
 };
 
 class MuArchStateGraph {
 
 public:
   const bool DebugPrints = false;
+  const bool Verbose = true;
 
   MuArchStateGraph();
 

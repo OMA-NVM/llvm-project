@@ -4,6 +4,7 @@
 #include "llvm/Analysis/LoopInfo.h"
 #include "llvm/Analysis/ScalarEvolution.h"
 #include "llvm/Analysis/ScalarEvolutionAliasAnalysis.h"
+#include "llvm/CodeGen/MachineFunction.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 #include "llvm/CodeGen/MachineLoopInfo.h"
 #include "llvm/CodeGen/MachineModuleInfo.h"
@@ -39,10 +40,11 @@ public:
 
   CallGraph *CG = nullptr;
 
+  static bool finalize(MachineFunction &MF, MuArchStateGraph &MASG, MachineModuleInfo *MMI);
   bool runOnMachineBasicBlock(MachineBasicBlock &MBB);
   bool runOnMachineFunction(MachineFunction &F) override;
-  bool doFinalization(Module &) override;
   bool dumpMuGraphToDotFile(MuArchStateGraph &MASG, StringRef FileName);
+  bool fillMuGraph(MachineFunction &MF);
   Function *getStartingFunction(CallGraph &CG);
   void getAnalysisUsage(AnalysisUsage &AU) const override {
     AU.setPreservesCFG();
