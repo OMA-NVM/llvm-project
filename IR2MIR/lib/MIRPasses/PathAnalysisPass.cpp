@@ -54,39 +54,36 @@ bool PathAnalysisPass::finalize(MachineFunction &MF, MuArchStateGraph &MASG,
 
   for (auto *MF : MachineFunctions) {
     for (auto &MBB : *MF) {
-
       for (auto &MI : MBB) {
         if (MI.isCall()) {
           // taken care of by Call SpLitter Pass
-          if (false) {
-            // split MBB before and after the call
-            outs() << "MBB: " << MBB.getName() << ", MBB size: " << MBB.size()
-                   << "\n";
-            outs() << "Found Call Instruction: " << "in Function: "
-                   << MF->getName() << "\n";
-            MI.getOperand(1).dump();
-            if (MI.getOperand(0).getType() ==
-                llvm::MachineOperand::MO_GlobalAddress) {
-              const auto *GV = MI.getOperand(0).getGlobal();
-              const auto *Callee = dyn_cast<Function>(GV);
-              assert(Callee != nullptr && "Unexpected type of global value");
-              outs() << "Callee: " << Callee->getName() << "\n";
+          // split MBB before and after the call
+          // outs() << "MBB: " << MBB.getName() << ", MBB size: " << MBB.size()
+          //        << "\n";
+          // outs() << "Found Call Instruction: " << "in Function: "
+          //        << MF->getName() << "\n";
+          // MI.getOperand(1).dump();
+          if (MI.getOperand(0).getType() ==
+              llvm::MachineOperand::MO_GlobalAddress) {
+            const auto *GV = MI.getOperand(0).getGlobal();
+            const auto *Callee = dyn_cast<Function>(GV);
+            assert(Callee != nullptr && "Unexpected type of global value");
+            // outs() << "Callee: " << Callee->getName() << "\n";
 
-              unsigned FromNode = MASG.MBBToNodeMap[&MBB];
-              // Get first MachineBasicBlock from Callee
-              assert(MMI != nullptr &&
-                     "Expected MachineModuleInfo to be available!");
-              auto *CalleeMF = MMI->getMachineFunction(*Callee);
-              assert(CalleeMF != nullptr &&
-                     "Expected MachineFunction to be available!");
-              outs() << "Callee MachineFunction: " << CalleeMF->getName()
-                     << "\n";
-              outs() << "Callee MachineFunction has " << CalleeMF->size()
-                     << " MBBs\n";
-              // unsigned ToNode = MASG.MBBToNodeMap[&*CalleeMF->begin()];
-              // MASG.addEdge(FromNode, ToNode);
-            }
+            unsigned FromNode = MASG.MBBToNodeMap[&MBB];
+            // Get first MachineBasicBlock from Callee
+            assert(MMI != nullptr &&
+                   "Expected MachineModuleInfo to be available!");
+            auto *CalleeMF = MMI->getMachineFunction(*Callee);
+            assert(CalleeMF != nullptr &&
+                   "Expected MachineFunction to be available!");
+            auto *CalleeMBB = CalleeMF->getBlockNumbered(0);
+            assert(CalleeMBB != nullptr &&
+                   "Expected MachineFunction to be available!");
+            unsigned ToNode = MASG.MBBToNodeMap[&*CalleeMF->begin()];
+            MASG.addEdge(FromNode, ToNode);
           }
+          // TODO add back edges
         }
       }
     }

@@ -96,7 +96,6 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock *MBB) {
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
   MBBToNodeMap[MBB] = CurrentId;
-  Nd.setMBB(MBB);
   return CurrentId;
 }
 
@@ -111,7 +110,6 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock *MBB,
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
   MBBToNodeMap[MBB] = CurrentId;
-  Nd.setMBB(MBB);
   MBB->print(outs());
   return CurrentId;
 }
@@ -220,7 +218,6 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
       File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr();
       if (Verbose) {
         File << "\n";
-        // Node.getMBB()->print(File);
       }
       File << "\"];\n";
     }
