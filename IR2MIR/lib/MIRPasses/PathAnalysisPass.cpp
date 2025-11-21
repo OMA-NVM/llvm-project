@@ -70,20 +70,23 @@ bool PathAnalysisPass::finalize(MachineFunction &MF, MuArchStateGraph &MASG,
             assert(Callee != nullptr && "Unexpected type of global value");
             // outs() << "Callee: " << Callee->getName() << "\n";
 
-            unsigned FromNode = MASG.MBBToNodeMap[&MBB];
+            unsigned CallNode = MASG.MBBToNodeMap[&MBB];
             // Get first MachineBasicBlock from Callee
             assert(MMI != nullptr &&
                    "Expected MachineModuleInfo to be available!");
             auto *CalleeMF = MMI->getMachineFunction(*Callee);
             assert(CalleeMF != nullptr &&
                    "Expected MachineFunction to be available!");
-            auto *CalleeMBB = CalleeMF->getBlockNumbered(0);
-            assert(CalleeMBB != nullptr &&
-                   "Expected MachineFunction to be available!");
-            unsigned ToNode = MASG.MBBToNodeMap[&*CalleeMF->begin()];
-            MASG.addEdge(FromNode, ToNode);
+            unsigned CaleeNode = MASG.MBBToNodeMap[&*CalleeMF->begin()];
+            MASG.addEdge(CallNode, CaleeNode);
+            // TODO Find Returnees and add edges to caller
+            for(auto &CalleeMBB : *CalleeMF){
+              if(!CalleeMBB.isReturnBlock())
+                continue;
+              unsigned ReturnNode = MASG.MBBToNodeMap[&CalleeMBB];
+              MASG.addEdge(ReturnNode, CallNode);
+            }
           }
-          // TODO add back edges
         }
       }
     }
