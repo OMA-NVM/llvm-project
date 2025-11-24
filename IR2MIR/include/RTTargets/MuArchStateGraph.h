@@ -4,8 +4,12 @@
 #include <map>
 #include <ostream>
 #include <set>
+#include <unordered_map>
 
 namespace llvm {
+
+class MachineFunction;
+class MachineModuleInfo;
 
   struct MuArchState {
     unsigned UpperBoundCycles;
@@ -144,6 +148,17 @@ public:
    * Get a list of node IDs that exist in the graph but are not mapped to any MBB.
    */
   std::vector<unsigned> getNodesNotInMBBMap() const;
+
+  /**
+   * Fill the MuArchStateGraph with nodes and edges from a MachineFunction.
+   */
+  bool fillMuGraph(MachineFunction &MF, bool IsEntry,
+                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap);
+
+  /**
+   * Finalize the graph by adding call and return edges.
+   */
+  bool finalize(MachineFunction &MF, MachineModuleInfo *MMI);
 
   /**
    * The set vertices in the graph.

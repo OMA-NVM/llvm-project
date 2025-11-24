@@ -34,123 +34,6 @@ char PathAnalysisPass::ID = 0;
 PathAnalysisPass::PathAnalysisPass(TimingAnalysisResults &TAR)
     : MachineFunctionPass(ID), TAR(TAR) {}
 
-/**
- * @brief Fill in edges of function calls and returns.
- *
- * @return false
- */
-bool PathAnalysisPass::finalize(MachineFunction &MF, MuArchStateGraph &MASG,
-                                MachineModuleInfo *MMI) {
-  // create list of MachineFunctions
-  std::vector<MachineFunction *> MachineFunctions;
-  for (auto &F : MMI->getModule()->getFunctionList()) {
-    if (auto *MF = MMI->getMachineFunction(F)) {
-      // write Machine Functions into list I can iterate over later
-      // for(auto &MBB : *MF) {
-      // }
-      MachineFunctions.push_back(MF);
-    }
-  }
-
-  for (auto *MF : MachineFunctions) {
-    for (auto &MBB : *MF) {
-      for (auto &MI : MBB) {
-        if (MI.isCall()) {
-          // taken care of by Call SpLitter Pass
-          // split MBB before and after the call
-          // outs() << "MBB: " << MBB.getName() << ", MBB size: " << MBB.size()
-          //        << "\n";
-          // outs() << "Found Call Instruction: " << "in Function: "
-          //        << MF->getName() << "\n";
-          // MI.getOperand(1).dump();
-          if (MI.getOperand(0).getType() ==
-              llvm::MachineOperand::MO_GlobalAddress) {
-            const auto *GV = MI.getOperand(0).getGlobal();
-            const auto *Callee = dyn_cast<Function>(GV);
-            assert(Callee != nullptr && "Unexpected type of global value");
-            // outs() << "Callee: " << Callee->getName() << "\n";
-
-            unsigned CallNode = MASG.MBBToNodeMap[&MBB];
-            // Get first MachineBasicBlock from Callee
-            assert(MMI != nullptr &&
-                   "Expected MachineModuleInfo to be available!");
-            auto *CalleeMF = MMI->getMachineFunction(*Callee);
-            assert(CalleeMF != nullptr &&
-                   "Expected MachineFunction to be available!");
-            unsigned CaleeNode = MASG.MBBToNodeMap[&*CalleeMF->begin()];
-            MASG.addEdge(CallNode, CaleeNode);
-            // TODO Find Returnees and add edges to caller
-            for (auto &CalleeMBB : *CalleeMF) {
-              if (!CalleeMBB.isReturnBlock())
-                continue;
-              unsigned ReturnNode = MASG.MBBToNodeMap[&CalleeMBB];
-              MASG.addEdge(ReturnNode, CallNode);
-            }
-          }
-        }
-      }
-    }
-  }
-  outs() << "Printing Dot file \n";
-  MASG.dump2Dot(StringRef("MuArchStateGraph.dot"));
-  return false;
-}
-
-bool PathAnalysisPass::fillMuGraph(MachineFunction &MF, bool IsEntry) {
-  // Get the Latency analysis results
-  auto MBBLatencyMap = TAR.getMBBLatencyMap();
-
-  // Add entry state and Exit state
-  bool EntryStateSet = false;
-  bool ExitStateSet = false;
-  unsigned int ExitNode;
-  unsigned int EntryNode;
-
-  if(IsEntry){
-    EntryNode = MASG.addNode(MuArchState(0,0), nullptr);
-    assert(EntryNode == 0 && "EntryNode should be 0!");
-    ExitNode = MASG.addNode(MuArchState(0,0), nullptr);
-    MASG.Nodes.at(EntryNode).setName(StringRef("Entry"));
-    MASG.Nodes.at(ExitNode).setName(StringRef("Exit"));
-  }
-
-  // Fill MuArchGraph Nodes
-  unsigned int CurrentNode;
-  for (auto &MBB : MF) {
-    // interate over MIs in MBB and find calling Instructions
-    //  represented correctly by the dot file. Create a new MuArchStateGraph and
-    //  add ti the graph as unique ptr
-    MASG.addNode(MuArchState(MBBLatencyMap[&MBB], MBBLatencyMap[&MBB]), &MBB);
-    CurrentNode = MASG.MBBToNodeMap[&MBB];
-    // Add entry state for the first Node only
-    if (IsEntry && !EntryStateSet) {
-      MASG.addEdge(EntryNode, CurrentNode);
-      EntryStateSet = true;
-    }
-    // Add name for the node + Function name
-    MASG.Nodes.at(CurrentNode).setName(MBB.getName());
-    // Add Edges to Exit node
-    if (IsEntry && MBB.isReturnBlock()){
-      MASG.addEdge(MASG.MBBToNodeMap[&MBB], ExitNode);
-      ExitStateSet = true;
-    }
-  }
-  if(IsEntry)
-    assert(ExitStateSet && "At least one Return should have been found!");
-
-  // Fill MuArchGraph Edges
-  for (auto &MBB : MF) {
-    for (auto &Succ : MBB.successors()) {
-      // if (Succ->getParent() == MBB.getParent()){
-      unsigned FromNode = MASG.MBBToNodeMap[&MBB];
-      unsigned ToNode = MASG.MBBToNodeMap[Succ];
-      MASG.addEdge(FromNode, ToNode);
-      //}
-    }
-  }
-  return true;
-}
-
 Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
   // We assume that the Function with the minimal number of References might be
   // the starting Function, e.g. main. If multiple Functions have the same
@@ -225,17 +108,21 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   auto &MLI = MLWP.getLI();
   // outs() << "MachineLoopInfo: \n";
   // MLI.print(outs());
+
+  // Get the Latency analysis results
+  auto MBBLatencyMap = TAR.getMBBLatencyMap();
+
   bool IsEntry = true;
   for (auto &F : MMI->getModule()->getFunctionList()) {
     if (auto *MF = MMI->getMachineFunction(F)) {
       outs() << "Fill MuGraph for Function: " << MF->getName() << "\n";
-      fillMuGraph(*MF, IsEntry);
+      MASG.fillMuGraph(*MF, IsEntry, MBBLatencyMap);
       if (IsEntry)
         IsEntry = false;
     }
   }
 
-  finalize(F, MASG, MMI);
+  MASG.finalize(F, MMI);
   return false;
 }
 

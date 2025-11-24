@@ -2,8 +2,13 @@
 #include "llvm/ADT/StringRef.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include "llvm/CodeGen/MachineFunction.h"
+#include "llvm/CodeGen/MachineInstr.h"
+#include "llvm/CodeGen/MachineModuleInfo.h"
+#include "llvm/CodeGen/MachineOperand.h"
 #include "llvm/IR/BasicBlock.h"
 #include "llvm/IR/Function.h"
+#include "llvm/IR/Module.h"
+#include "llvm/Support/Casting.h"
 #include "llvm/Support/Debug.h"
 #include "llvm/Support/FileSystem.h"
 #include "llvm/Support/raw_ostream.h"
@@ -11,6 +16,7 @@
 #include <map>
 #include <memory>
 #include <set>
+#include <vector>
 
 namespace llvm {
 
@@ -270,6 +276,116 @@ std::vector<unsigned> MuArchStateGraph::getNodesNotInMBBMap() const {
   }
 
   return NodesNotInMap;
+}
+
+bool MuArchStateGraph::fillMuGraph(MachineFunction &MF, bool IsEntry,
+                                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap) {
+  // Add entry state and Exit state
+  bool EntryStateSet = false;
+  bool ExitStateSet = false;
+  unsigned int ExitNode;
+  unsigned int EntryNode;
+
+  if(IsEntry){
+    EntryNode = addNode(MuArchState(0,0), nullptr);
+    assert(EntryNode == 0 && "EntryNode should be 0!");
+    ExitNode = addNode(MuArchState(0,0), nullptr);
+    Nodes.at(EntryNode).setName(StringRef("Entry"));
+    Nodes.at(ExitNode).setName(StringRef("Exit"));
+  }
+
+  // Fill MuArchGraph Nodes
+  unsigned int CurrentNode;
+  for (auto &MBB : MF) {
+    // interate over MIs in MBB and find calling Instructions
+    //  represented correctly by the dot file. Create a new MuArchStateGraph and
+    //  add ti the graph as unique ptr
+    auto It = MBBLatencyMap.find(&MBB);
+    unsigned Latency = (It != MBBLatencyMap.end()) ? It->second : 0;
+    addNode(MuArchState(Latency, Latency), &MBB);
+    CurrentNode = MBBToNodeMap[&MBB];
+    // Add entry state for the first Node only
+    if (IsEntry && !EntryStateSet) {
+      addEdge(EntryNode, CurrentNode);
+      EntryStateSet = true;
+    }
+    // Add name for the node + Function name
+    Nodes.at(CurrentNode).setName(MBB.getName());
+    // Add Edges to Exit node
+    if (IsEntry && MBB.isReturnBlock()){
+      addEdge(MBBToNodeMap[&MBB], ExitNode);
+      ExitStateSet = true;
+    }
+  }
+  if(IsEntry)
+    assert(ExitStateSet && "At least one Return should have been found!");
+
+  // Fill MuArchGraph Edges
+  for (auto &MBB : MF) {
+    for (auto &Succ : MBB.successors()) {
+      // if (Succ->getParent() == MBB.getParent()){
+      unsigned FromNode = MBBToNodeMap[&MBB];
+      unsigned ToNode = MBBToNodeMap[Succ];
+      addEdge(FromNode, ToNode);
+      //}
+    }
+  }
+  return true;
+}
+
+bool MuArchStateGraph::finalize(MachineFunction &MF, MachineModuleInfo *MMI) {
+  // create list of MachineFunctions
+  std::vector<MachineFunction *> MachineFunctions;
+  for (auto &F : MMI->getModule()->getFunctionList()) {
+    if (auto *MF = MMI->getMachineFunction(F)) {
+      // write Machine Functions into list I can iterate over later
+      // for(auto &MBB : *MF) {
+      // }
+      MachineFunctions.push_back(MF);
+    }
+  }
+
+  for (auto *MF : MachineFunctions) {
+    for (auto &MBB : *MF) {
+      for (auto &MI : MBB) {
+        if (MI.isCall()) {
+          // taken care of by Call SpLitter Pass
+          // split MBB before and after the call
+          // outs() << "MBB: " << MBB.getName() << ", MBB size: " << MBB.size()
+          //        << "\n";
+          // outs() << "Found Call Instruction: " << "in Function: "
+          //        << MF->getName() << "\n";
+          // MI.getOperand(1).dump();
+          if (MI.getOperand(0).getType() ==
+              llvm::MachineOperand::MO_GlobalAddress) {
+            const auto *GV = MI.getOperand(0).getGlobal();
+            const auto *Callee = dyn_cast<Function>(GV);
+            assert(Callee != nullptr && "Unexpected type of global value");
+            // outs() << "Callee: " << Callee->getName() << "\n";
+
+            unsigned CallNode = MBBToNodeMap[&MBB];
+            // Get first MachineBasicBlock from Callee
+            assert(MMI != nullptr &&
+                   "Expected MachineModuleInfo to be available!");
+            auto *CalleeMF = MMI->getMachineFunction(*Callee);
+            assert(CalleeMF != nullptr &&
+                   "Expected MachineFunction to be available!");
+            unsigned CaleeNode = MBBToNodeMap[&*CalleeMF->begin()];
+            addEdge(CallNode, CaleeNode);
+            for (auto &CalleeMBB : *CalleeMF) {
+              if (!CalleeMBB.isReturnBlock())
+                continue;
+              unsigned ReturnNode = MBBToNodeMap[&CalleeMBB];
+              addEdge(ReturnNode, CallNode);
+            }
+          }
+        }
+      }
+    }
+  }
+  outs() << "Printing Dot file \n";
+  dump2Dot(StringRef("MuArchStateGraph.dot"));
+  return false;
 }
 
 } // end namespace llvm
