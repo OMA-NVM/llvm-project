@@ -73,7 +73,7 @@ bool Node::isFree() const { return Successors.empty() && Predecessors.empty(); }
 
 // Get a description of the Node
 std::string Node::getNodeDescr() const {
-  return "ID: " + std::to_string(Id) + ", Name: " + Name.str();
+  return "ID: " + std::to_string(Id) + ", Name: " + Name.str() + ", Cycle:" + std::to_string(State->getUpperBoundCycles());
 }
 
 // Get the architectural state of the Node
