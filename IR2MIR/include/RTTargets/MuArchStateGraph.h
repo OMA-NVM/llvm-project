@@ -141,6 +141,11 @@ public:
   bool dump2Dot(StringRef FileName);
 
   /**
+   * Get a list of node IDs that exist in the graph but are not mapped to any MBB.
+   */
+  std::vector<unsigned> getNodesNotInMBBMap() const;
+
+  /**
    * The set vertices in the graph.
    * Edges are also contained in this set, each edge has two entries,
    * 	one in the preceding, one in the succeeding Node.

@@ -172,8 +172,8 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
 
   // Group nodes by function
   std::map<const Function *, std::vector<unsigned>> FunctionToNodes;
-  std::vector<unsigned> NodesWithoutFunction; // Nodes without a parent function
-
+  std::vector<unsigned int> NodesWithoutFunction =
+      getNodesNotInMBBMap(); // Nodes without a parent function
 
   for (const auto &[MBB, NodeId] : MBBToNodeMap) {
     const Function *F = nullptr;
@@ -218,7 +218,8 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
     // Write nodes in this cluster
     for (unsigned NodeId : NodeIds) {
       const auto &Node = Nodes.at(NodeId);
-      File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr() << "\"];\n";
+      File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr()
+           << "\"];\n";
     }
 
     File << "  }\n";
@@ -232,7 +233,7 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
 
     for (unsigned NodeId : NodesWithoutFunction) {
       const auto &Node = Nodes.at(NodeId);
-      File << "ID:  " << Node.getId() << " [label=\"" << Node.getNodeDescr()
+      File << "  " << Node.getId() << " [label=\"" << Node.getNodeDescr()
            << " (no function)\"];\n";
     }
   }
@@ -250,6 +251,25 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
   File << "}\n";
   File.close();
   return true;
+}
+
+std::vector<unsigned> MuArchStateGraph::getNodesNotInMBBMap() const {
+  std::vector<unsigned> NodesNotInMap;
+
+  // Create a set of all node IDs that are in MBBToNodeMap
+  std::set<unsigned> NodesInMap;
+  for (const auto &[MBB, NodeId] : MBBToNodeMap) {
+    NodesInMap.insert(NodeId);
+  }
+
+  // Find all nodes that are not in the MBBToNodeMap
+  for (const auto &[NodeId, Node] : Nodes) {
+    if (NodesInMap.find(NodeId) == NodesInMap.end()) {
+      NodesNotInMap.push_back(NodeId);
+    }
+  }
+
+  return NodesNotInMap;
 }
 
 } // end namespace llvm
