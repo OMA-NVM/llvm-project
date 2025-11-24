@@ -73,7 +73,8 @@ bool Node::isFree() const { return Successors.empty() && Predecessors.empty(); }
 
 // Get a description of the Node
 std::string Node::getNodeDescr() const {
-  return "ID: " + std::to_string(Id) + ", Name: " + Name.str() + ", Cycle:" + std::to_string(State->getUpperBoundCycles());
+  return "ID: " + std::to_string(Id) + ", Name: " + Name.str() +
+         ", Cycle:" + std::to_string(State->getUpperBoundCycles());
 }
 
 // Get the architectural state of the Node
@@ -92,10 +93,11 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock *MBB) {
   assert(NextNodeId > 0 &&
          "We used all Node ids for the state graph. Unsigned is not enough!");
   Node Nd(CurrentId, std::make_unique<MuArchState>(State));
-  Nd.setName(MBB->getName());
+  // Nd.setName(MBB->getName());
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
-  MBBToNodeMap[MBB] = CurrentId;
+  if (MBB)
+    MBBToNodeMap[MBB] = CurrentId;
   return CurrentId;
 }
 
@@ -106,11 +108,11 @@ unsigned MuArchStateGraph::addNode(MuArchState State, MachineBasicBlock *MBB,
   assert(NextNodeId > 0 &&
          "We used all Node ids for the state graph. Unsigned is not enough!");
   Node Nd(CurrentId, std::make_unique<MuArchState>(State));
-  Nd.setName(NodeName);
+  // Nd.setName(NodeName);
   Nodes.insert(std::make_pair(CurrentId, Nd));
   DEBUG_WITH_TYPE("ilp", dbgs() << "Adding Node with id " << CurrentId << "\n");
-  MBBToNodeMap[MBB] = CurrentId;
-  MBB->print(outs());
+  if (MBB)
+    MBBToNodeMap[MBB] = CurrentId;
   return CurrentId;
 }
 
@@ -172,6 +174,7 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
   std::map<const Function *, std::vector<unsigned>> FunctionToNodes;
   std::vector<unsigned> NodesWithoutFunction; // Nodes without a parent function
 
+
   for (const auto &[MBB, NodeId] : MBBToNodeMap) {
     const Function *F = nullptr;
 
@@ -215,11 +218,7 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
     // Write nodes in this cluster
     for (unsigned NodeId : NodeIds) {
       const auto &Node = Nodes.at(NodeId);
-      File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr();
-      if (Verbose) {
-        File << "\n";
-      }
-      File << "\"];\n";
+      File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr() << "\"];\n";
     }
 
     File << "  }\n";
@@ -233,7 +232,7 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
 
     for (unsigned NodeId : NodesWithoutFunction) {
       const auto &Node = Nodes.at(NodeId);
-      File << "  " << Node.getId() << " [label=\"" << Node.getNodeDescr()
+      File << "ID:  " << Node.getId() << " [label=\"" << Node.getNodeDescr()
            << " (no function)\"];\n";
     }
   }
