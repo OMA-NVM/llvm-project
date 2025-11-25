@@ -278,7 +278,7 @@ std::vector<unsigned> MuArchStateGraph::getNodesNotInMBBMap() const {
   return NodesNotInMap;
 }
 
-bool MuArchStateGraph::fillMuGraph(MachineFunction &MF, bool IsEntry,
+bool MuArchStateGraph::fillMuGraphWithFunction(MachineFunction &MF, bool IsEntry,
                                    const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap) {
   // Add entry state and Exit state
   bool EntryStateSet = false;
@@ -331,6 +331,19 @@ bool MuArchStateGraph::fillMuGraph(MachineFunction &MF, bool IsEntry,
     }
   }
   return true;
+}
+
+void MuArchStateGraph::fillMuGraph(MachineModuleInfo *MMI,
+                                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap) {
+  // Fill the Mu graph from MBBs
+  bool IsEntry = true;
+  for (auto &F : MMI->getModule()->getFunctionList()) {
+    if (auto *MF = MMI->getMachineFunction(F)) {
+      fillMuGraphWithFunction(*MF, IsEntry, MBBLatencyMap);
+      if (IsEntry)
+        IsEntry = false;
+    }
+  }
 }
 
 bool MuArchStateGraph::finalize(MachineFunction &MF, MachineModuleInfo *MMI) {

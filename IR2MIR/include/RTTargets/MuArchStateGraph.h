@@ -152,7 +152,13 @@ public:
   /**
    * Fill the MuArchStateGraph with nodes and edges from a MachineFunction.
    */
-  bool fillMuGraph(MachineFunction &MF, bool IsEntry,
+  bool fillMuGraphWithFunction(MachineFunction &MF, bool IsEntry,
+                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap);
+
+  /**
+   * Fill the MuArchStateGraph with all functions from a module.
+   */
+  void fillMuGraph(MachineModuleInfo *MMI,
                    const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap);
 
   /**

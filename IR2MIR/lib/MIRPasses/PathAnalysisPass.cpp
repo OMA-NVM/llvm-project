@@ -74,11 +74,8 @@ Function *PathAnalysisPass::getStartingFunction(CallGraph &CG) {
  * @return false
  */
 bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
-  if (DebugPrints)
-    // outs() << "MachineFunction: " << F.getName() << "\n";
-    if (StartFunctionName != "")
-      FoundStartingFunction = true;
-
+  if (StartFunctionName != "")
+    FoundStartingFunction = true;
   if (!CG) {
     CG = &getAnalysis<CallGraphWrapperPass>().getCallGraph();
   }
@@ -90,7 +87,6 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
     }
     assert(StartingFunction && "StartingFunction is null");
   }
-
   // Only continue when StartFunction is not set as parameter.
   if (!(&F.getFunction() == StartingFunction) && StartFunctionName == "") {
     return false;
@@ -106,23 +102,17 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   // Get the MachineLoopInfo analysisresults
   auto &MLWP = getAnalysis<MachineLoopInfoWrapperPass>();
   auto &MLI = MLWP.getLI();
-  // outs() << "MachineLoopInfo: \n";
-  // MLI.print(outs());
 
   // Get the Latency analysis results
   auto MBBLatencyMap = TAR.getMBBLatencyMap();
-
-  bool IsEntry = true;
-  for (auto &F : MMI->getModule()->getFunctionList()) {
-    if (auto *MF = MMI->getMachineFunction(F)) {
-      outs() << "Fill MuGraph for Function: " << MF->getName() << "\n";
-      MASG.fillMuGraph(*MF, IsEntry, MBBLatencyMap);
-      if (IsEntry)
-        IsEntry = false;
-    }
-  }
-
+  
+  // Fill the Mu graph from MBBs
+  MASG.fillMuGraph(MMI, MBBLatencyMap);
   MASG.finalize(F, MMI);
+
+  // TODO Get Loop Bounds
+
+  // TODO Create ILP to solve.
   return false;
 }
 
