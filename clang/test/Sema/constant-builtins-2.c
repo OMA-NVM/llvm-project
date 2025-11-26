@@ -35,7 +35,7 @@ long double  g11 = __builtin_nansl("");
 __float128   g11_2 = __builtin_nansf128("");
 #endif
 
-//int          g12 = __builtin_abs(-12);
+int g12 = __builtin_abs(-12);
 
 double       g13 = __builtin_fabs(-12.);
 double       g13_0 = __builtin_fabs(-0.);
@@ -456,6 +456,17 @@ char clrsb9[__builtin_clrsb(1 << (BITSIZE(int) - 1)) == 0 ? 1 : -1];
 char clrsb10[__builtin_clrsb(~(1 << (BITSIZE(int) - 1))) == 0 ? 1 : -1];
 char clrsb11[__builtin_clrsb(0xf) == BITSIZE(int) - 5 ? 1 : -1];
 char clrsb12[__builtin_clrsb(~0x1f) == BITSIZE(int) - 6 ? 1 : -1];
+
+char abs1[__builtin_abs(-12)];
+char abs2[__builtin_labs(-12L)];
+char abs3[__builtin_llabs(-12LL)];
+int abs4 = __builtin_abs(1 << (BITSIZE(int) - 1)); // expected-error {{not a compile-time constant}}
+char abs5[__builtin_abs((1 << (BITSIZE(int) - 1)) + 1)];
+long abs6 = __builtin_labs(1L << (BITSIZE(long) - 1)); // expected-error {{not a compile-time constant}}
+long abs7 = __builtin_labs((1L << (BITSIZE(long) - 1)) + 1);
+long long abs8 = __builtin_llabs(1LL << (BITSIZE(long long) - 1)); // expected-error {{not a compile-time constant}}
+long long abs9 = __builtin_llabs((1LL << (BITSIZE(long long) - 1)) + 1);
+
 #undef BITSIZE
 
 // GCC misc stuff
@@ -468,6 +479,28 @@ int h0 = __builtin_types_compatible_p(int, float);
 int h3 = __builtin_bswap16(0x1234) == 0x3412 ? 1 : f();
 int h4 = __builtin_bswap32(0x1234) == 0x34120000 ? 1 : f();
 int h5 = __builtin_bswap64(0x1234) == 0x3412000000000000 ? 1 : f();
+int h6 = __builtin_bswapg((char)(0x12)) == (char)(0x12) ? 1 : f();
+int h7 = __builtin_bswapg((short)(0x1234)) == (short)(0x3412) ? 1 : f();
+int h8 = __builtin_bswapg(0x00001234) == 0x34120000 ? 1 : f();
+int h9 = __builtin_bswapg(0x0000000000001234ULL) == 0x3412000000000000 ? 1 : f();
+float h10 = __builtin_bswapg(1.0f); // expected-error {{1st argument must be a scalar integer type (was 'float')}}
+double h12 = __builtin_bswapg(1.0L); // expected-error {{1st argument must be a scalar integer type (was 'long double')}}
+char *h13 = __builtin_bswapg("hello"); // expected-error {{1st argument must be a scalar integer type (was 'char[6]')}}
+int h14 = __builtin_bswapg(1, 2); // expected-error {{too many arguments to function call, expected 1, have 2}}
+int *h15 = __builtin_bswapg(&h9); // expected-error {{1st argument must be a scalar integer type (was 'int *')}}
+int arr[4] = {0x12, 0x34, 0x56, 0x78};
+int h16 = __builtin_bswapg(arr); // expected-error {{1st argument must be a scalar integer type (was 'int[4]')}}
+enum BasicEnum {
+  ENUM_VALUE1 = 0x1234,
+};
+int h17 = __builtin_bswapg(ENUM_VALUE1) == 0x34120000 ? 1 : f();
+int h18 = __builtin_bswapg((_BitInt(8))0x12) == (_BitInt(8))0x12 ? 1 : f();
+int h19 = __builtin_bswapg((_BitInt(16))0x1234) == (_BitInt(16))0x3412 ? 1 : f();
+int h20 = __builtin_bswapg((_BitInt(32))0x00001234) == (_BitInt(32))0x34120000 ? 1 : f();
+int h21 = __builtin_bswapg((_BitInt(64))0x0000000000001234) == (_BitInt(64))0x3412000000000000 ? 1 : f();
+int h22 = __builtin_bswapg(~(_BitInt(128))0) == (~(_BitInt(128))0) ? 1 : f();
+int h23 = __builtin_bswapg((_BitInt(24))0x1234) == (_BitInt(24))0x3412 ? 1 : f();
+// expected-error@-1 {{_BitInt type '_BitInt(24)' (24 bits) must be a multiple of 16 bits for byte swapping}}
 extern long int bi0;
 extern __typeof__(__builtin_expect(0, 0)) bi0;
 

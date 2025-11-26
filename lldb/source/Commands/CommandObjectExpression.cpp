@@ -12,6 +12,8 @@
 #include "lldb/Expression/REPL.h"
 #include "lldb/Expression/UserExpression.h"
 #include "lldb/Host/OptionParser.h"
+#include "lldb/Host/StreamFile.h"
+#include "lldb/Host/common/DiagnosticsRendering.h"
 #include "lldb/Interpreter/CommandInterpreter.h"
 #include "lldb/Interpreter/CommandOptionArgumentTable.h"
 #include "lldb/Interpreter/CommandReturnObject.h"
@@ -20,8 +22,8 @@
 #include "lldb/Target/Process.h"
 #include "lldb/Target/StackFrame.h"
 #include "lldb/Target/Target.h"
-#include "lldb/Utility/DiagnosticsRendering.h"
 #include "lldb/lldb-enumerations.h"
+#include "lldb/lldb-forward.h"
 #include "lldb/lldb-private-enumerations.h"
 
 using namespace lldb;
@@ -200,7 +202,7 @@ EvaluateExpressionOptions
 CommandObjectExpression::CommandOptions::GetEvaluateExpressionOptions(
     const Target &target, const OptionGroupValueObjectDisplay &display_opts) {
   EvaluateExpressionOptions options;
-  options.SetCoerceToId(display_opts.use_objc);
+  options.SetCoerceToId(display_opts.use_object_desc);
   options.SetUnwindOnError(unwind_on_error);
   options.SetIgnoreBreakpoints(ignore_breakpoints);
   options.SetKeepInMemory(true);
@@ -239,11 +241,11 @@ CommandObjectExpression::CommandOptions::GetEvaluateExpressionOptions(
 bool CommandObjectExpression::CommandOptions::ShouldSuppressResult(
     const OptionGroupValueObjectDisplay &display_opts) const {
   // Explicitly disabling persistent results takes precedence over the
-  // m_verbosity/use_objc logic.
+  // m_verbosity/use_object_desc logic.
   if (suppress_persistent_result != eLazyBoolCalculate)
     return suppress_persistent_result == eLazyBoolYes;
 
-  return display_opts.use_objc &&
+  return display_opts.use_object_desc &&
          m_verbosity == eLanguageRuntimeDescriptionDisplayVerbosityCompact;
 }
 
@@ -330,7 +332,7 @@ Options *CommandObjectExpression::GetOptions() { return &m_option_group; }
 
 void CommandObjectExpression::HandleCompletion(CompletionRequest &request) {
   EvaluateExpressionOptions options;
-  options.SetCoerceToId(m_varobj_options.use_objc);
+  options.SetCoerceToId(m_varobj_options.use_object_desc);
   options.SetLanguage(m_command_options.language);
   options.SetExecutionPolicy(lldb_private::eExecutionPolicyNever);
   options.SetAutoApplyFixIts(false);
@@ -434,6 +436,8 @@ bool CommandObjectExpression::EvaluateExpression(llvm::StringRef expr,
   }
 
   if (result_valobj_sp) {
+    result.GetValueObjectList().Append(result_valobj_sp);
+
     Format format = m_format_options.GetFormat();
 
     if (result_valobj_sp->GetError().Success()) {
@@ -466,6 +470,9 @@ bool CommandObjectExpression::EvaluateExpression(llvm::StringRef expr,
           return false;
         }
 
+        m_interpreter.PrintWarningsIfNecessary(result.GetOutputStream(),
+                                               m_cmd_name);
+
         if (suppress_result)
           if (auto result_var_sp =
                   target.GetPersistentVariable(result_valobj_sp->GetName())) {
@@ -485,35 +492,8 @@ bool CommandObjectExpression::EvaluateExpression(llvm::StringRef expr,
 
         result.SetStatus(eReturnStatusSuccessFinishResult);
       } else {
-        // Retrieve the diagnostics.
-        std::vector<DiagnosticDetail> details;
-        llvm::consumeError(llvm::handleErrors(
-            result_valobj_sp->GetError().ToError(),
-            [&](DiagnosticError &error) { details = error.GetDetails(); }));
-        // Find the position of the expression in the command.
-        std::optional<uint16_t> expr_pos;
-        size_t nchar = m_original_command.find(expr);
-        if (nchar != std::string::npos)
-          expr_pos = nchar + GetDebugger().GetPrompt().size();
-
-        if (!details.empty()) {
-          bool show_inline =
-              GetDebugger().GetShowInlineDiagnostics() && !expr.contains('\n');
-          RenderDiagnosticDetails(error_stream, expr_pos, show_inline, details);
-        } else {
-          const char *error_cstr = result_valobj_sp->GetError().AsCString();
-          llvm::StringRef error(error_cstr);
-          if (!error.empty()) {
-            if (!error.starts_with("error:"))
-              error_stream << "error: ";
-            error_stream << error;
-            if (!error.ends_with('\n'))
-              error_stream.EOL();
-          } else {
-            error_stream << "error: unknown error\n";
-          }
-        }
         result.SetStatus(eReturnStatusFailed);
+        result.SetError(result_valobj_sp->GetError().ToError());
       }
     }
   } else {
@@ -527,16 +507,17 @@ bool CommandObjectExpression::EvaluateExpression(llvm::StringRef expr,
 void CommandObjectExpression::IOHandlerInputComplete(IOHandler &io_handler,
                                                      std::string &line) {
   io_handler.SetIsDone(true);
-  StreamFileSP output_sp = io_handler.GetOutputStreamFileSP();
-  StreamFileSP error_sp = io_handler.GetErrorStreamFileSP();
+  StreamSP output_stream =
+      GetCommandInterpreter().GetDebugger().GetAsyncOutputStream();
+  StreamSP error_stream =
+      GetCommandInterpreter().GetDebugger().GetAsyncErrorStream();
 
   CommandReturnObject return_obj(
       GetCommandInterpreter().GetDebugger().GetUseColor());
-  EvaluateExpression(line.c_str(), *output_sp, *error_sp, return_obj);
-  if (output_sp)
-    output_sp->Flush();
-  if (error_sp)
-    error_sp->Flush();
+  EvaluateExpression(line.c_str(), *output_stream, *error_stream, return_obj);
+
+  output_stream->Flush();
+  *error_stream << return_obj.GetErrorString();
 }
 
 bool CommandObjectExpression::IOHandlerIsInputComplete(IOHandler &io_handler,
@@ -568,11 +549,10 @@ void CommandObjectExpression::GetMultilineExpression() {
                             1, // Show line numbers starting at 1
                             *this));
 
-  StreamFileSP output_sp = io_handler_sp->GetOutputStreamFileSP();
-  if (output_sp) {
-    output_sp->PutCString(
+  if (LockableStreamFileSP output_sp = io_handler_sp->GetOutputStreamFileSP()) {
+    LockedStreamFile locked_stream = output_sp->Lock();
+    locked_stream.PutCString(
         "Enter expressions, then terminate with an empty line to evaluate:\n");
-    output_sp->Flush();
   }
   debugger.RunIOHandlerAsync(io_handler_sp);
 }
@@ -678,6 +658,14 @@ void CommandObjectExpression::DoExecute(llvm::StringRef command,
       return;
     }
   }
+
+  // Previously the indent was set up for diagnosing command line
+  // parsing errors. Now point it to the expression.
+  std::optional<uint16_t> indent;
+  size_t pos = m_original_command.rfind(expr);
+  if (pos != llvm::StringRef::npos)
+    indent = pos;
+  result.SetDiagnosticIndent(indent);
 
   Target &target = GetTarget();
   if (EvaluateExpression(expr, result.GetOutputStream(),

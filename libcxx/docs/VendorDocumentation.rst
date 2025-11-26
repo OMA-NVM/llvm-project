@@ -81,12 +81,14 @@ CMake invocation at ``<monorepo>/llvm``:
 .. code-block:: bash
 
   $ mkdir build
-  $ cmake -G Ninja -S llvm -B build -DLLVM_ENABLE_PROJECTS="clang"                      \  # Configure
-                                    -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind" \
-                                    -DLLVM_RUNTIME_TARGETS="<target-triple>"
-  $ ninja -C build runtimes                                                                # Build
-  $ ninja -C build check-runtimes                                                          # Test
-  $ ninja -C build install-runtimes                                                        # Install
+  $ cmake -G Ninja -S llvm -B build                                       \
+          -DCMAKE_BUILD_TYPE=RelWithDebInfo                               \
+          -DLLVM_ENABLE_PROJECTS="clang"                                  \  # Configure
+          -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind;compiler-rt" \
+          -DLLVM_RUNTIME_TARGETS="<target-triple>"
+  $ ninja -C build runtimes                                                  # Build
+  $ ninja -C build check-runtimes                                            # Test
+  $ ninja -C build install-runtimes                                          # Install
 
 .. note::
   - This type of build is also commonly called a "Runtimes build", but we would like to move
@@ -162,10 +164,10 @@ General purpose options
 
 .. option:: LIBCXX_ENABLE_FILESYSTEM:BOOL
 
-   **Default**: ``ON`` except on Windows when using MSVC.
+   **Default**: ``ON``
 
    This option can be used to enable or disable the filesystem components on
-   platforms that may not support them. For example on Windows when using MSVC.
+   platforms that may not support them.
 
 .. option:: LIBCXX_ENABLE_WIDE_CHARACTERS:BOOL
 
@@ -213,11 +215,13 @@ General purpose options
 
   Output name for the shared libc++ runtime library.
 
-.. option:: LIBCXX_ADDITIONAL_COMPILE_FLAGS:STRING
+.. option:: {LIBCXX,LIBCXXABI,LIBUNWIND}_ADDITIONAL_COMPILE_FLAGS:STRING
 
   **Default**: ``""``
 
-  Additional Compile only flags which can be provided in cache.
+  Additional compile flags to use when building the runtimes. This should be a CMake ``;``-delimited list of individual
+  compiler options to use. For options that must be passed as-is to the compiler without deduplication (e.g.
+  ``-Xclang -foo`` option groups), consider using ``SHELL:`` as `documented here <https://cmake.org/cmake/help/latest/command/add_compile_options.html#option-de-duplication>`_.
 
 .. option:: LIBCXX_ADDITIONAL_LIBRARIES:STRING
 
@@ -242,7 +246,8 @@ General purpose options
 
   **Default**: ``ON`` (or value of ``LLVM_INCLUDE_TESTS``)
 
-  Build the libc++ tests.
+  Build the libc++ test suite, which includes various types of tests like conformance
+  tests, vendor-specific tests and benchmarks.
 
 .. option:: LIBCXX_INCLUDE_BENCHMARKS:BOOL
 
@@ -250,15 +255,6 @@ General purpose options
 
   Build the libc++ benchmark tests and the Google Benchmark library needed
   to support them.
-
-.. option:: LIBCXX_BENCHMARK_TEST_ARGS:STRING
-
-  **Default**: ``--benchmark_min_time=0.01``
-
-  A semicolon list of arguments to pass when running the libc++ benchmarks using the
-  ``check-cxx-benchmarks`` rule. By default we run the benchmarks for a very short amount of time,
-  since the primary use of ``check-cxx-benchmarks`` is to get test and sanitizer coverage, not to
-  get accurate measurements.
 
 .. option:: LIBCXX_ASSERTION_HANDLER_FILE:PATH
 
@@ -346,12 +342,6 @@ The following options allow building libc++ for a different ABI version.
   Build and use the LLVM unwinder. Note: This option can only be used when
   libc++abi is the C++ ABI library used.
 
-.. option:: LIBCXXABI_ADDITIONAL_COMPILE_FLAGS:STRING
-
-  **Default**: ``""``
-
-  Additional Compile only flags which can be provided in cache.
-
 .. option:: LIBCXXABI_ADDITIONAL_LIBRARIES:STRING
 
   **Default**: ``""``
@@ -387,6 +377,12 @@ cl doesn't support the ``#include_next`` extension. Furthermore, VS 2017 or
 newer (19.14) is required.
 
 Libc++ also supports being built with clang targeting MinGW environments.
+
+Libc++ supports Windows 7 or newer. However, the minimum runtime version
+of the build is determined by the ``_WIN32_WINNT`` define, which in many
+SDKs defaults to the latest version. To build a version that runs on an
+older version, define e.g. ``_WIN32_WINNT=0x601`` while building libc++,
+to target Windows 7.
 
 CMake + Visual Studio
 ---------------------
@@ -455,7 +451,7 @@ e.g. the ``mingw-w64-x86_64-clang`` package), together with CMake and ninja.
           -DCMAKE_C_COMPILER=clang                                                    \
           -DCMAKE_CXX_COMPILER=clang++                                                \
           -DLLVM_ENABLE_LLD=ON                                                        \
-          -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi"                                   \
+          -DLLVM_ENABLE_RUNTIMES="libcxx;libcxxabi;libunwind"                         \
           -DLIBCXXABI_ENABLE_SHARED=OFF                                               \
           -DLIBCXX_ENABLE_STATIC_ABI_LIBRARY=ON
   > ninja -C build cxx
@@ -594,3 +590,8 @@ situations will give the same result:
   $ clang++ -stdlib=libc++ helloworld.cpp -lcxxrt
 
 .. _`libcxxrt`: https://github.com/libcxxrt/libcxxrt
+
+libc++'s ABI guarantees
+=======================
+
+Libc++ provides several ABI guarantees, which are documented :ref:`here <ABIGuarantees>`.
