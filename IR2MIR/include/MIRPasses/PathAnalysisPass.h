@@ -28,9 +28,6 @@ public:
 
   Function *StartingFunction = nullptr;
 
-
-  MuArchStateGraph MASG;
-
   // a struct that holds graphnodes and edges, which link to BBs
   // and instructions
 

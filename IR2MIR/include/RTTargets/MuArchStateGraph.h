@@ -1,3 +1,6 @@
+#ifndef MU_ARCH_STATE_GRAPH_H
+#define MU_ARCH_STATE_GRAPH_H
+
 #include "llvm/ADT/StringRef.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include <cassert>
@@ -178,6 +181,21 @@ public:
    */
   std::map<const MachineBasicBlock *, unsigned> MBBToNodeMap;
 
+  /**
+   * Map that stores the entry node for each Function.
+   */
+  std::map<const Function *, unsigned> FunctionToEntryNodeMap;
+
+  /**
+   * Map that stores the return nodes for each Function.
+   */
+  std::map<const Function *, std::vector<unsigned>> FunctionToReturnNodesMap;
+
+  /**
+   * Store call sites: map from caller node to callee Function.
+   */
+  std::vector<std::pair<unsigned, const Function *>> CallSites;
+
 private:
   /**
    * A counter to give unique identifiers to each Node.
@@ -186,3 +204,5 @@ private:
 };
 
 } // end namespace llvm
+
+#endif // MU_ARCH_STATE_GRAPH_H

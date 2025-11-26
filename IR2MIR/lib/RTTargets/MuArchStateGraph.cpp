@@ -290,7 +290,6 @@ bool MuArchStateGraph::fillMuGraphWithFunction(
 
   if (IsEntry) {
     EntryNode = addNode(MuArchState(0, 0), nullptr);
-    assert(EntryNode == 0 && "EntryNode should be 0!");
     ExitNode = addNode(MuArchState(0, 0), nullptr);
     Nodes.at(EntryNode).setName(StringRef("Entry"));
     Nodes.at(ExitNode).setName(StringRef("Exit"));
@@ -335,6 +334,30 @@ bool MuArchStateGraph::fillMuGraphWithFunction(
       //}
     }
   }
+
+  // Store Entry and Return nodes for this function
+  if (!MF.empty()) {
+      FunctionToEntryNodeMap[&MF.getFunction()] = MBBToNodeMap[&*MF.begin()];
+  }
+  for (auto &MBB : MF) {
+      if (MBB.isReturnBlock()) {
+          FunctionToReturnNodesMap[&MF.getFunction()].push_back(MBBToNodeMap[&MBB]);
+      }
+      // Capture call sites
+      for (auto &MI : MBB) {
+          if (MI.isCall()) {
+              if (MI.getOperand(0).getType() == llvm::MachineOperand::MO_GlobalAddress) {
+                  const auto *GV = MI.getOperand(0).getGlobal();
+                  const auto *Callee = dyn_cast<Function>(GV);
+                  if (Callee) {
+                      unsigned CallNode = MBBToNodeMap[&MBB];
+                      CallSites.push_back({CallNode, Callee});
+                  }
+              }
+          }
+      }
+  }
+
   return true;
 }
 
@@ -354,50 +377,23 @@ void MuArchStateGraph::fillMuGraph(
 }
 
 bool MuArchStateGraph::finalize(MachineFunction &MF, MachineModuleInfo *MMI) {
-  // create list of MachineFunctions
-  std::vector<MachineFunction *> MachineFunctions;
-  for (auto &F : MMI->getModule()->getFunctionList()) {
-    if (auto *MF = MMI->getMachineFunction(F)) {
-      // write Machine Functions into list I can iterate over later
-      // for(auto &MBB : *MF) {
-      // }
-      MachineFunctions.push_back(MF);
-    }
-  }
+  // Process all captured call sites
+  for (const auto &[CallNode, Callee] : CallSites) {
+    // Use the maps to find entry and return nodes
+    if (FunctionToEntryNodeMap.find(Callee) != FunctionToEntryNodeMap.end()) {
+        unsigned CaleeNode = FunctionToEntryNodeMap[Callee];
+        addEdge(CallNode, CaleeNode);
 
-  for (auto *MF : MachineFunctions) {
-    for (auto &MBB : *MF) {
-      for (auto &MI : MBB) {
-        if (MI.isCall()) {
-          if (MI.getOperand(0).getType() ==
-              llvm::MachineOperand::MO_GlobalAddress) {
-            const auto *GV = MI.getOperand(0).getGlobal();
-            const auto *Callee = dyn_cast<Function>(GV);
-            assert(Callee != nullptr && "Unexpected type of global value");
-            // outs() << "Callee: " << Callee->getName() << "\n";
-
-            unsigned CallNode = MBBToNodeMap[&MBB];
-            // Get first MachineBasicBlock from Callee
-            assert(MMI != nullptr &&
-                   "Expected MachineModuleInfo to be available!");
-            auto *CalleeMF = MMI->getMachineFunction(*Callee);
-            if (CalleeMF == nullptr) {
-              MBB.dump();
-              continue;
+        if (FunctionToReturnNodesMap.find(Callee) != FunctionToReturnNodesMap.end()) {
+            for (unsigned ReturnNode : FunctionToReturnNodesMap[Callee]) {
+                addEdge(ReturnNode, CallNode);
             }
-            assert(CalleeMF != nullptr &&
-                   "Expected MachineFunction to be available!");
-            unsigned CaleeNode = MBBToNodeMap[&*CalleeMF->begin()];
-            addEdge(CallNode, CaleeNode);
-            for (auto &CalleeMBB : *CalleeMF) {
-              if (!CalleeMBB.isReturnBlock())
-                continue;
-              unsigned ReturnNode = MBBToNodeMap[&CalleeMBB];
-              addEdge(ReturnNode, CallNode);
-            }
-          }
         }
-      }
+    } else {
+        // Fallback or error handling if callee not found in map
+        // This might happen for external functions or if FillMuGraphPass didn't run on it
+        if (DebugPrints)
+            outs() << "Warning: Callee " << Callee->getName() << " not found in FunctionToEntryNodeMap\n";
     }
   }
   outs() << "Printing Dot file \n";

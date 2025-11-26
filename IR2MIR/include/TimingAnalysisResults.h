@@ -3,6 +3,7 @@
 
 #include "llvm/CodeGen/MachineBasicBlock.h"
 #include <unordered_map>
+#include "RTTargets/MuArchStateGraph.h"
 namespace llvm {
 
 //===- TimingAnalysisResults.h - Timing Analysis Results -------*- C++ -*-===//
@@ -28,6 +29,10 @@ public:
 
     std::unordered_map<const MachineBasicBlock *, unsigned int> getLoopBoundMap();
     // END: Machine Loop Bound Agregator Pass Containers
+
+    // START: MuArchStateGraph Container
+    MuArchStateGraph MASG;
+    // END: MuArchStateGraph Container
 };
 
 } // namespace llvm

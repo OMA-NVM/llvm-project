@@ -98,17 +98,17 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
   outs() << "Should Be: " << StartFunctionName << "\n";
 
   // Get MachineModuleInfo
-  auto *MMI = &getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
+  // auto *MMI = &getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
   // Get the MachineLoopInfo analysisresults
   auto &MLWP = getAnalysis<MachineLoopInfoWrapperPass>();
-  auto &MLI = MLWP.getLI();
+  // auto &MLI = MLWP.getLI();
 
   // Get the Latency analysis results
   auto MBBLatencyMap = TAR.getMBBLatencyMap();
 
   // Fill the Mu graph from MBBs
-  MASG.fillMuGraph(MMI, MBBLatencyMap);
-  MASG.finalize(F, MMI);
+  // MASG.fillMuGraph(MMI, MBBLatencyMap);
+  // MASG.finalize(F, MMI);
 
   // TODO print Loop Bounds
   outs() << "Aggregated Loop Bounds:\n";

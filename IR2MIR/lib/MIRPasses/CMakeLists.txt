@@ -8,6 +8,7 @@ add_llvm_library(ir2mirMPasses
   AccessAnalyses.cpp
   PathAnalysisPass.cpp
   MachineLoopBoundAgregatorPass.cpp
+  FillMuGraphPass.cpp
   Mir2IrPass.cpp
   CallSplitterPass.cpp
   DebugIRPass.cpp
