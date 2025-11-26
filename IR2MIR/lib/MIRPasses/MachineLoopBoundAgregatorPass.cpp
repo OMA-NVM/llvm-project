@@ -29,21 +29,40 @@ bool MachineLoopBoundAgregatorPass::runOnMachineFunction(MachineFunction &F) {
 
   std::unordered_map<const MachineBasicBlock *, unsigned int> LoopBounds;
 
+  outs() << "Processing function: " << F.getName() << "\n";
+  outs() << "  Machine loops found: " << MLI.getLoopsInPreorder().size() << "\n";
+  outs() << "  IR loops found: " << LI.getLoopsInPreorder().size() << "\n";
+
   // Iterate over all loops in preorder
   for (auto *ML : MLI.getLoopsInPreorder()) {
       MachineBasicBlock *Header = ML->getHeader();
       const BasicBlock *BB = Header->getBasicBlock();
-      if (!BB)
+
+      outs() << "  Machine loop with header MBB " << Header->getNumber()
+             << " (" << Header->getName() << ")";
+
+      if (!BB) {
+        outs() << " - NO IR BasicBlock mapped!\n";
         continue;
+      }
+
+      outs() << " maps to IR BB " << BB->getName() << "\n";
 
       Loop *L = LI.getLoopFor(BB);
-      if (!L)
+      if (!L) {
+        outs() << "    - No IR Loop found for this BB\n";
         continue;
+      }
 
       // Check if the IR loop header matches the Machine loop header's BB
       // This ensures we are looking at the same loop structure
-      if (L->getHeader() != BB)
+      if (L->getHeader() != BB) {
+        outs() << "    - IR Loop header mismatch: IR loop header is "
+               << L->getHeader()->getName() << "\n";
         continue;
+      }
+
+      outs() << "    - Found matching IR loop\n";
 
       unsigned TripCount = SE.getSmallConstantTripCount(L);
       // getSmallConstantTripCount returns 0 if unknown or not constant.
@@ -51,11 +70,15 @@ bool MachineLoopBoundAgregatorPass::runOnMachineFunction(MachineFunction &F) {
       // But for timing analysis, exact trip count is often what we want if it's constant.
       // If it's not constant, we might want max backedge taken count.
 
+      outs() << "    - SmallConstantTripCount: " << TripCount << "\n";
+
       if (TripCount == 0) {
           // Try to get max backedge taken count
           const SCEV *MaxBTC = SE.getConstantMaxBackedgeTakenCount(L);
+          outs() << "    - Trying max backedge taken count: " << *MaxBTC << "\n";
           if (auto *C = dyn_cast<SCEVConstant>(MaxBTC)) {
               TripCount = C->getAPInt().getZExtValue() + 1; // Trip count is BTC + 1
+              outs() << "    - Got trip count from max BTC: " << TripCount << "\n";
           }
       }
 
@@ -74,6 +97,12 @@ bool MachineLoopBoundAgregatorPass::runOnMachineFunction(MachineFunction &F) {
   auto ExistingBounds = TAR.getLoopBoundMap();
   ExistingBounds.insert(LoopBounds.begin(), LoopBounds.end());
   TAR.setLoopBoundMap(ExistingBounds);
+
+  outs() << "MachineLoopBoundAgregatorPass: Found " << LoopBounds.size()
+         << " loop bounds in function " << F.getName() << "\n";
+  for (auto const& [MBB, Bound] : LoopBounds) {
+      outs() << "  MBB " << MBB->getNumber() << " (" << MBB->getName() << "): " << Bound << "\n";
+  }
 
   return false;
 }

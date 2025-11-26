@@ -55,6 +55,7 @@ add_llvm_tool(ir2mir
   )
 
 add_subdirectory(lib)
+add_subdirectory(clang-plugin)
 
 target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility ir2mirRTTargets TimingAnalysisBase ${GUROBI_CXX_LIBRARY})
 

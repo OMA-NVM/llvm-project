@@ -13,4 +13,5 @@ add_llvm_library(ir2mirMPasses
   CallSplitterPass.cpp
   DebugIRPass.cpp
   DEPENDS LLVMAnalysis LLVMCodeGen LLVMCore LLVMSupport LLVMTarget
+  LINK_LIBS TimingAnalysisBase ir2mirRTTargets ir2mirUtility
 )
