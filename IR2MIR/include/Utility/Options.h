@@ -13,4 +13,6 @@ extern llvm::cl::opt<std::string> StartFunctionName;
 
 extern llvm::cl::opt<bool> DebugIR;
 
+extern llvm::cl::opt<std::string> LoopBoundsJSON;
+
 #endif

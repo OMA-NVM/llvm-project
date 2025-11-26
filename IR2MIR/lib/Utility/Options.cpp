@@ -18,3 +18,8 @@ cl::opt<bool> DebugIR(
     "gIR", cl::init(false),
     cl::desc("Use this option to move debug information for the IR"),
     cl::cat(LLTA));
+
+cl::opt<std::string> LoopBoundsJSON(
+    "loop-bounds-json", cl::init(""),
+    cl::desc("Path to JSON file containing loop bounds from clang plugin"),
+    cl::cat(LLTA));
