@@ -19,6 +19,15 @@ public:
 
     std::unordered_map<const MachineBasicBlock *, unsigned int> getMBBLatencyMap();
     // END: Instruction Latency Pass Containers
+
+    // START: Machine Loop Bound Agregator Pass Containers
+    std::unordered_map<const MachineBasicBlock *, unsigned int> LoopBoundMap;
+    bool LoopBoundMapSet = false;
+
+    void setLoopBoundMap(std::unordered_map<const MachineBasicBlock *, unsigned int> LoopBoundMap);
+
+    std::unordered_map<const MachineBasicBlock *, unsigned int> getLoopBoundMap();
+    // END: Machine Loop Bound Agregator Pass Containers
 };
 
 } // namespace llvm

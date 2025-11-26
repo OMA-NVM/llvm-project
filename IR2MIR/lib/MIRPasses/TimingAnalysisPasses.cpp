@@ -7,6 +7,7 @@
 #include "MIRPasses/InstructionLatencyPass.h"
 #include "MIRPasses/Mir2IrPass.h"
 #include "MIRPasses/PathAnalysisPass.h"
+#include "MIRPasses/MachineLoopBoundAgregatorPass.h"
 #include "TimingAnalysisResults.h"
 #include "Utility/Options.h"
 
@@ -27,6 +28,7 @@ std::list<MachineFunctionPass *> getTimingAnalysisPasses() {
   Passes.push_back(createAdressResolverPass(TAR));
   Passes.push_back(createInstructionLatencyPass(TAR));
   //Passes.push_back(createAccessAnalysesPass(TM));
+  Passes.push_back(createMachineLoopBoundAgregatorPass(TAR));
   Passes.push_back(createPathAnalysisPass(TAR));
   Passes.push_back(createMIRtoIRPass(TAR));
   return Passes;

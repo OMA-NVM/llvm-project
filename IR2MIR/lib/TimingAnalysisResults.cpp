@@ -14,5 +14,17 @@ namespace llvm {
   }
   // END: Instruction Latency Pass Containers
 
+  // START: Machine Loop Bound Agregator Pass Containers
+  void TimingAnalysisResults::setLoopBoundMap(std::unordered_map<const MachineBasicBlock *, unsigned int> LoopBoundMap) {
+    LoopBoundMapSet = true;
+    this->LoopBoundMap = LoopBoundMap;
+  }
+
+  std::unordered_map<const MachineBasicBlock *, unsigned int> TimingAnalysisResults::getLoopBoundMap() {
+    // We do not assert here, because it is possible that no loops are found
+    return LoopBoundMap;
+  }
+  // END: Machine Loop Bound Agregator Pass Containers
+
 
 } // namespace llvm
