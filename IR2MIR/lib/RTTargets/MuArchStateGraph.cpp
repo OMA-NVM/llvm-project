@@ -278,18 +278,20 @@ std::vector<unsigned> MuArchStateGraph::getNodesNotInMBBMap() const {
   return NodesNotInMap;
 }
 
-bool MuArchStateGraph::fillMuGraphWithFunction(MachineFunction &MF, bool IsEntry,
-                                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap) {
+bool MuArchStateGraph::fillMuGraphWithFunction(
+    MachineFunction &MF, bool IsEntry,
+    const std::unordered_map<const MachineBasicBlock *, unsigned int>
+        &MBBLatencyMap) {
   // Add entry state and Exit state
   bool EntryStateSet = false;
   bool ExitStateSet = false;
   unsigned int ExitNode;
   unsigned int EntryNode;
 
-  if(IsEntry){
-    EntryNode = addNode(MuArchState(0,0), nullptr);
+  if (IsEntry) {
+    EntryNode = addNode(MuArchState(0, 0), nullptr);
     assert(EntryNode == 0 && "EntryNode should be 0!");
-    ExitNode = addNode(MuArchState(0,0), nullptr);
+    ExitNode = addNode(MuArchState(0, 0), nullptr);
     Nodes.at(EntryNode).setName(StringRef("Entry"));
     Nodes.at(ExitNode).setName(StringRef("Exit"));
   }
@@ -312,13 +314,16 @@ bool MuArchStateGraph::fillMuGraphWithFunction(MachineFunction &MF, bool IsEntry
     // Add name for the node + Function name
     Nodes.at(CurrentNode).setName(MBB.getName());
     // Add Edges to Exit node
-    if (IsEntry && MBB.isReturnBlock()){
+    if (IsEntry && MBB.isReturnBlock()) {
       addEdge(MBBToNodeMap[&MBB], ExitNode);
       ExitStateSet = true;
     }
   }
-  if(IsEntry)
-    assert(ExitStateSet && "At least one Return should have been found!");
+  if (IsEntry && !ExitStateSet) {
+      addEdge(CurrentNode, ExitNode);
+      ExitStateSet = true;
+  }
+  //assert(ExitStateSet && "At least one Return should have been found!");
 
   // Fill MuArchGraph Edges
   for (auto &MBB : MF) {
@@ -333,8 +338,10 @@ bool MuArchStateGraph::fillMuGraphWithFunction(MachineFunction &MF, bool IsEntry
   return true;
 }
 
-void MuArchStateGraph::fillMuGraph(MachineModuleInfo *MMI,
-                                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap) {
+void MuArchStateGraph::fillMuGraph(
+    MachineModuleInfo *MMI,
+    const std::unordered_map<const MachineBasicBlock *, unsigned int>
+        &MBBLatencyMap) {
   // Fill the Mu graph from MBBs
   bool IsEntry = true;
   for (auto &F : MMI->getModule()->getFunctionList()) {
@@ -362,13 +369,6 @@ bool MuArchStateGraph::finalize(MachineFunction &MF, MachineModuleInfo *MMI) {
     for (auto &MBB : *MF) {
       for (auto &MI : MBB) {
         if (MI.isCall()) {
-          // taken care of by Call SpLitter Pass
-          // split MBB before and after the call
-          // outs() << "MBB: " << MBB.getName() << ", MBB size: " << MBB.size()
-          //        << "\n";
-          // outs() << "Found Call Instruction: " << "in Function: "
-          //        << MF->getName() << "\n";
-          // MI.getOperand(1).dump();
           if (MI.getOperand(0).getType() ==
               llvm::MachineOperand::MO_GlobalAddress) {
             const auto *GV = MI.getOperand(0).getGlobal();
@@ -381,6 +381,10 @@ bool MuArchStateGraph::finalize(MachineFunction &MF, MachineModuleInfo *MMI) {
             assert(MMI != nullptr &&
                    "Expected MachineModuleInfo to be available!");
             auto *CalleeMF = MMI->getMachineFunction(*Callee);
+            if (CalleeMF == nullptr) {
+              MBB.dump();
+              continue;
+            }
             assert(CalleeMF != nullptr &&
                    "Expected MachineFunction to be available!");
             unsigned CaleeNode = MBBToNodeMap[&*CalleeMF->begin()];

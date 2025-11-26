@@ -105,12 +105,16 @@ bool PathAnalysisPass::runOnMachineFunction(MachineFunction &F) {
 
   // Get the Latency analysis results
   auto MBBLatencyMap = TAR.getMBBLatencyMap();
-  
+
   // Fill the Mu graph from MBBs
   MASG.fillMuGraph(MMI, MBBLatencyMap);
   MASG.finalize(F, MMI);
 
-  // TODO Get Loop Bounds
+  // TODO print Loop Bounds
+  outs() << "Aggregated Loop Bounds:\n";
+  for (auto const& [MBB, Bound] : TAR.LoopBoundMap) {
+      outs() << "MBB: " << MBB->getName() << " Bound: " << Bound << "\n";
+  }
 
   // TODO Create ILP to solve.
   return false;

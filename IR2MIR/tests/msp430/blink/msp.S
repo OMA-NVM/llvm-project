@@ -1,5 +1,5 @@
-	.text
 	.file	"llvm-link"
+	.text
 	.globl	main                            ; -- Begin function main
 	.p2align	1
 	.type	main,@function
