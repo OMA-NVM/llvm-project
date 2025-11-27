@@ -59,6 +59,7 @@ bool FillMuGraphPass::runOnMachineFunction(MachineFunction &F) {
 
   auto *MMI = &getAnalysis<MachineModuleInfoWrapperPass>().getMMI();
   auto MBBLatencyMap = TAR.getMBBLatencyMap();
+  auto LoopBoundMap = TAR.getLoopBoundMap();
 
   bool IsEntry = false;
   if (StartFunctionName != "") {
@@ -67,7 +68,7 @@ bool FillMuGraphPass::runOnMachineFunction(MachineFunction &F) {
       if (StartingFunction && &F.getFunction() == StartingFunction) IsEntry = true;
   }
 
-  TAR.MASG.fillMuGraphWithFunction(F, IsEntry, MBBLatencyMap);
+  TAR.MASG.fillMuGraphWithFunction(F, IsEntry, MBBLatencyMap, LoopBoundMap);
 
   // Check if this is the last function to finalize
   bool IsLast = false;

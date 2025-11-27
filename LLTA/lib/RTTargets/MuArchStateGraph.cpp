@@ -79,8 +79,13 @@ bool Node::isFree() const { return Successors.empty() && Predecessors.empty(); }
 
 // Get a description of the Node
 std::string Node::getNodeDescr() const {
-  return "ID: " + std::to_string(Id) + ", Name: " + Name.str() +
+  std::string Descr = "ID: " + std::to_string(Id) + ", Name: " + Name.str() +
          ", Cycle:" + std::to_string(State->getUpperBoundCycles());
+  if (IsLoop) {
+    Descr += "\\nLoop: [" + std::to_string(LowerLoopBound) + ", " +
+             std::to_string(UpperLoopBound) + "]";
+  }
+  return Descr;
 }
 
 // Get the architectural state of the Node
@@ -224,8 +229,9 @@ bool MuArchStateGraph::dump2Dot(StringRef FileName) {
     // Write nodes in this cluster
     for (unsigned NodeId : NodeIds) {
       const auto &Node = Nodes.at(NodeId);
+      std::string Color = Node.IsLoop ? "lightblue" : "white";
       File << "    " << Node.getId() << " [label=\"" << Node.getNodeDescr()
-           << "\"];\n";
+           << "\",color=" << Color << "];\n";
     }
 
     File << "  }\n";
@@ -281,7 +287,9 @@ std::vector<unsigned> MuArchStateGraph::getNodesNotInMBBMap() const {
 bool MuArchStateGraph::fillMuGraphWithFunction(
     MachineFunction &MF, bool IsEntry,
     const std::unordered_map<const MachineBasicBlock *, unsigned int>
-        &MBBLatencyMap) {
+        &MBBLatencyMap,
+    const std::unordered_map<const MachineBasicBlock *, unsigned int>
+        &LoopBoundMap) {
   // Add entry state and Exit state
   bool EntryStateSet = false;
   bool ExitStateSet = false;
@@ -305,6 +313,19 @@ bool MuArchStateGraph::fillMuGraphWithFunction(
     unsigned Latency = (It != MBBLatencyMap.end()) ? It->second : 0;
     addNode(MuArchState(Latency, Latency), &MBB);
     CurrentNode = MBBToNodeMap[&MBB];
+
+    // Check if this MBB is a loop header and set loop bounds
+    auto LoopIt = LoopBoundMap.find(&MBB);
+    if (LoopIt != LoopBoundMap.end()) {
+      Nodes.at(CurrentNode).IsLoop = true;
+      Nodes.at(CurrentNode).UpperLoopBound = LoopIt->second;
+      Nodes.at(CurrentNode).LowerLoopBound = 1; // Default lower bound
+      if (DebugPrints) {
+        outs() << "  Marked node " << CurrentNode << " (MBB " << MBB.getName()
+               << ") as loop header with bound " << LoopIt->second << "\n";
+      }
+    }
+
     // Add entry state for the first Node only
     if (IsEntry && !EntryStateSet) {
       addEdge(EntryNode, CurrentNode);
@@ -364,12 +385,14 @@ bool MuArchStateGraph::fillMuGraphWithFunction(
 void MuArchStateGraph::fillMuGraph(
     MachineModuleInfo *MMI,
     const std::unordered_map<const MachineBasicBlock *, unsigned int>
-        &MBBLatencyMap) {
+        &MBBLatencyMap,
+    const std::unordered_map<const MachineBasicBlock *, unsigned int>
+        &LoopBoundMap) {
   // Fill the Mu graph from MBBs
   bool IsEntry = true;
   for (auto &F : MMI->getModule()->getFunctionList()) {
     if (auto *MF = MMI->getMachineFunction(F)) {
-      fillMuGraphWithFunction(*MF, IsEntry, MBBLatencyMap);
+      fillMuGraphWithFunction(*MF, IsEntry, MBBLatencyMap, LoopBoundMap);
       if (IsEntry)
         IsEntry = false;
     }

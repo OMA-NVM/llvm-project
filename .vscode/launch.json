@@ -37,16 +37,6 @@
     }, {
       "type": "lldb",
       "request": "launch",
-      "name": "dbg covercnt MSP430",
-      "program": "${workspaceFolder}/build/bin/llta",
-      "args": ["${workspaceFolder}/LLTA/tests/msp430/cover/msp.ll",
-      "-dump-file=${workspaceFolder}/LLTA/tests/msp430/cover/msp.elf.dump",
-      "-start-function=main"],
-      "cwd": "${workspaceFolder}",
-      "preLaunchTask": "build"
-    }, {
-      "type": "lldb",
-      "request": "launch",
       "name": "dbg DebugIR",
       "program": "${workspaceFolder}/build/bin/ir2mir",
       "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cover/msp.ll",

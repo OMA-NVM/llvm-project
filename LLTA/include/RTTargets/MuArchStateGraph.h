@@ -64,6 +64,16 @@ public:
 
   MuArchState &getState() const;
 
+  bool IsLoop = false;
+
+  bool IsNestedLoop = false;
+
+  unsigned int LowerLoopBound;
+
+  unsigned int UpperLoopBound;
+
+  Node* NestedLoopHeader;
+
   friend std::ostream &operator<<(std::ostream &Stream, Node Node) {
     Stream << "Node ID: " << Node.Id;
     return Stream;
@@ -156,13 +166,15 @@ public:
    * Fill the MuArchStateGraph with nodes and edges from a MachineFunction.
    */
   bool fillMuGraphWithFunction(MachineFunction &MF, bool IsEntry,
-                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap);
+                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap,
+                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &LoopBoundMap = {});
 
   /**
    * Fill the MuArchStateGraph with all functions from a module.
    */
   void fillMuGraph(MachineModuleInfo *MMI,
-                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap);
+                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &MBBLatencyMap,
+                   const std::unordered_map<const MachineBasicBlock *, unsigned int> &LoopBoundMap = {});
 
   /**
    * Finalize the graph by adding call and return edges.
