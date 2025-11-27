@@ -423,6 +423,13 @@ void AsmDumpAndCheckPass::checkMSP430Instruction(const MachineInstr &I) {
     // TODO We should be able to ignore those but better make sure
     // errs() << "Found CFI\n";
     break;
+  case TargetOpcode::DBG_VALUE:
+  case TargetOpcode::DBG_LABEL:
+  case TargetOpcode::DBG_INSTR_REF:
+  case TargetOpcode::DBG_PHI:
+  case TargetOpcode::DBG_VALUE_LIST:
+    // Debug instructions can be ignored for timing analysis
+    break;
   default:
     errs() << "UNKNOWN: " << I << "\n";
     // TODO Handle frame-setup CFI_INSTRUCTION

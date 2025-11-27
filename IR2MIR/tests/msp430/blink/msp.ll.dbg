@@ -11,34 +11,40 @@ target triple = "msp430"
 ; Function Attrs: noinline nounwind
 define dso_local i16 @main() #0 !dbg !6 {
 entry:
+  %retval = alloca i16, align 2
   %i = alloca i16, align 2
+  store i16 0, ptr %retval, align 2
   store volatile i16 23168, ptr @WDTCTL, align 2, !dbg !11
   %0 = load volatile i16, ptr @PM5CTL0, align 2, !dbg !12
   %and = and i16 %0, -2, !dbg !12
   store volatile i16 %and, ptr @PM5CTL0, align 2, !dbg !12
   %1 = load volatile i8, ptr @PADIR_L, align 1, !dbg !13
-  %2 = or i8 %1, 1, !dbg !13
-  store volatile i8 %2, ptr @PADIR_L, align 1, !dbg !13
+  %conv = zext i8 %1 to i16, !dbg !13
+  %or = or i16 %conv, 1, !dbg !13
+  %conv1 = trunc i16 %or to i8, !dbg !13
+  store volatile i8 %conv1, ptr @PADIR_L, align 1, !dbg !13
   br label %for.cond, !dbg !14
 
 for.cond:                                         ; preds = %do.end, %entry
     #dbg_declare(ptr %i, !15, !DIExpression(), !21)
-  %3 = load volatile i8, ptr @PAOUT_L, align 1, !dbg !22
-  %4 = xor i8 %3, 1, !dbg !22
-  store volatile i8 %4, ptr @PAOUT_L, align 1, !dbg !22
+  %2 = load volatile i8, ptr @PAOUT_L, align 1, !dbg !22
+  %conv2 = zext i8 %2 to i16, !dbg !22
+  %xor = xor i16 %conv2, 1, !dbg !22
+  %conv3 = trunc i16 %xor to i8, !dbg !22
+  store volatile i8 %conv3, ptr @PAOUT_L, align 1, !dbg !22
   store volatile i16 -15536, ptr %i, align 2, !dbg !23
   br label %do.body, !dbg !24
 
 do.body:                                          ; preds = %do.cond, %for.cond
-  %5 = load volatile i16, ptr %i, align 2, !dbg !25
-  %dec = add i16 %5, -1, !dbg !25
+  %3 = load volatile i16, ptr %i, align 2, !dbg !25
+  %dec = add i16 %3, -1, !dbg !25
   store volatile i16 %dec, ptr %i, align 2, !dbg !25
   br label %do.cond, !dbg !26
 
 do.cond:                                          ; preds = %do.body
-  %6 = load volatile i16, ptr %i, align 2, !dbg !27
-  %cmp.not = icmp eq i16 %6, 0, !dbg !28
-  br i1 %cmp.not, label %do.end, label %do.body, !dbg !26, !llvm.loop !29
+  %4 = load volatile i16, ptr %i, align 2, !dbg !27
+  %cmp = icmp ne i16 %4, 0, !dbg !28
+  br i1 %cmp, label %do.body, label %do.end, !dbg !26, !llvm.loop !29
 
 do.end:                                           ; preds = %do.cond
   br label %for.cond, !dbg !32, !llvm.loop !33

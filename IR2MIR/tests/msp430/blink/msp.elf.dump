@@ -121,31 +121,28 @@ Disassembly of section .debug_abbrev:
   12:	00 02       	bra	@r2		;
   14:	2e 01 11 01 	mova	&65809,	r14	;0x10111
   18:	12 06       	mova	@r6+,	r2	;
-  1a:	40 18 97 42 	movx.w	&0x00319,14862(r7); 0x03a0e
-  1e:	19 03 0e 3a 
-  22:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe3a
-  24:	0b 27       	jz	$-488    	;abs 0xfffffffffffffe3c
-  26:	19 49 13 3f 	mov	16147(r9),r9	;0x03f13
-  2a:	19 00       	mova	@r0+,	r9	;
-  2c:	00 03       	bra	@r3		;
-  2e:	0b 01       	mova	@r1,	r11	;
-  30:	11 01       	mova	@r1+,	r1	;
-  32:	12 06       	mova	@r6+,	r2	;
-  34:	00 00       	beq			
-  36:	04 34       	jge	$+10     	;abs 0x40
-  38:	00 02       	bra	@r2		;
-  3a:	18 03       	mova	@r3+,	r8	;
-  3c:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffc5a
-  3e:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe56
-  40:	0b 49       	mov	r9,	r11	;
-  42:	13 00       	mova	@r0+,	r3	;
-  44:	00 05       	bra	@r5		;
-  46:	24 00 03 0e 	mova	&3587,	r4	;0x00e03
-  4a:	3e 0b 0b 0b 	mova	2827(r11),r14	;0x00b0b
-  4e:	00 00       	beq			
-  50:	06 35       	jge	$+526    	;abs 0x25e
-  52:	00 49       	br	r9		;
-  54:	13 00       	mova	@r0+,	r3	;
+  1a:	40 18 03 0e 	movax	@r14,	r3	;
+  1e:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  22:	27 19 49 13 	rpt #8 { callax	r9		;
+  26:	3f 19 00 00 	rpt #16 { beqx			
+  2a:	03 0b       	mova	@r11,	r3	;
+  2c:	01 11       	rra	r1		;
+  2e:	01 12       	push	r1		;
+  30:	06 00       	mova	@r0,	r6	;
+  32:	00 04       	bra	@r4		;
+  34:	34 00 02 18 	mova	6146(r0),r4	;PC rel. 0x01838
+  38:	03 0e       	mova	@r14,	r3	;
+  3a:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  3e:	49 13       	calla	r9		;
+  40:	00 00       	beq			
+  42:	05 24       	jz	$+12     	;abs 0x4e
+  44:	00 03       	bra	@r3		;
+  46:	0e 3e       	jmp	$-994    	;abs 0xfffffffffffffc64
+  48:	0b 0b       	mova	@r11,	r11	;
+  4a:	0b 00       	mova	@r0,	r11	;
+  4c:	00 06       	bra	@r6		;
+  4e:	35 00 49 13 	mova	4937(r0),r5	;PC rel. 0x01399
+  52:	00 00       	beq			
 	...
 
 Disassembly of section .debug_line:

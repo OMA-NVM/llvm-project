@@ -508,6 +508,14 @@ unsigned int InstructionLatencyPass::getMSP430Latency(const MachineInstr &I) {
   case MSP430::CFI_INSTRUCTION:
     return 0;
 
+  // Debug Instructions should not ahve any Latencies
+  case TargetOpcode::DBG_VALUE:
+  case TargetOpcode::DBG_LABEL:
+  case TargetOpcode::DBG_INSTR_REF:
+  case TargetOpcode::DBG_PHI:
+  case TargetOpcode::DBG_VALUE_LIST:
+    return 0;
+
   default:
     errs() << "No Latency assigned to Inst: " << I << "\n";
     assert(0 && "Instruction has no Latency!");

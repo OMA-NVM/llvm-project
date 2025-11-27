@@ -6,8 +6,128 @@ Disassembly of section __reset_vector:
 
 0000fffe <__msp430_resetvec_hook>:
 __msp430_resetvec_hook():
-    fffe:	02 40       	interrupt service routine at 0x4002
+    fffe:	7e 41       	interrupt service routine at 0x417e
 
+Disassembly of section .rodata:
+
+00004000 <.rodata>:
+    4000:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4004:	98 41 
+    4006:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    400a:	98 41 
+    400c:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4010:	98 41 
+    4012:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4016:	98 41 
+    4018:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    401c:	98 41 
+    401e:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4022:	98 41 
+    4024:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4028:	98 41 
+    402a:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    402e:	98 41 
+    4030:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4034:	98 41 
+    4036:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    403a:	98 41 
+    403c:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4040:	98 41 
+    4042:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4046:	98 41 
+    4048:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    404c:	98 41 
+    404e:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4052:	98 41 
+    4054:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4058:	98 41 
+    405a:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    405e:	98 41 
+    4060:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4064:	98 41 
+    4066:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    406a:	98 41 
+    406c:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4070:	98 41 
+    4072:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4076:	98 41 
+    4078:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    407c:	98 41 
+    407e:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4082:	98 41 
+    4084:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4088:	98 41 
+    408a:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    408e:	98 41 
+    4090:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    4094:	98 41 
+    4096:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    409a:	98 41 
+    409c:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40a0:	98 41 
+    40a2:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40a6:	98 41 
+    40a8:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40ac:	98 41 
+    40ae:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40b2:	98 41 
+    40b4:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40b8:	98 41 
+    40ba:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40be:	98 41 
+    40c0:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40c4:	98 41 
+    40c6:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40ca:	98 41 
+    40cc:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40d0:	98 41 
+    40d2:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40d6:	98 41 
+    40d8:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40dc:	98 41 
+    40de:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40e2:	98 41 
+    40e4:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40e8:	98 41 
+    40ea:	98 41 98 41 	mov	16792(r1),16792(r8);0x04198, 0x4198
+    40ee:	98 41 
+    40f0:	ba 41 ba 41 	pop	16826(r10)		;
+    40f4:	ba 41 ba 41 	pop	16826(r10)		;
+    40f8:	ba 41 ba 41 	pop	16826(r10)		;
+    40fc:	ba 41 ba 41 	pop	16826(r10)		;
+    4100:	ba 41 ba 41 	pop	16826(r10)		;
+    4104:	ba 41 ba 41 	pop	16826(r10)		;
+    4108:	ba 41 ba 41 	pop	16826(r10)		;
+    410c:	ba 41 ba 41 	pop	16826(r10)		;
+    4110:	ba 41 ba 41 	pop	16826(r10)		;
+    4114:	ba 41 ba 41 	pop	16826(r10)		;
+    4118:	ba 41 ba 41 	pop	16826(r10)		;
+    411c:	ba 41 ba 41 	pop	16826(r10)		;
+    4120:	ba 41 ba 41 	pop	16826(r10)		;
+    4124:	ba 41 ba 41 	pop	16826(r10)		;
+    4128:	ba 41 ba 41 	pop	16826(r10)		;
+    412c:	ba 41 ba 41 	pop	16826(r10)		;
+    4130:	ba 41 ba 41 	pop	16826(r10)		;
+    4134:	ba 41 ba 41 	pop	16826(r10)		;
+    4138:	ba 41 ba 41 	pop	16826(r10)		;
+    413c:	ba 41 ba 41 	pop	16826(r10)		;
+    4140:	ba 41 ba 41 	pop	16826(r10)		;
+    4144:	ba 41 ba 41 	pop	16826(r10)		;
+    4148:	ba 41 ba 41 	pop	16826(r10)		;
+    414c:	ba 41 ba 41 	pop	16826(r10)		;
+    4150:	ba 41 ba 41 	pop	16826(r10)		;
+    4154:	ba 41 ba 41 	pop	16826(r10)		;
+    4158:	ba 41 ba 41 	pop	16826(r10)		;
+    415c:	ba 41 ba 41 	pop	16826(r10)		;
+    4160:	ba 41 ba 41 	pop	16826(r10)		;
+    4164:	ba 41 ba 41 	pop	16826(r10)		;
+    4168:	dc 41 dc 41 	mov.b	16860(r1),16860(r12);0x041dc, 0x41dc
+    416c:	dc 41 
+    416e:	dc 41 dc 41 	mov.b	16860(r1),16860(r12);0x041dc, 0x41dc
+    4172:	dc 41 
+    4174:	dc 41 dc 41 	mov.b	16860(r1),16860(r12);0x041dc, 0x41dc
+    4178:	dc 41 
+    417a:	
 Disassembly of section .upper.data:
 
 00010000 <__high_dataend-0x2>:
@@ -22,179 +142,165 @@ __heap_start__():
 
 Disassembly of section .text:
 
-00004002 <__crt0_start>:
+0000417e <__crt0_start>:
 __crt0_start():
-    4002:	81 00 00 2c 	mova	#11264,	r1	;0x02c00
+    417e:	81 00 00 2c 	mova	#11264,	r1	;0x02c00
 
-00004006 <__crt0_call_main>:
+00004182 <__crt0_call_main>:
 __crt0_call_main():
-    4006:	0c 43       	clr	r12		;
+    4182:	0c 43       	clr	r12		;
 
-00004008 <.Loc.254.1>:
-    4008:	b0 13 60 40 	calla	#16480		;0x04060
+00004184 <.Loc.254.1>:
+    4184:	b0 13 ee 41 	calla	#16878		;0x041ee
 
-0000400c <swi120>:
+00004188 <swi120>:
 swi120():
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:2
-    400c:	0d 43       	clr	r13		;
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:2
+    4188:	0d 43       	clr	r13		;
 
-0000400e <.Ltmp0>:
-    400e:	05 3c       	jmp	$+12     	;abs 0x401a
+0000418a <.LBB0_1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:6
+    418a:	3d 90 78 00 	cmp	#120,	r13	;#0x0078
+    418e:	0a 2c       	jc	$+22     	;abs 0x41a4
+    4190:	0e 4d       	mov	r13,	r14	;
+    4192:	0e 5e       	rla	r14		;
+    4194:	10 4e 00 40 	br	16384(r14)		;
 
-00004010 <.LBB0_1>:
-    4010:	0c 5e       	add	r14,	r12	;
+00004198 <.LBB0_3>:
+    4198:	1c 53       	inc	r12		;
 
-00004012 <.Loc.4.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:4
-    4012:	1d 53       	inc	r13		;
+0000419a <.LBB0_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:5
+    419a:	1d 53       	inc	r13		;
 
-00004014 <.Loc.4.1>:
-    4014:	3d 90 78 00 	cmp	#120,	r13	;#0x0078
-    4018:	06 24       	jz	$+14     	;abs 0x4026
+0000419c <.Loc.5.1>:
+    419c:	3d 90 78 00 	cmp	#120,	r13	;#0x0078
+    41a0:	f4 23       	jnz	$-22     	;abs 0x418a
+    41a2:	02 3c       	jmp	$+6      	;abs 0x41a8
 
-0000401a <.LBB0_2>:
-    401a:	1e 43       	mov	#1,	r14	;r3 As==01
-    401c:	3d 90 78 00 	cmp	#120,	r13	;#0x0078
-    4020:	f7 2b       	jnc	$-16     	;abs 0x4010
-    4022:	3e 43       	mov	#-1,	r14	;r3 As==11
-    4024:	f5 3f       	jmp	$-20     	;abs 0x4010
+000041a4 <.LBB0_5>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:127
+    41a4:	3c 53       	add	#-1,	r12	;r3 As==11
+    41a6:	f9 3f       	jmp	$-12     	;abs 0x419a
 
-00004026 <.LBB0_4>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:129
-    4026:	30 41       	ret			
+000041a8 <.LBB0_6>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:130
+    41a8:	30 41       	ret			
 
-00004028 <swi50>:
+000041aa <swi50>:
 swi50():
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:134
-    4028:	0d 43       	clr	r13		;
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:135
+    41aa:	0d 43       	clr	r13		;
 
-0000402a <.Ltmp9>:
-    402a:	05 3c       	jmp	$+12     	;abs 0x4036
+000041ac <.LBB1_1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:139
+    41ac:	3d 90 3c 00 	cmp	#60,	r13	;#0x003c
+    41b0:	0a 2c       	jc	$+22     	;abs 0x41c6
+    41b2:	0e 4d       	mov	r13,	r14	;
+    41b4:	0e 5e       	rla	r14		;
+    41b6:	10 4e f0 40 	br	16624(r14)		;
 
-0000402c <.LBB1_1>:
-    402c:	0c 5e       	add	r14,	r12	;
+000041ba <.LBB1_3>:
+    41ba:	1c 53       	inc	r12		;
 
-0000402e <.Loc.136.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:136
-    402e:	1d 53       	inc	r13		;
+000041bc <.LBB1_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:138
+    41bc:	1d 53       	inc	r13		;
 
-00004030 <.Loc.136.1>:
-    4030:	3d 90 32 00 	cmp	#50,	r13	;#0x0032
-    4034:	06 24       	jz	$+14     	;abs 0x4042
+000041be <.Loc.138.1>:
+    41be:	3d 90 32 00 	cmp	#50,	r13	;#0x0032
+    41c2:	f4 23       	jnz	$-22     	;abs 0x41ac
+    41c4:	02 3c       	jmp	$+6      	;abs 0x41ca
 
-00004036 <.LBB1_2>:
-    4036:	1e 43       	mov	#1,	r14	;r3 As==01
-    4038:	3d 90 32 00 	cmp	#50,	r13	;#0x0032
-    403c:	f7 2b       	jnc	$-16     	;abs 0x402c
-    403e:	3e 43       	mov	#-1,	r14	;r3 As==11
-    4040:	f5 3f       	jmp	$-20     	;abs 0x402c
+000041c6 <.LBB1_5>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:200
+    41c6:	3c 53       	add	#-1,	r12	;r3 As==11
+    41c8:	f9 3f       	jmp	$-12     	;abs 0x41bc
 
-00004042 <.LBB1_4>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:201
-    4042:	30 41       	ret			
+000041ca <.LBB1_6>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:203
+    41ca:	30 41       	ret			
 
-00004044 <swi10>:
+000041cc <swi10>:
 swi10():
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:206
-    4044:	0d 43       	clr	r13		;
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:208
+    41cc:	0d 43       	clr	r13		;
 
-00004046 <.Ltmp18>:
-    4046:	05 3c       	jmp	$+12     	;abs 0x4052
+000041ce <.LBB2_1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:212
+    41ce:	3d 90 0a 00 	cmp	#10,	r13	;#0x000a
+    41d2:	0a 2c       	jc	$+22     	;abs 0x41e8
+    41d4:	0e 4d       	mov	r13,	r14	;
+    41d6:	0e 5e       	rla	r14		;
+    41d8:	10 4e 68 41 	br	16744(r14)		;
 
-00004048 <.LBB2_1>:
-    4048:	0c 5e       	add	r14,	r12	;
+000041dc <.LBB2_3>:
+    41dc:	1c 53       	inc	r12		;
 
-0000404a <.Loc.208.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:208
-    404a:	1d 53       	inc	r13		;
+000041de <.LBB2_4>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:211
+    41de:	1d 53       	inc	r13		;
 
-0000404c <.Loc.208.1>:
-    404c:	3d 90 0a 00 	cmp	#10,	r13	;#0x000a
-    4050:	06 24       	jz	$+14     	;abs 0x405e
+000041e0 <.Loc.211.1>:
+    41e0:	3d 90 0a 00 	cmp	#10,	r13	;#0x000a
+    41e4:	f4 23       	jnz	$-22     	;abs 0x41ce
+    41e6:	02 3c       	jmp	$+6      	;abs 0x41ec
 
-00004052 <.LBB2_2>:
-    4052:	1e 43       	mov	#1,	r14	;r3 As==01
-    4054:	3d 90 0a 00 	cmp	#10,	r13	;#0x000a
-    4058:	f7 2b       	jnc	$-16     	;abs 0x4048
-    405a:	3e 43       	mov	#-1,	r14	;r3 As==11
-    405c:	f5 3f       	jmp	$-20     	;abs 0x4048
+000041e8 <.LBB2_5>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:223
+    41e8:	3c 53       	add	#-1,	r12	;r3 As==11
+    41ea:	f9 3f       	jmp	$-12     	;abs 0x41de
 
-0000405e <.LBB2_4>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:223
-    405e:	30 41       	ret			
+000041ec <.LBB2_6>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:226
+    41ec:	30 41       	ret			
 
-00004060 <main>:
+000041ee <main>:
 main():
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:227
-    4060:	21 83       	decd	r1		;
-    4062:	0c 43       	clr	r12		;
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:230
+    41ee:	21 83       	decd	r1		;
 
-00004064 <.Loc.228.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:228
-    4064:	81 43 00 00 	mov	#0,	0(r1)	;r3 As==00
+000041f0 <.Loc.231.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:231
+    41f0:	81 43 00 00 	mov	#0,	0(r1)	;r3 As==00
 
-00004068 <.Loc.230.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:230
-    4068:	2d 41       	mov	@r1,	r13	;
-    406a:	05 3c       	jmp	$+12     	;abs 0x4076
+000041f4 <.Loc.233.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:233
+    41f4:	2c 41       	mov	@r1,	r12	;
 
-0000406c <.LBB3_1>:
-swi10():
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:230
-    406c:	0d 5e       	add	r14,	r13	;
+000041f6 <.Loc.233.1>:
+    41f6:	b0 12 cc 41 	call	#16844		;#0x41cc
 
-0000406e <.Loc.208.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:208
-    406e:	1c 53       	inc	r12		;
+000041fa <.Loc.233.1>:
+    41fa:	81 4c 00 00 	mov	r12,	0(r1)	;
 
-00004070 <.Loc.208.1>:
-    4070:	3c 90 0a 00 	cmp	#10,	r12	;#0x000a
-    4074:	06 24       	jz	$+14     	;abs 0x4082
+000041fe <.Loc.234.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:234
+    41fe:	2c 41       	mov	@r1,	r12	;
 
-00004076 <.LBB3_2>:
-    4076:	1e 43       	mov	#1,	r14	;r3 As==01
+00004200 <.Loc.234.1>:
+    4200:	b0 12 aa 41 	call	#16810		;#0x41aa
 
-00004078 <.Ltmp32>:
-    4078:	3c 90 0a 00 	cmp	#10,	r12	;#0x000a
-    407c:	f7 2b       	jnc	$-16     	;abs 0x406c
+00004204 <.Loc.234.1>:
+    4204:	81 4c 00 00 	mov	r12,	0(r1)	;
 
-0000407e <.Ltmp33>:
-main():
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:208
-    407e:	3e 43       	mov	#-1,	r14	;r3 As==11
-    4080:	f5 3f       	jmp	$-20     	;abs 0x406c
+00004208 <.Loc.235.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:235
+    4208:	2c 41       	mov	@r1,	r12	;
 
-00004082 <.LBB3_4>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:230
-    4082:	81 4d 00 00 	mov	r13,	0(r1)	;
+0000420a <.Loc.235.1>:
+    420a:	b0 12 88 41 	call	#16776		;#0x4188
 
-00004086 <.Loc.231.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:231
-    4086:	2c 41       	mov	@r1,	r12	;
+0000420e <.Loc.235.1>:
+    420e:	81 4c 00 00 	mov	r12,	0(r1)	;
 
-00004088 <.Loc.231.1>:
-    4088:	b0 12 28 40 	call	#16424		;#0x4028
+00004212 <.Loc.239.1>:
+/Users/nilsholscher/workspaces/msp430_template/src/main.c:239
+    4212:	2c 41       	mov	@r1,	r12	;
 
-0000408c <.Loc.231.1>:
-    408c:	81 4c 00 00 	mov	r12,	0(r1)	;
-
-00004090 <.Loc.232.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:232
-    4090:	2c 41       	mov	@r1,	r12	;
-
-00004092 <.Loc.232.1>:
-    4092:	b0 12 0c 40 	call	#16396		;#0x400c
-
-00004096 <.Loc.232.1>:
-    4096:	81 4c 00 00 	mov	r12,	0(r1)	;
-
-0000409a <.Loc.236.1>:
-/Users/nilsholscher/workspaces/msp430_template/src/cover.c:236
-    409a:	2c 41       	mov	@r1,	r12	;
-
-0000409c <.Loc.236.1>:
-    409c:	21 53       	incd	r1		;
-    409e:	30 41       	ret			
+00004214 <.Loc.239.1>:
+    4214:	21 53       	incd	r1		;
+    4216:	30 41       	ret			
 
 Disassembly of section .MSP430.attributes:
 
@@ -210,7 +316,8 @@ Disassembly of section .comment:
 Disassembly of section .debug_info:
 
 00000000 <.debug_info>:
-   0:	2f 01 00 00 	mova	&65536,	r15	;0x10000
+   0:	e3 00       	adda	r0,	r3	;
+   2:	00 00       	beq			
    4:	04 00       	mova	@r0,	r4	;
    6:	00 00       	beq			
    8:	00 00       	beq			
@@ -221,30 +328,28 @@ Disassembly of section .debug_info:
   12:	6b 00 00 00 	mova	r0,	&720896	; 0xb0000
   16:	00 00       	beq			
   18:	00 00       	beq			
-  1a:	77 00 00 00 	mova	r0,	0(r7)	;
-  1e:	0c 40       	mov	r0,	r12	;
-  20:	00 00       	beq			
-  22:	94 00 00 00 	cmpa	#0,	r4	;
-  26:	02 0c       	mova	@r12,	r2	;
-  28:	40 00       	rrcm.a	#1,	r0	;
-  2a:	00 1c 00 00 	beqx			
+  1a:	76 00 00 00 	mova	r0,	0(r6)	;
+  1e:	88 41 00 00 	mov	r1,	0(r8)	;
+  22:	90 00 00 00 	cmpa	#0,	r0	;
+  26:	02 88       	sub	r8,	r2	;
+  28:	41 00       	rrcm.a	#1,	r1	;
+  2a:	00 22       	.word	0x2200;	????
+  2c:	00 00       	beq			
   2e:	00 01       	bra	@r1		;
-  30:	51 b2 00 00 	bit.b	&0x0000,r1	;0x0000
+  30:	51 a5 00 00 	dadd.b	0(r5),	r1	;
   34:	00 01       	bra	@r1		;
-  36:	01 cd       	bic	r13,	r1	;
+  36:	01 da       	bis	r10,	r1	;
   38:	00 00       	beq			
   3a:	00 03       	bra	@r3		;
   3c:	01 5c       	add	r12,	r1	;
-  3e:	75 00 00 00 	mova	r0,	0(r5)	;
+  3e:	74 00 00 00 	mova	r0,	0(r4)	;
   42:	01 01       	mova	@r1,	r1	;
-  44:	cd 00       	mova	r0,	r13	;
+  44:	da 00       	cmpa	r0,	r10	;
   46:	00 00       	beq			
-  48:	04 00       	mova	@r0,	r4	;
-  4a:	00 00       	beq			
-  4c:	00 b0       	bit	r0,	r0	;
-  4e:	00 00       	beq			
-  50:	00 01       	bra	@r1		;
-  52:	
+  48:	04 01       	mova	@r1,	r4	;
+  4a:	5d c1 00 00 	bic.b	0(r1),	r13	;
+  4e:	00 01       	bra	@r1		;
+  50:	
 Disassembly of section .debug_abbrev:
 
 00000000 <.debug_abbrev>:
@@ -259,104 +364,49 @@ Disassembly of section .debug_abbrev:
   12:	00 02       	bra	@r2		;
   14:	2e 01 11 01 	mova	&65809,	r14	;0x10111
   18:	12 06       	mova	@r6+,	r2	;
-  1a:	40 18 97 42 	movx.w	&0x00319,14862(r7); 0x03a0e
-  1e:	19 03 0e 3a 
-  22:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe3a
-  24:	0b 27       	jz	$-488    	;abs 0xfffffffffffffe3c
-  26:	19 49 13 3f 	mov	16147(r9),r9	;0x03f13
-  2a:	19 00       	mova	@r0+,	r9	;
-  2c:	00 03       	bra	@r3		;
-  2e:	05 00       	mova	@r0,	r5	;
-  30:	02 18 03 0e 	rpt #3 { movax	@r14,	r3	;
-  34:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
-  38:	49 13       	calla	r9		;
-  3a:	00 00       	beq			
-  3c:	04 34       	jge	$+10     	;abs 0x46
-  3e:	00 02       	bra	@r2		;
-  40:	17 03       	mova	@r3+,	r7	;
-  42:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffc60
-  44:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe5c
-  46:	0b 49       	mov	r9,	r11	;
-  48:	13 00       	mova	@r0+,	r3	;
-  4a:	00 05       	bra	@r5		;
-  4c:	2e 01 11 01 	mova	&65809,	r14	;0x10111
-  50:	12 06       	mova	@r6+,	r2	;
-  52:	40 18 97 42 	movx.w	&0x03119,19(r7)	; 0x00013
-  56:	19 31 13 00 
-  5a:	00 06       	bra	@r6		;
-  5c:	05 00       	mova	@r0,	r5	;
-  5e:	02 18 31 13 	rpt #3 { retix			;return from interupt
-  62:	00 00       	beq			
-  64:	07 34       	jge	$+16     	;abs 0x74
-  66:	00 02       	bra	@r2		;
-  68:	17 31       	jn	$+560    	;abs 0x298
-  6a:	13 00       	mova	@r0+,	r3	;
-  6c:	00 08       	bra	@r8		;
-  6e:	2e 01 03 0e 	mova	&69123,	r14	;0x10e03
-  72:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
-  76:	27 19 49 13 	rpt #8 { callax	r9		;
-  7a:	3f 19 20 0b 	brax	&720896	;0xb0000
-  7e:	00 00 
-  80:	09 05       	mova	@r5,	r9	;
-  82:	00 03       	bra	@r3		;
-  84:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffca2
-  86:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe9e
-  88:	0b 49       	mov	r9,	r11	;
-  8a:	13 00       	mova	@r0+,	r3	;
-  8c:	00 0a       	bra	@r10		;
-  8e:	34 00 03 0e 	mova	3587(r0),r4	;PC rel. 0x00e93
-  92:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
-  96:	49 13       	calla	r9		;
-  98:	00 00       	beq			
-  9a:	0b 24       	jz	$+24     	;abs 0xb2
-  9c:	00 03       	bra	@r3		;
-  9e:	0e 3e       	jmp	$-994    	;abs 0xfffffffffffffcbc
-  a0:	0b 0b       	mova	@r11,	r11	;
-  a2:	0b 00       	mova	@r0,	r11	;
-  a4:	00 0c       	bra	@r12		;
-  a6:	2e 01 11 01 	mova	&65809,	r14	;0x10111
-  aa:	12 06       	mova	@r6+,	r2	;
-  ac:	40 18 97 42 	movx.w	&0x00319,14862(r7); 0x03a0e
-  b0:	19 03 0e 3a 
-  b4:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffecc
-  b6:	0b 49       	mov	r9,	r11	;
-  b8:	13 3f       	jmp	$-472    	;abs 0xfffffffffffffee0
-  ba:	19 00       	mova	@r0+,	r9	;
-  bc:	00 0d       	bra	@r13		;
-  be:	34 00 02 18 	mova	6146(r0),r4	;PC rel. 0x018c2
-  c2:	03 0e       	mova	@r14,	r3	;
-  c4:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
-  c8:	49 13       	calla	r9		;
-  ca:	00 00       	beq			
-  cc:	0e 1d 01 31 	rpt #15 { jnx.?	$+516    	;abs 0x2d2, Warning: reserved use of A/L and B/W bits detected
-  d0:	13 11       	rra	#1		;r3 As==01
-  d2:	01 12       	push	r1		;
-  d4:	06 58       	add	r8,	r6	;
-  d6:	0b 59       	add	r9,	r11	;
-  d8:	0b 57       	add	r7,	r11	;
-  da:	0b 00       	mova	@r0,	r11	;
-  dc:	00 0f       	bra	@r15		;
-  de:	05 00       	mova	@r0,	r5	;
-  e0:	02 17       	popm	#1,	r2	;16-bit words
-  e2:	31 13       	reti			;return from interupt
-  e4:	00 00       	beq			
-  e6:	10 89 82 01 	sub	386(r9),r0	;0x00182
-  ea:	00 31       	jn	$+514    	;abs 0x2ec
-  ec:	13 11       	rra	#1		;r3 As==01
-  ee:	01 00       	mova	@r0,	r1	;
-  f0:	00 11       	rra	r0		;
-  f2:	35 00 49 13 	mova	4937(r0),r5	;PC rel. 0x0143d
-  f6:	00 00       	beq			
+  1a:	40 18 03 0e 	movax	@r14,	r3	;
+  1e:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  22:	27 19 49 13 	rpt #8 { callax	r9		;
+  26:	3f 19 00 00 	rpt #16 { beqx			
+  2a:	03 05       	mova	@r5,	r3	;
+  2c:	00 02       	bra	@r2		;
+  2e:	18 03       	mova	@r3+,	r8	;
+  30:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffc4e
+  32:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe4a
+  34:	0b 49       	mov	r9,	r11	;
+  36:	13 00       	mova	@r0+,	r3	;
+  38:	00 04       	bra	@r4		;
+  3a:	34 00 02 18 	mova	6146(r0),r4	;PC rel. 0x0183e
+  3e:	03 0e       	mova	@r14,	r3	;
+  40:	3a 0b 3b 0b 	mova	2875(r11),r10	;0x00b3b
+  44:	49 13       	calla	r9		;
+  46:	00 00       	beq			
+  48:	05 2e       	jc	$-1012   	;abs 0xfffffffffffffc54
+  4a:	01 11       	rra	r1		;
+  4c:	01 12       	push	r1		;
+  4e:	06 40       	mov	r0,	r6	;
+  50:	18 03       	mova	@r3+,	r8	;
+  52:	0e 3a       	jl	$-994    	;abs 0xfffffffffffffc70
+  54:	0b 3b       	jl	$-488    	;abs 0xfffffffffffffe6c
+  56:	0b 49       	mov	r9,	r11	;
+  58:	13 3f       	jmp	$-472    	;abs 0xfffffffffffffe80
+  5a:	19 00       	mova	@r0+,	r9	;
+  5c:	00 06       	bra	@r6		;
+  5e:	24 00 03 0e 	mova	&3587,	r4	;0x00e03
+  62:	3e 0b 0b 0b 	mova	2827(r11),r14	;0x00b0b
+  66:	00 00       	beq			
+  68:	07 35       	jge	$+528    	;abs 0x278
+  6a:	00 49       	br	r9		;
+  6c:	13 00       	mova	@r0+,	r3	;
 	...
 
 Disassembly of section .debug_line:
 
 00000000 <L0^A>:
 L0^A():
-   0:	0c 01       	mova	@r1,	r12	;
-   2:	00 00       	beq			
+   0:	38 01 00 00 	mova	0(r1),	r8	;
    4:	03 00       	mova	@r0,	r3	;
-   6:	22 00 00 00 	mova	&0,	r2	;
+   6:	21 00 00 00 	mova	&0,	r1	;
 
 0000000a <L0^A>:
    a:	01 01       	mova	@r1,	r1	;
@@ -370,63 +420,22 @@ L0^A():
   1a:	01 73       	sbc	r1		;
   1c:	72 63       	addc.b	#-1,	r2	;r3 As==11
   1e:	00 00       	beq			
-  20:	
+  20:	6d 61       	addc.b	@r1,	r13	;
+  22:	69 6e       	addc.b	@r14,	r9	;
+  24:	2e 63       	addc	#2,	r14	;r3 As==10
+  26:	00 01       	bra	@r1		;
+  28:	00 00       	beq			
+  2a:	00 00       	beq			
+  2c:	05 02       	mova	@r2,	r5	;
+  2e:	88 41 00 00 	mov	r1,	0(r8)	;
+  32:	13 05       	mova	@r5+,	r3	;
+  34:	03 0a       	mova	@r10,	r3	;
+  36:	03 04       	mova	@r4,	r3	;
+  38:	09 02       	mova	@r2,	r9	;
+  3a:	00 01       	bra	@r1		;
+  3c:	05 14       	pushm.a	#1,	r5	;20-bit words
+  3e:	
 Disassembly of section .debug_str:
 
 00000000 <.debug_str>:
    0:	
-Disassembly of section .debug_loc:
-
-00000000 <.debug_loc>:
-   0:	02 00       	mova	@r0,	r2	;
-   2:	00 00       	beq			
-   4:	04 00       	mova	@r0,	r4	;
-   6:	00 00       	beq			
-   8:	03 00       	mova	@r0,	r3	;
-   a:	11 00       	mova	@r0+,	r1	;
-   c:	9f 04 00 00 	cmpa	#262144,r15	;0x40000
-  10:	00 1c 00 00 	beqx			
-  14:	00 01       	bra	@r1		;
-  16:	00 5d       	add	r13,	r0	;
-	...
-  20:	1e 00       	mova	@r0+,	r14	;
-  22:	00 00       	beq			
-  24:	20 00 00 00 	bra	&0		;
-  28:	03 00       	mova	@r0,	r3	;
-  2a:	11 00       	mova	@r0+,	r1	;
-  2c:	9f 20       	jnz	$+320    	;abs 0x16c
-  2e:	00 00       	beq			
-  30:	00 38       	jl	$+2      	;abs 0x32
-  32:	00 00       	beq			
-  34:	00 01       	bra	@r1		;
-  36:	00 5d       	add	r13,	r0	;
-	...
-  40:	3a 00 00 00 	mova	0(r0),	r10	;
-  44:	3c 00 00 00 	mova	0(r0),	r12	;
-  48:	03 00       	mova	@r0,	r3	;
-  4a:	11 00       	mova	@r0+,	r1	;
-  4c:	9f 3c       	jmp	$+320    	;abs 0x18c
-  4e:	00 00       	beq			
-  50:	00 54       	add	r4,	r0	;
-  52:	00 00       	beq			
-  54:	00 01       	bra	@r1		;
-  56:	00 5d       	add	r13,	r0	;
-	...
-  60:	60 00 00 00 	mova	r0,	&0	;
-  64:	6a 00 00 00 	mova	r0,	&655360	; 0xa0000
-  68:	01 00       	mova	@r0,	r1	;
-  6a:	5c 6c 00 00 	addc.b	0(r12),	r12	;
-  6e:	00 72       	subc	r2,	r0	;
-  70:	00 00       	beq			
-  72:	00 01       	bra	@r1		;
-  74:	00 5c       	add	r12,	r0	;
-	...
-  7e:	60 00 00 00 	mova	r0,	&0	;
-  82:	6a 00 00 00 	mova	r0,	&655360	; 0xa0000
-  86:	01 00       	mova	@r0,	r1	;
-  88:	5d 6c 00 00 	addc.b	0(r12),	r13	;
-  8c:	00 72       	subc	r2,	r0	;
-  8e:	00 00       	beq			
-  90:	00 01       	bra	@r1		;
-  92:	00 5d       	add	r13,	r0	;
-	...
