@@ -4,6 +4,7 @@
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
   "version": "0.2.0",
   "configurations": [
+
     {
       "type": "lldb",
       "request": "launch",
@@ -19,7 +20,7 @@
       "request": "launch",
       "name": "dbg cnt MSP430",
       "program": "${workspaceFolder}/build/bin/ir2mir",
-      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cnt/msp.ll",
+      "args": ["${workspaceFolder}/IR2MIR/tests/msp430/cnt/msp_opt.ll",
       "-dump-file=${workspaceFolder}/IR2MIR/tests/msp430/cnt/msp.elf.dump",
       "-start-function=main"],
       "cwd": "${workspaceFolder}",
