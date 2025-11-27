@@ -1,9 +1,9 @@
 
 #building out of llvm sources  is not possible, see:
 #https://lists.llvm.org/pipermail/llvm-dev/2019-March/130706.html
-message (STATUS "Found tool IR2MIR")
+message (STATUS "Found tool LLTA")
 
-project("ir2mir")
+project("llta")
 
 list(APPEND CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR})
 if(NOT CMAKE_BUILD_TYPE)
@@ -45,8 +45,8 @@ message (${GUROBI_INCLUDE_DIRS})
 
 include_directories(include ${LLVM_BINARY_DIR}/lib/Target/ARM ${LLVM_SOURCE_DIR}/lib/Target/ARM ${LLVM_BINARY_DIR}/lib/Target/RISCV ${LLVM_SOURCE_DIR}/lib/Target/RISCV ${LLVM_BINARY_DIR}/lib/Target/MSP430 ${LLVM_SOURCE_DIR}/lib/Target/MSP430 ${GUROBI_INCLUDE_DIRS})
 
-add_llvm_tool(ir2mir
-  IR2MIR.cpp
+add_llvm_tool(llta
+  LLTA.cpp
   NewPMDriver.cpp
 
   DEPENDS
@@ -57,6 +57,6 @@ add_llvm_tool(ir2mir
 add_subdirectory(lib)
 add_subdirectory(clang-plugin)
 
-target_link_libraries(ir2mir PRIVATE ir2mirMPasses ir2mirUtility ir2mirRTTargets TimingAnalysisBase ${GUROBI_CXX_LIBRARY})
+target_link_libraries(llta PRIVATE lltaMPasses lltaUtility lltaRTTargets TimingAnalysisBase ${GUROBI_CXX_LIBRARY})
 
-export_executable_symbols_for_plugins(ir2mir)
+export_executable_symbols_for_plugins(llta)

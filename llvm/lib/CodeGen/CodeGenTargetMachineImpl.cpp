@@ -242,7 +242,7 @@ bool CodeGenTargetMachineImpl::addPassesToEmitFile(
       PM.add(createPrintMIRPass(Out));
   }
 
-  // PM.add(createFreeMachineFunctionPass()); Modified for IR2MIR
+  // PM.add(createFreeMachineFunctionPass()); Modified for LLTA
   return false;
 }
 
@@ -294,7 +294,7 @@ bool CodeGenTargetMachineImpl::addPassesToEmitMC(PassManagerBase &PM,
     return true;
 
   PM.add(Printer);
-  // PM.add(createFreeMachineFunctionPass()); Modified for IR2MIR
+  // PM.add(createFreeMachineFunctionPass()); Modified for LLTA
 
   return false; // success!
 }

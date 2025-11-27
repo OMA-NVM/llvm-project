@@ -1,6 +1,6 @@
-# IR2MIR Tests
+# LLTA Tests
 
-This directory contains test cases and benchmarks for the IR2MIR project.
+This directory contains test cases and benchmarks for the LLTA project.
 
 ## Generating Loop Bounds
 

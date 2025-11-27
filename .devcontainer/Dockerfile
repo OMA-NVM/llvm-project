@@ -22,7 +22,7 @@ ENV GUROBI_HOME="/opt/gurobi/armlinux64"
 ENV PATH="${PATH}:${GUROBI_HOME}/bin"
 ENV LD_LIBRARY_PATH="${LD_LIBRARY_PATH}:${GUROBI_HOME}/lib"
 ENV CPLUS_INCLUDE_PATH="$CPLUS_INCLUDE_PATH:${GUROBI_HOME}/include"
-ENV GRB_LICENSE_FILE=/workspaces/llvmta/dependencies/gurobi.lic
+ENV GRB_LICENSE_FILE=/workspaces/llvm-project/LLTA/dependencies/gurobi.lic
 #RUN ln -s $GUROBI_HOME/lib/libgurobi95.so /usr/lib/libgurobi.so
 
 #Seting up icecc (icecream) distributed compiler.

@@ -1,6 +1,6 @@
-message(STATUS "Found LLVM Machine Passes LIB for IR2MIR")
+message(STATUS "Found LLVM Machine Passes LIB for LLTA")
 
-add_llvm_library(ir2mirMPasses
+add_llvm_library(lltaMPasses
   AsmDumpAndCheckPass.cpp
   TimingAnalysisPasses.cpp
   AdressResolverPass.cpp
@@ -13,5 +13,5 @@ add_llvm_library(ir2mirMPasses
   CallSplitterPass.cpp
   DebugIRPass.cpp
   DEPENDS LLVMAnalysis LLVMCodeGen LLVMCore LLVMSupport LLVMTarget
-  LINK_LIBS TimingAnalysisBase ir2mirRTTargets ir2mirUtility
+  LINK_LIBS TimingAnalysisBase lltaRTTargets lltaUtility
 )

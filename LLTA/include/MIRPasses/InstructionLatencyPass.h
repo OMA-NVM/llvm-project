@@ -1,5 +1,5 @@
-#ifndef LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H
-#define LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H
+#ifndef LLVM_LLTA_MIRPASSES_INSTRUCTIONLATENCYPASS_H
+#define LLVM_LLTA_MIRPASSES_INSTRUCTIONLATENCYPASS_H
 
 #include "TimingAnalysisResults.h"
 #include "llvm/CodeGen/MachineBasicBlock.h"
@@ -53,4 +53,4 @@ public:
 MachineFunctionPass *createInstructionLatencyPass(TimingAnalysisResults &TAR);
 } // namespace llvm
 
-#endif // LLVM_IR2MIR_MIRPASSES_INSTRUCTIONLATENCYPASS_H
+#endif // LLVM_LLTA_MIRPASSES_INSTRUCTIONLATENCYPASS_H

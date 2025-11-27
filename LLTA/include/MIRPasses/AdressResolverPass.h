@@ -1,5 +1,5 @@
-#ifndef IR2MIR_ADRESS_RESOLVER_H
-#define IR2MIR_ADRESS_RESOLVER_H
+#ifndef LLTA_ADRESS_RESOLVER_H
+#define LLTA_ADRESS_RESOLVER_H
 #include "TimingAnalysisResults.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
 

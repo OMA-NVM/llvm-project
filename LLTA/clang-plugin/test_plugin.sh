@@ -20,8 +20,8 @@ if [ ! -f "$PLUGIN" ]; then
     PLUGIN="$BUILD_DIR/lib/LoopBoundPlugin.so"
 fi
 CLANG="$BUILD_DIR/bin/clang"
-EXAMPLE_FILE="$PROJECT_ROOT/IR2MIR/examples/loop_bound_example.c"
-EXAMPLE_DIR="$PROJECT_ROOT/IR2MIR/examples"
+EXAMPLE_FILE="$PROJECT_ROOT/LLTA/examples/loop_bound_example.c"
+EXAMPLE_DIR="$PROJECT_ROOT/LLTA/examples"
 JSON_FILE="$EXAMPLE_DIR/loop_bound_example.c.loop_bounds.json"
 
 # Cleanup function

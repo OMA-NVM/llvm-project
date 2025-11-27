@@ -2,7 +2,7 @@
 
 ## Overview
 
-The LoopBoundPlugin is a Clang plugin that parses custom pragma annotations for loop bounds in C source code. This plugin is designed to work with the IR2MIR timing analysis infrastructure for Worst-Case Execution Time (WCET) analysis.
+The LoopBoundPlugin is a Clang plugin that parses custom pragma annotations for loop bounds in C source code. This plugin is designed to work with the LLTA timing analysis infrastructure for Worst-Case Execution Time (WCET) analysis.
 
 ## Features
 
@@ -47,7 +47,7 @@ do { } while (condition);
 
 ## Building
 
-The plugin is built automatically as part of the IR2MIR project when LLVM is configured with `BUILD_SHARED_LIBS=ON`:
+The plugin is built automatically as part of the LLTA project when LLVM is configured with `BUILD_SHARED_LIBS=ON`:
 
 ```bash
 cmake -S llvm -B build \
@@ -55,8 +55,8 @@ cmake -S llvm -B build \
   -DBUILD_SHARED_LIBS=ON \
   -DLLVM_ENABLE_RTTI=ON \
   -DLLVM_TARGETS_TO_BUILD='MSP430' \
-  -DLLVM_EXTERNAL_IR2MIR_SOURCE_DIR=./IR2MIR \
-  -DLLVM_EXTERNAL_PROJECTS='IR2MIR' \
+  -DLLVM_EXTERNAL_LLTA_SOURCE_DIR=./LLTA \
+  -DLLVM_EXTERNAL_PROJECTS='LLTA' \
   -DLLVM_ENABLE_PROJECTS='clang' \
   -GNinja
 
@@ -102,7 +102,10 @@ clang -cc1 -triple msp430 \
 Run the automated test script to verify the plugin works correctly:
 
 ```bash
-./IR2MIR/clang-plugin/test_plugin.sh
+./LLTA/clang-plugin/test_plugin.sh
+```
+
+See `LLTA/examples/loop_bound_example.c` for a complete example:
 ```
 
 The test script will:
